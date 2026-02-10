@@ -2,6 +2,7 @@
 name: amazon-shopping
 version: "0.0.0"
 description: Search Amazon.com, extract product data, and present ranked recommendations. Use when user asks to shop on Amazon, find products, compare items, or research purchases. Prioritizes review count over rating.
+allowed-tools: "Bash(agent-browser*)"
 ---
 
 # Amazon Shopping
@@ -39,6 +40,7 @@ Use `AskUserQuestion` to gather this information. Only after receiving answers s
 
 - `agent-browser` CLI at `/opt/homebrew/bin/agent-browser`
 - Internet access to Amazon.com
+- Run command examples from this skill's root directory (the folder containing `SKILL.md`) so relative paths like `scripts/...` and `reference/...` resolve correctly.
 
 ## Search Workflow
 
@@ -96,7 +98,7 @@ grep -B2 -A2 "Product Name" results.txt | grep -oE "dp/[A-Z0-9]{10}"
 
 ```bash
 # Use the verification script
-scripts/verify_products.sh results.txt
+bash scripts/verify_products.sh results.txt
 ```
 
 The verification script:
