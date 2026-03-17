@@ -1,6 +1,6 @@
 # Common Amazon Shopping Errors
 
-## ⚠️ CRITICAL: ASIN-Product Mismatch
+## CRITICAL: ASIN-Product Mismatch
 
 **Symptom**: Recommended product link goes to completely different product
 
@@ -9,20 +9,17 @@
 **Root Cause**: Extracting ASINs separately from product names, causing mismatched pairs
 
 **Solution**:
-1. **ALWAYS extract product name AND ASIN together** from the same URL block:
-   ```bash
-   grep -B1 -A1 "/url:.*dp/[A-Z0-9]{10}" snapshot.txt | grep -E "(heading \"|/url:.*dp/)"
-   ```
+1. **Read the accessibility tree carefully** - pair each product heading with the link in the **same container element** using UIDs and hierarchy
 2. **Verify each ASIN before presenting**:
-   ```bash
-   agent-browser open https://www.amazon.com/dp/[ASIN]
-   # Confirm title matches product being recommended
+   ```
+   navigate_page url="https://www.amazon.com/dp/[ASIN]"
+   take_snapshot  # Confirm title matches product being recommended
    ```
 3. **If verification fails, find correct ASIN** - do NOT present mismatched data
 
-**Prevention**: Never use `grep -oE "dp/[A-Z0-9]{10}"` alone - this extracts ALL ASINs including ads, sponsored products, and unrelated items
+**Prevention**: Never extract all ASINs from a page independently - this includes ASINs for ads, sponsored products, and unrelated items
 
-## ⚠️ CRITICAL: Price Inaccuracy
+## CRITICAL: Price Inaccuracy
 
 **Symptom**: Prices shown in recommendations don't match actual product page prices
 
@@ -36,12 +33,11 @@
 
 **Solution**:
 1. **ALWAYS verify price on the actual product page**:
-   ```bash
-   agent-browser open https://www.amazon.com/dp/[ASIN]
-   sleep 3
-   agent-browser snapshot | grep -iE "One-time purchase"
    ```
-2. **Look for "One-time purchase: $XX.XX"** on the product page
+   navigate_page url="https://www.amazon.com/dp/[ASIN]"
+   take_snapshot
+   ```
+2. **Look for product-page pricing text** such as `"Buy new: $XX.XX"`, `"One-time purchase: $XX.XX"`, or the main price block in the snapshot
 3. **Never trust search result prices** - they're often misleading
 
 **Prevention**: Make price verification mandatory alongside ASIN verification before presenting any recommendation
@@ -52,7 +48,7 @@
 
 **Solution**:
 1. Wait 60 seconds
-2. Retry from amazon.com homepage
+2. `navigate_page` back to `https://www.amazon.com`
 3. If persistent, inform user Amazon is rate-limiting
 
 ## Rate Limiting
@@ -78,6 +74,6 @@
 **Symptom**: Incomplete snapshot or missing product data
 
 **Solution**:
-1. Increase sleep time to 7-10 seconds
-2. Check for dynamic content indicators
-3. Wait for page load completion
+1. Use `wait_for` with visible text you expect on the page, such as the search term, `"results"`, a product brand, or `"Add to Cart"`
+2. Do not wait on CSS selectors or product containers; this tool only supports visible text
+3. Retake `take_snapshot` after the text appears, or after a short delay if the page is still loading

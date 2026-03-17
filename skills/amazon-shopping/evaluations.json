@@ -4,9 +4,9 @@
     "query": "Search Amazon for CTS 500k guitar pots",
     "files": [],
     "expected_behavior": [
-      "Uses agent-browser CLI (not Playwright MCP)",
-      "Fills searchbox and presses Enter",
-      "Extracts ASINs from snapshot using grep",
+      "Uses Chrome DevTools MCP to navigate to Amazon",
+      "Takes snapshot and reads product data from the accessibility tree",
+      "Extracts ASINs paired with product names from the same container elements",
       "Presents products with clean amazon.com/dp/[ASIN] URLs"
     ]
   },
@@ -18,6 +18,7 @@
       "Extracts exactly 10-character ASINs",
       "Never fabricates or hallucinates ASINs",
       "Handles /dp/, /gp/product/, and amzn.to/ URL formats",
+      "Pairs ASINs with product names from the same container element",
       "Provides clean amazon.com/dp/[ASIN] links"
     ]
   },
