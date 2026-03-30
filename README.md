@@ -18,6 +18,9 @@ npx skills add jlave-dev/agent-skills --list
 # Install specific skill
 npx skills add jlave-dev/agent-skills --skill amazon-shopping
 
+# Install a second-opinion workflow skill
+npx skills add jlave-dev/agent-skills --skill consult-codex
+
 # Install globally
 npx skills add jlave-dev/agent-skills -g
 ```
@@ -26,6 +29,9 @@ npx skills add jlave-dev/agent-skills -g
 
 ### Amazon Shopping
 Search Amazon.com, extract product data, and present ranked recommendations.
+
+### Consult Codex
+Ask Codex CLI for a second opinion on local code changes, debugging findings, architectural tradeoffs, or ship-readiness decisions.
 
 ## Releases
 
