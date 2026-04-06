@@ -6,7 +6,7 @@
       "always",
       ["feat", "fix", "docs", "chore", "perf", "refactor", "test", "style", "build", "ci"]
     ],
-    "scope-enum": [2, "always", ["amazon-shopping", "consult-codex", "release", "deps"]],
+    "scope-enum": [2, "always", ["amazon-shopping", "release", "deps"]],
     "subject-case": [0]
   }
 }
