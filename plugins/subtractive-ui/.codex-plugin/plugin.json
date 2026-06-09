@@ -1,9 +1,9 @@
 {
   "name": "subtractive-ui",
-  "version": "0.1.0",
+  "version": "0.1.0+codex.20260609044455",
   "description": "Reference-led frontend design, rendered UI audit, and behavior-preserving UI cleanup.",
   "author": {
-    "name": "James",
+    "name": "James Lave",
     "url": "https://github.com/jlave-dev"
   },
   "homepage": "https://github.com/jlave-dev/agent-skills",
@@ -20,7 +20,7 @@
     "displayName": "Subtractive UI",
     "shortDescription": "Minimal, reference-led frontend critique.",
     "longDescription": "Subtractive UI helps Codex design, audit, and refactor frontend surfaces with a professional minimal process. It favors real rendered evidence, visual references, fewer controls, shorter copy, stable responsive layouts, and removal of implementation-detail UI.",
-    "developerName": "James",
+    "developerName": "James Lave",
     "category": "Productivity",
     "capabilities": [
       "frontend design",
