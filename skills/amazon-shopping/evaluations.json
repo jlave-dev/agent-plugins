@@ -4,7 +4,7 @@
     "query": "Search Amazon for CTS 500k guitar pots",
     "expected_behavior": [
       "Asks for missing budget, usage, and deal-breakers",
-      "Uses the Chrome plugin through Node REPL browser runtime",
+      "Visits Amazon through the normal browser path available to the agent",
       "Pairs ASINs with names from the same result container",
       "Verifies title, price, rating, and reviews on each product page",
       "Returns clean amazon.com/dp/<ASIN> links"
