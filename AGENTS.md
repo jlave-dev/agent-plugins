@@ -52,7 +52,6 @@ BREAKING CHANGE: Product API now requires new format
 2. GitHub Actions runs semantic-release and, when a release is due, creates a single release commit with:
    - Updated `package.json` version
    - Auto-generated CHANGELOG
-   - Synced skill versions in `SKILL.md` files
    - Git tag and GitHub release
 
 ## Project Structure
@@ -61,10 +60,10 @@ BREAKING CHANGE: Product API now requires new format
 agent-skills/
 ├── skills/           # Individual skill implementations
 │   └── <skill-name>/
-│       ├── SKILL.md          # Skill definition (with version)
+│       ├── SKILL.md          # Skill definition
 │       ├── evaluations.json  # Test definitions
 │       ├── reference/        # Reference docs
-│       └── scripts/          # Implementation scripts
+│       └── scripts/          # Optional implementation scripts
 ├── .github/          # GitHub configuration
 │   └── workflows/            # CI/CD
 ├── .releaserc.json   # semantic-release configuration

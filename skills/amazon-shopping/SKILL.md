@@ -1,142 +1,68 @@
 ---
 name: amazon-shopping
-version: "0.0.0"
-description: Search Amazon.com, extract product data, and present ranked recommendations. Use when user asks to shop on Amazon, find products, compare items, or research purchases. Prioritizes review count over rating.
-allowed-tools: "mcp__chrome-devtools__*"
+description: Use when the user asks to shop on Amazon, compare Amazon products, or research purchase options. Searches Amazon in Chrome, verifies product-page ASIN/title/price data, and ranks options by user criteria with review count favored when ratings are close.
+allowed-tools: "tool_search_tool, mcp__node_repl__*"
 ---
 
 # Amazon Shopping
 
-Search Amazon and recommend products based on user preferences.
+Search Amazon, verify product facts on product pages, and return ranked recommendations.
 
----
+## Requirements Gate
 
-## MANDATORY FIRST STEP - REQUIREMENTS GATHERING
+Before browser automation, ask directly for any missing shopping constraints:
 
-**YOU MUST ASK CLARIFYING QUESTIONS BEFORE ANY BROWSER AUTOMATION.**
+- Budget or comfortable price range
+- Usage context: personal, gift, professional, compatibility need, etc.
+- Deal-breakers: required features, avoided brands/materials, shipping needs
 
-DO NOT proceed to search until you understand:
-- **Budget**: Price range they're comfortable with
-- **Usage**: Who/what it's for (personal, gift, professional)
-- **Deal-breakers**: Features they must have or avoid
+If the user already supplied enough constraints, proceed.
 
-Use `AskUserQuestion` to gather this information. Only after receiving answers should you proceed to Step 2.
+## Browser Backend
 
-**Example questions for any product:**
-- Budget range (under $25, $25-50, $50-100, $100+)
-- Primary use case (personal, gift, professional)
-- Key preferences (brand, features, quality vs value)
+Use the Chrome plugin through the `chrome:control-chrome` skill and its Node REPL `js` tool. Do not use Chrome DevTools MCP for this workflow.
 
----
+Before the first browser action:
 
-## Quick Start (After Requirements Gathered)
+1. Read `chrome:control-chrome` if it is not already loaded.
+2. If the Node REPL `js` tool is unavailable, use `tool_search_tool` for `node_repl js`.
+3. Bootstrap with the current Chrome plugin root and `setupBrowserRuntime`; do not hardcode a plugin version.
+4. Reuse one `tab` for search and product verification.
 
-1. ~~**Gather requirements**: Ask about budget, usage, deal-breakers~~ → **DONE in mandatory step above**
-2. **Search Amazon**: Navigate to search results and capture snapshot
-3. **Extract data**: Identify products with ASINs, prices, ratings, review counts
-4. **Verify**: Visit product pages to confirm accuracy
-5. **Present recommendations**: Ranked by user's criteria
+End Chrome work with `browser.tabs.finalize({ keep: [] })` unless the user explicitly asked to keep the Amazon page open.
 
-## Prerequisites
+## Workflow
 
-- Chrome DevTools MCP server connected
-- Internet access to Amazon.com
+1. Search Amazon directly:
 
-## Search Workflow
+   ```js
+   await tab.goto(`https://www.amazon.com/s?k=${encodeURIComponent(searchQuery)}`);
+   await tab.playwright.waitForLoadState({ state: "domcontentloaded", timeoutMs: 15000 });
+   const snapshot = await tab.playwright.domSnapshot();
+   nodeRepl.write(snapshot);
+   ```
 
-### Step 1: Navigate to Amazon Search Results
+2. Extract product names and ASINs from the same result container. Never pair a list of names with a separate list of ASINs.
+3. Visit each candidate product page before presenting it:
 
-Go directly to the search URL (simplest approach):
+   ```js
+   await tab.goto(`https://www.amazon.com/dp/${asin}`);
+   const productSnapshot = await tab.playwright.domSnapshot();
+   nodeRepl.write(productSnapshot);
+   ```
 
-```
-navigate_page type="url" url="https://www.amazon.com/s?k=<encoded search query>"
-```
+4. Keep only products whose product page confirms title match, current price, rating, and review count.
+5. Rank by the user's criteria. When ratings are within 0.5 stars, prefer the product with more reviews.
 
-**Alternative** - Interactive search (if direct URL doesn't work):
-1. Navigate to `https://www.amazon.com`
-2. `take_snapshot` to find the search box UID
-3. `fill` the search box with your query
-4. `click` the search button or `press_key` with key="Enter"
+Read references only when needed:
 
-### Step 2: Capture Results
+- [reference/asin-extraction.md](reference/asin-extraction.md): ASIN patterns and mismatch prevention.
+- [reference/common-errors.md](reference/common-errors.md): CAPTCHA, rate-limit, slow-load, and verification recovery.
+- [reference/output-formats.md](reference/output-formats.md): Shortlist and table templates.
 
-```
-take_snapshot
-```
+## Output Rules
 
-The snapshot returns the full accessibility tree with UIDs for every element. Each element includes its role, name, and URL where applicable.
-
-### Step 3: Extract Products WITH Their ASINs
-
-**CRITICAL: Extract product names AND their ASINs from THE SAME container element to prevent mismatches.**
-
-In the accessibility tree, each product is typically a `listitem` containing:
-- A `heading` with the product name
-- A `link` with the ASIN in the URL (e.g., `/dp/B0XXXXXXXXX`)
-
-Read the snapshot and pair each heading with the link **in the same container**. Use the UID hierarchy and indentation to identify which elements belong to the same product.
-
-**WRONG - Causes ASIN/Product Mismatches:**
-- Extracting all ASINs separately and pairing them with product names
-- Amazon pages contain ASINs for ads, sponsored products, and footer links that will mix with real results
-
-### Step 4: MANDATORY Product Page Verification
-
-**For EVERY product before presenting it to the user, you MUST verify by visiting its actual product page.**
-
-For each product:
-1. `navigate_page` to `https://www.amazon.com/dp/<ASIN>`
-2. `take_snapshot` to read the page content
-3. Verify:
-   - **Title matches** the product you're recommending
-   - **Price** is current from the product page (for example `Buy new: $XX.XX`, `One-time purchase: $XX.XX`, or the main price block)
-   - **Rating** and **review count** are present
-
-**MANDATORY VERIFICATION RULES:**
-- If ASIN redirects to different product → DISCARD
-- If page title doesn't match expected product → DISCARD
-- If price cannot be found → DISCARD
-- Only present VERIFIED products with a checkmark
-
-**NEVER extract prices from search results pages** - they often don't match actual product page prices due to variants, promotions, or different sellers.
-
-See [reference/asin-extraction.md](reference/asin-extraction.md) for detailed patterns.
-
-## Common Issues
-
-| Issue | Solution |
-|-------|----------|
-| CAPTCHA | Wait 60s, retry from amazon.com |
-| Rate limited | Wait 2-3 min |
-| No results | Broaden search |
-| Slow page load | Use `wait_for` with expected visible text, then retake `take_snapshot` |
-
-See [reference/common-errors.md](reference/common-errors.md) for complete troubleshooting.
-
-## Output Format
-
-**ALL presented products MUST be verified on their actual product pages.**
-
-```markdown
-## Amazon Shortlist - [Category]
-
-### 1. [Product] - $XX.XX (verified)
-**ASIN**: [ASIN]
-**Rating**: X.X/5 (X,XXX reviews)
-**Amazon**: https://www.amazon.com/dp/[ASIN]
-**Why this**: [Reason]
-**Key specs**: [Specs]
-```
-
-**Do NOT present unverified products.** The verified marker confirms that:
-1. The ASIN link goes to the actual product (not a redirect)
-2. The price is current from the product page
-3. The title matches what was recommended
-
-See [reference/output-formats.md](reference/output-formats.md) for templates.
-
-## Ranking Priority
-
-When ratings are similar (within 0.5), prioritize review count.
-
-Example: 4.0 with 10,000 reviews > 5.0 with 100 reviews
+- Present only product-page-verified items.
+- Use clean links: `https://www.amazon.com/dp/<ASIN>`.
+- Include ASIN, product-page price, rating, review count, why it matches, and key trade-offs.
+- Mark each item `(verified)` only after product-page title, price, rating, and review count were checked.

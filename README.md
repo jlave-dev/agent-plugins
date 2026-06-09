@@ -31,7 +31,6 @@ Search Amazon.com, extract product data, and present ranked recommendations.
 
 This project uses automated semantic versioning powered by [semantic-release](https://github.com/semantic-release/semantic-release). Every merge to `main` is evaluated automatically and, when commits require it, semantic-release creates:
 - a version bump in `package.json`
-- synced `version` fields in all `skills/**/SKILL.md`
 - a Git tag (`vX.Y.Z`)
 - a GitHub Release with generated notes
 
@@ -70,15 +69,15 @@ Skills are organized in the `skills/` directory following the [Agent Skills Spec
 agent-skills/
 ├── skills/           # Individual skill implementations
 │   └── <skill-name>/
-│       ├── SKILL.md          # Skill definition (with version)
+│       ├── SKILL.md          # Skill definition
 │       ├── evaluations.json  # Test definitions
 │       ├── reference/        # Reference docs
-│       └── scripts/          # Implementation scripts
+│       └── scripts/          # Optional implementation scripts
 ├── .github/          # GitHub configuration
 │   └── workflows/            # CI/CD
 ├── .releaserc.json   # semantic-release configuration
 ├── CHANGELOG.md      # Auto-generated changelog
-└── package.json      # Version tracking
+└── package.json      # Repository version tracking
 ```
 
 ## License

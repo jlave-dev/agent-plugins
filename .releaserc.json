@@ -57,13 +57,13 @@
     [
       "@semantic-release/exec",
       {
-        "prepareCmd": "node scripts/sync-version.js ${nextRelease.version}"
+        "prepareCmd": "node scripts/update-package-version.js ${nextRelease.version}"
       }
     ],
     [
       "@semantic-release/git",
       {
-        "assets": ["CHANGELOG.md", "package.json", "skills/**/SKILL.md"],
+        "assets": ["CHANGELOG.md", "package.json"],
         "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
       }
     ],
