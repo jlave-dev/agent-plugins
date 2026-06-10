@@ -10,6 +10,9 @@
 # Logs
 *.log
 
+# Build artifacts
+dist/
+
 # Dependencies
 node_modules/
 

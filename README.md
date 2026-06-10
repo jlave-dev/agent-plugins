@@ -98,20 +98,19 @@ agent-skills/
 ├── scripts/                     # Release helper scripts and tests
 ├── .github/workflows/           # Release automation
 ├── .releaserc.json              # semantic-release configuration
-├── CHANGELOG.md                 # Auto-generated changelog
-└── package.json                 # Repository version tracking
+├── dist/                        # Ignored release artifacts
+└── package.json                 # Development package metadata
 ```
 
 ## Releases
 
 This project uses automated semantic versioning powered by [semantic-release](https://github.com/semantic-release/semantic-release). Every merge to `main` is evaluated automatically and, when commits require it, semantic-release creates:
 
-- a version bump in `package.json`
-- an updated `CHANGELOG.md`
 - a Git tag (`vX.Y.Z`)
 - a GitHub Release with generated notes
+- a downloadable archive named `agent-skills-vX.Y.Z.tar.gz`
 
-See [Releases](https://github.com/jlave-dev/agent-skills/releases) for the full changelog.
+Release notes live in [GitHub Releases](https://github.com/jlave-dev/agent-skills/releases); there is no committed `CHANGELOG.md`. The committed `package.json` keeps the development placeholder version `0.0.0-development`. During CI release preparation, semantic-release temporarily rewrites `package.json` to the computed release version before packaging the uploaded archive. The temporary version bump is not committed back to `main`.
 
 ## Commit Conventions
 

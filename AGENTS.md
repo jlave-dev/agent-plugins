@@ -68,7 +68,6 @@ agent-skills/
 ├── scripts/
 ├── .github/workflows/
 ├── .releaserc.json
-├── CHANGELOG.md
 └── package.json
 ```
 
@@ -121,17 +120,17 @@ Examples:
 feat(amazon): add order workflow plugin
 fix(shop-amazon): handle empty search results correctly
 docs(write-reviews): clarify review submission approval
-chore(release): 1.2.1 [skip ci]
+chore(release): update automation docs
 ```
 
 Never include `codex` in branch names or commit messages.
 
 ## Release Process
 
-Push conventional commits to `main`. GitHub Actions runs semantic-release and, when a release is due, creates a release commit with:
+Push conventional commits to `main`. GitHub Actions runs semantic-release and, when a release is due, creates:
 
-- updated `package.json` version
-- auto-generated `CHANGELOG.md`
 - Git tag and GitHub release
+- generated release notes in the GitHub Release
+- downloadable `agent-skills-vX.Y.Z.tar.gz` archive
 
-Do not manually edit release versions in skill frontmatter. Plugin manifests may use helper-generated cachebuster versions during plugin development; repo package versioning remains controlled by semantic-release.
+Do not configure semantic-release to commit release assets back to `main`. The committed `package.json` version is the development placeholder `0.0.0-development`; semantic-release temporarily rewrites it only inside the CI workspace before creating the release archive. GitHub Releases are the changelog source of truth. Do not manually edit release versions in skill frontmatter. Plugin manifests may use helper-generated cachebuster versions during plugin development.
