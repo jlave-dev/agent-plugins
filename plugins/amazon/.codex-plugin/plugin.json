@@ -1,6 +1,6 @@
 {
   "name": "amazon",
-  "version": "0.1.0+codex.20260610075817",
+  "version": "0.1.0+codex.20260610085301",
   "description": "Amazon product research, order lookup, and review workflows.",
   "author": {
     "name": "James Lave",
@@ -35,6 +35,8 @@
     "defaultPrompt": [
       "Use Amazon to research products, inspect orders, or draft a product review."
     ],
-    "brandColor": "#FF9900"
+    "brandColor": "#FF9900",
+    "composerIcon": "./assets/icon.svg",
+    "logo": "./assets/icon.svg"
   }
 }

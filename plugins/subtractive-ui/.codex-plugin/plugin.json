@@ -1,6 +1,6 @@
 {
   "name": "subtractive-ui",
-  "version": "0.1.0+codex.20260609044455",
+  "version": "0.1.0+codex.20260610085301",
   "description": "Reference-led frontend design, rendered UI audit, and behavior-preserving UI cleanup.",
   "author": {
     "name": "James Lave",
@@ -35,6 +35,8 @@
     "defaultPrompt": [
       "Use Subtractive UI to audit or simplify this frontend."
     ],
-    "brandColor": "#2F7D57"
+    "brandColor": "#2F7D57",
+    "composerIcon": "./assets/icon.svg",
+    "logo": "./assets/icon.svg"
   }
 }

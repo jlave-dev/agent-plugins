@@ -57,12 +57,14 @@ agent-skills/
 ├── plugins/
 │   ├── amazon/
 │   │   ├── .codex-plugin/plugin.json
+│   │   ├── assets/
 │   │   └── skills/
 │   │       ├── find-orders/
 │   │       ├── shop-amazon/
 │   │       └── write-reviews/
 │   └── subtractive-ui/
 │       ├── .codex-plugin/plugin.json
+│       ├── assets/
 │       ├── references/
 │       └── skills/
 ├── scripts/
@@ -79,6 +81,15 @@ agent-skills/
 - Keep browser/tool instructions user-facing unless implementation detail is necessary for reliability.
 - Add or update `.commitlintrc.json` scopes when adding, renaming, or removing plugins or skills.
 - Use `plugins/<plugin-name>/references/` for plugin-wide reference material and `plugins/<plugin-name>/skills/<skill-name>/references/` for skill-specific material.
+
+## Plugin Icons
+
+- Put plugin presentation icons in `plugins/<plugin-name>/assets/` and reference them from `.codex-plugin/plugin.json` under `interface.composerIcon` and `interface.logo`.
+- Prefer a single scalable SVG such as `./assets/icon.svg` unless the icon requires a raster source; keep paths relative to the plugin root and starting with `./`.
+- Before drawing, decide what the icon should communicate for the plugin, then inspect current plugin/app icon examples for style calibration. Do not jump straight to the first obvious metaphor.
+- Keep icons minimal and legible at small sizes: one centered symbol, strong silhouette, limited palette, no text, no screenshots-in-miniature, and no decorative badges unless the badge is the core metaphor.
+- Avoid copying protected brand marks, logos, or trade dress unless the plugin is first-party for that brand or the user explicitly supplies and approves the asset.
+- After icon changes, render-check the SVG at both large and small sizes, refresh the plugin cachebuster with `update_plugin_cachebuster.py`, and run `validate_plugin.py` for each edited plugin.
 
 ## Commit Conventions
 
