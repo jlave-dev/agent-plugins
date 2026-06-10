@@ -1,0 +1,40 @@
+{
+  "name": "amazon",
+  "version": "0.1.0+codex.20260610075817",
+  "description": "Amazon product research, order lookup, and review workflows.",
+  "author": {
+    "name": "James Lave",
+    "url": "https://github.com/jlave-dev"
+  },
+  "homepage": "https://github.com/jlave-dev/agent-skills",
+  "repository": "https://github.com/jlave-dev/agent-skills",
+  "license": "MIT",
+  "keywords": [
+    "amazon",
+    "shopping",
+    "orders",
+    "reviews"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Amazon",
+    "shortDescription": "Shop, inspect orders, and draft reviews.",
+    "longDescription": "Amazon helps Codex research products, verify product-page details, inspect past orders and invoices, and draft or submit product reviews only with explicit user approval.",
+    "developerName": "James Lave",
+    "category": "Productivity",
+    "capabilities": [
+      "Amazon product research",
+      "order lookup",
+      "invoice lookup",
+      "return and warranty lookup",
+      "review drafting"
+    ],
+    "websiteURL": "https://github.com/jlave-dev/agent-skills",
+    "privacyPolicyURL": "https://github.com/jlave-dev/agent-skills/blob/main/PRIVACY.md",
+    "termsOfServiceURL": "https://github.com/jlave-dev/agent-skills/blob/main/TERMS.md",
+    "defaultPrompt": [
+      "Use Amazon to research products, inspect orders, or draft a product review."
+    ],
+    "brandColor": "#FF9900"
+  }
+}

@@ -1,0 +1,5 @@
+interface:
+  display_name: "Shop Amazon"
+  short_description: "Verify and compare Amazon products."
+  brand_color: "#FF9900"
+  default_prompt: "Use $shop-amazon to compare Amazon products and return verified recommendations."

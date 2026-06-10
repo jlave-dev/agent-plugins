@@ -1,0 +1,5 @@
+interface:
+  display_name: "Write Reviews"
+  short_description: "Draft and submit Amazon reviews."
+  brand_color: "#FF9900"
+  default_prompt: "Use $write-reviews to draft an Amazon review for this product."

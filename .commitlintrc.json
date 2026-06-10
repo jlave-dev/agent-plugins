@@ -10,7 +10,10 @@
       2,
       "always",
       [
-        "amazon-shopping",
+        "amazon",
+        "find-orders",
+        "shop-amazon",
+        "write-reviews",
         "audit-rendered-ui",
         "design-frontend",
         "refactor-ui",

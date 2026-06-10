@@ -1,75 +1,137 @@
 # Agent Skills - Development Guidelines
 
+## Project Context
+
+This repository publishes a Codex plugin marketplace at `.agents/plugins/marketplace.json`. Plugin implementations live under `plugins/<plugin-name>/`, with each plugin carrying its own `.codex-plugin/plugin.json` manifest and `skills/<skill-name>/` directories.
+
+## Commands
+
+Install dependencies before running repository scripts:
+
+```bash
+npm install
+```
+
+Run the repo test suite:
+
+```bash
+npm test
+```
+
+Validate an edited skill:
+
+```bash
+python3 /Users/james/.codex/skills/.system/skill-creator/scripts/quick_validate.py plugins/<plugin-name>/skills/<skill-name>
+```
+
+Validate an edited plugin:
+
+```bash
+python3 /Users/james/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py plugins/<plugin-name>
+```
+
+Refresh a plugin cachebuster version while preparing local plugin changes:
+
+```bash
+python3 /Users/james/.codex/skills/.system/plugin-creator/scripts/update_plugin_cachebuster.py plugins/<plugin-name>
+```
+
+When available, run Plugin Eval from the cached script for skill-quality checks:
+
+```bash
+node /Users/james/.codex/plugins/cache/openai-curated/plugin-eval/c6ea566d/scripts/plugin-eval.js analyze plugins/<plugin-name>/skills/<skill-name> --format markdown
+```
+
+## Validation
+
+- For skill changes, run `quick_validate.py` on each edited skill.
+- For plugin manifest, marketplace, or plugin layout changes, run `validate_plugin.py` on the edited plugin.
+- For release helper or package-script changes, run `npm test`.
+- For README or AGENTS updates, verify documented commands against `package.json`, `.releaserc.json`, `.github/workflows/`, and the current plugin layout.
+
+## Repository Structure
+
+```text
+agent-skills/
+├── .agents/plugins/marketplace.json
+├── plugins/
+│   ├── amazon/
+│   │   ├── .codex-plugin/plugin.json
+│   │   └── skills/
+│   │       ├── find-orders/
+│   │       ├── shop-amazon/
+│   │       └── write-reviews/
+│   └── subtractive-ui/
+│       ├── .codex-plugin/plugin.json
+│       ├── references/
+│       └── skills/
+├── scripts/
+├── .github/workflows/
+├── .releaserc.json
+├── CHANGELOG.md
+└── package.json
+```
+
+## Skill And Plugin Conventions
+
+- Use `<action>-<noun>` skill names.
+- Keep each `SKILL.md` compact and move detailed, situational guidance into `references/`.
+- Include `agents/openai.yaml` for plugin skills, with concise user-facing metadata and a default prompt mentioning `$skill-name`.
+- Keep browser/tool instructions user-facing unless implementation detail is necessary for reliability.
+- Add or update `.commitlintrc.json` scopes when adding, renaming, or removing plugins or skills.
+- Use `plugins/<plugin-name>/references/` for plugin-wide reference material and `plugins/<plugin-name>/skills/<skill-name>/references/` for skill-specific material.
+
 ## Commit Conventions
 
-This project uses **Conventional Commits** to drive automated semantic versioning.
+This project uses Conventional Commits to drive semantic-release.
 
-### Format
-
-```
+```text
 <type>[optional scope]: <description>
 ```
 
-### Types
+Use these types:
 
-| Type | Description | Version Bump |
-|------|-------------|--------------|
-| `feat` | New skill or feature | MINOR |
-| `fix` | Bug fix | PATCH |
-| `docs` | Documentation changes only | PATCH |
-| `chore` | Maintenance tasks | PATCH |
-| `perf` | Performance improvements | PATCH |
-| `refactor` | Code refactoring | PATCH |
-| `test` | Test additions/changes | PATCH |
+- `feat`: new skill, plugin, or feature
+- `fix`: bug fix
+- `docs`: documentation changes only
+- `chore`: maintenance tasks
+- `perf`: performance improvements
+- `refactor`: code refactoring
+- `test`: test additions or changes
+- `style`: formatting-only changes
+- `build`: build system changes
+- `ci`: CI workflow changes
 
-### Scopes
+Current scopes include:
 
-Use skill name as scope for skill-specific changes:
-- `amazon-shopping` - Amazon Shopping skill
-- (Add more as new skills are created)
+- `amazon`
+- `shop-amazon`
+- `find-orders`
+- `write-reviews`
+- `subtractive-ui`
+- `design-frontend`
+- `audit-rendered-ui`
+- `refactor-ui`
+- `release`
+- `deps`
 
-### Examples
+Examples:
 
 ```bash
-# Repository-level changes
-feat: add github-actions skill
-docs: update README with installation guide
-chore: upgrade dependencies
-
-# Skill-specific changes
-feat(amazon-shopping): add wishlist integration
-fix(amazon-shopping): handle empty search results correctly
-docs(amazon-shopping): clarify verification steps
-
-# Breaking changes
-feat(amazon-shopping)!: change product data structure
-BREAKING CHANGE: Product API now requires new format
+feat(amazon): add order workflow plugin
+fix(shop-amazon): handle empty search results correctly
+docs(write-reviews): clarify review submission approval
+chore(release): 1.2.1 [skip ci]
 ```
+
+Never include `codex` in branch names or commit messages.
 
 ## Release Process
 
-1. Push commits to main (following conventional commits)
-2. GitHub Actions runs semantic-release and, when a release is due, creates a single release commit with:
-   - Updated `package.json` version
-   - Auto-generated CHANGELOG
-   - Git tag and GitHub release
+Push conventional commits to `main`. GitHub Actions runs semantic-release and, when a release is due, creates a release commit with:
 
-## Project Structure
+- updated `package.json` version
+- auto-generated `CHANGELOG.md`
+- Git tag and GitHub release
 
-```
-agent-skills/
-├── skills/           # Individual skill implementations
-│   └── <skill-name>/
-│       ├── SKILL.md          # Skill definition
-│       ├── evaluations.json  # Test definitions
-│       ├── reference/        # Reference docs
-│       └── scripts/          # Optional implementation scripts
-├── .github/          # GitHub configuration
-│   └── workflows/            # CI/CD
-├── .releaserc.json   # semantic-release configuration
-├── CHANGELOG.md      # Auto-generated changelog
-├── package.json      # Version tracking (not published to npm)
-└── .commitlintrc.json # Commit linting rules (update scopes when adding skills)
-```
-
-**Note**: When adding new skills, update the `scope-enum` in `.commitlintrc.json` to include the new skill name.
+Do not manually edit release versions in skill frontmatter. Plugin manifests may use helper-generated cachebuster versions during plugin development; repo package versioning remains controlled by semantic-release.

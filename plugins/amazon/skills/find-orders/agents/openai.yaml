@@ -1,0 +1,5 @@
+interface:
+  display_name: "Find Orders"
+  short_description: "Inspect Amazon orders and invoices."
+  brand_color: "#FF9900"
+  default_prompt: "Use $find-orders to locate an Amazon order and summarize the visible details."

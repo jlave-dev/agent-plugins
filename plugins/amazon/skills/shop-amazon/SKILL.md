@@ -1,9 +1,9 @@
 ---
-name: amazon-shopping
-description: Use when the user asks to shop on Amazon, compare Amazon products, or research purchase options. Visits Amazon through the normal browser path available to the agent, verifies product-page ASIN/title/price data, and ranks options by user criteria with review count favored when ratings are close.
+name: shop-amazon
+description: Use when the user asks to shop on Amazon, compare Amazon products, research purchase options, or build a product shortlist. Verifies product-page ASIN/title/price/rating/review data and ranks options by user criteria, favoring review count when ratings are close.
 ---
 
-# Amazon Shopping
+# Shop Amazon
 
 Search Amazon, verify product facts on product pages, and return ranked recommendations.
 
@@ -26,7 +26,6 @@ Keep the same browser page or session for search and product verification when p
 ## Workflow
 
 1. Search Amazon directly at `https://www.amazon.com/s?k=<encoded search query>`.
-
 2. Extract product names and ASINs from the same result container. Never pair a list of names with a separate list of ASINs.
 3. Visit each candidate product page before presenting it.
 4. Keep only products whose product page confirms title match, current price, rating, and review count.
@@ -34,9 +33,13 @@ Keep the same browser page or session for search and product verification when p
 
 Read references only when needed:
 
-- [reference/asin-extraction.md](reference/asin-extraction.md): ASIN patterns and mismatch prevention.
-- [reference/common-errors.md](reference/common-errors.md): CAPTCHA, rate-limit, slow-load, and verification recovery.
-- [reference/output-formats.md](reference/output-formats.md): Shortlist and table templates.
+- [references/asin-extraction.md](references/asin-extraction.md): ASIN patterns and mismatch prevention.
+- [references/common-errors.md](references/common-errors.md): CAPTCHA, rate-limit, slow-load, and verification recovery.
+- [references/output-formats.md](references/output-formats.md): Shortlist and table templates.
+
+## Account Actions
+
+Do not add items to cart, buy, reorder, subscribe, send gifts, apply coupons, or start checkout unless the user explicitly asks for that exact action. Treat product research as read-only by default.
 
 ## Output Rules
 
