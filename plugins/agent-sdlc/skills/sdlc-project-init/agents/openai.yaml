@@ -1,0 +1,5 @@
+interface:
+  display_name: "SDLC Project Init"
+  short_description: "Propose a project SDLC config."
+  brand_color: "#315C9A"
+  default_prompt: "Use $sdlc-project-init to propose an .agent-sdlc.yml config for this repo."

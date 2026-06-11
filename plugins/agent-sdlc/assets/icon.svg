@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Agent SDLC plugin icon">
+  <rect width="512" height="512" rx="112" fill="#315C9A"/>
+  <circle cx="162" cy="188" r="54" fill="#F5FAFF"/>
+  <circle cx="350" cy="188" r="54" fill="#F5FAFF"/>
+  <circle cx="256" cy="334" r="58" fill="#F5FAFF"/>
+  <path d="M213 188h86M324 236l-42 62M188 236l42 62" fill="none" stroke="#15305A" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M146 188h32M334 188h32M238 334h36" fill="none" stroke="#315C9A" stroke-width="24" stroke-linecap="round"/>
+</svg>

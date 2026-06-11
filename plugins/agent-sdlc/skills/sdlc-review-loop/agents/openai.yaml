@@ -1,0 +1,5 @@
+interface:
+  display_name: "SDLC Review Loop"
+  short_description: "Run implementer and reviewer threads."
+  brand_color: "#315C9A"
+  default_prompt: "Use $sdlc-review-loop to send my current changes to a reviewer thread and iterate until clean."

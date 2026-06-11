@@ -1,0 +1,5 @@
+interface:
+  display_name: "SDLC Reviewer"
+  short_description: "Review changes with an explicit verdict."
+  brand_color: "#315C9A"
+  default_prompt: "Use $sdlc-reviewer to review this change handoff and return findings plus a verdict."
