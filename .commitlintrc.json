@@ -18,6 +18,7 @@
         "audit-rendered-ui",
         "design-frontend",
         "refactor-ui",
+        "sdlc-docs",
         "sdlc-project-init",
         "sdlc-review-loop",
         "sdlc-reviewer",

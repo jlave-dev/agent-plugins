@@ -92,6 +92,16 @@ function parseKnownConfig(raw) {
       config.threads.reviewer = config.threads.reviewer || {};
       config.threads.reviewer.title = parseScalar(value);
     }
+    if (pathName === "threads.docs.mode") {
+      config.threads = config.threads || {};
+      config.threads.docs = config.threads.docs || {};
+      config.threads.docs.mode = parseScalar(value);
+    }
+    if (pathName === "threads.docs.title") {
+      config.threads = config.threads || {};
+      config.threads.docs = config.threads.docs || {};
+      config.threads.docs.title = parseScalar(value);
+    }
     if (pathName === "review.maxCycles") {
       config.review = config.review || {};
       config.review.maxCycles = parseScalar(value);
@@ -138,6 +148,10 @@ function readConfig(repoRoot) {
         mode: "reuse-or-create",
         title: `Reviewer: ${getProjectName(repoRoot)}`,
       },
+      docs: {
+        mode: "reuse-or-create",
+        title: `Docs: ${getProjectName(repoRoot)}`,
+      },
     },
     review: {
       maxCycles: 2,
@@ -164,6 +178,10 @@ function readConfig(repoRoot) {
       reviewer: {
         mode: parsed.threads?.reviewer?.mode || defaults.threads.reviewer.mode,
         title: parsed.threads?.reviewer?.title || `Reviewer: ${projectName}`,
+      },
+      docs: {
+        mode: parsed.threads?.docs?.mode || defaults.threads.docs.mode,
+        title: parsed.threads?.docs?.title || `Docs: ${projectName}`,
       },
     },
     review: {

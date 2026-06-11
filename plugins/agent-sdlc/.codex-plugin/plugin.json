@@ -1,6 +1,6 @@
 {
   "name": "agent-sdlc",
-  "version": "0.1.0+codex.20260611050122",
+  "version": "0.1.0+codex.20260611052356",
   "description": "Reusable multi-thread software development lifecycle workflows.",
   "author": {
     "name": "James Lave",
@@ -19,12 +19,13 @@
   "interface": {
     "displayName": "Agent SDLC",
     "shortDescription": "Coordinate repeatable SDLC thread workflows.",
-    "longDescription": "Agent SDLC helps Codex run repeatable software development workflows across communicating threads, starting with an implementer and independent reviewer loop that produces structured handoffs, review findings, and re-review cycles.",
+    "longDescription": "Agent SDLC helps Codex run repeatable software development workflows across communicating threads, starting with an implementer and independent reviewer loop, plus a dedicated docs role for keeping repository documentation aligned with implementation changes.",
     "developerName": "James Lave",
     "category": "Productivity",
     "capabilities": [
       "multi-thread review loop",
       "code review handoffs",
+      "documentation update role",
       "project workflow initialization",
       "review verdict classification",
       "SDLC role prompts"

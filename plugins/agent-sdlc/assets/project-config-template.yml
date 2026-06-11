@@ -8,6 +8,9 @@ threads:
   reviewer:
     mode: reuse-or-create
     title: "Reviewer: {{PROJECT_NAME}}"
+  docs:
+    mode: reuse-or-create
+    title: "Docs: {{PROJECT_NAME}}"
 
 review:
   maxCycles: 2

@@ -29,6 +29,10 @@ Before creating or messaging threads, make sure the target repository and change
 7. If changes are requested, present the findings to the implementer, fix them, and resubmit until approved or `review.maxCycles` is reached.
 8. Escalate to the user when the reviewer asks an unanswerable product question, the verdict is `needs_human`, or the max cycle count is reached.
 
+## Documentation Lane
+
+When the user asks for documentation coverage, or the change adds or changes public behavior, hand the same change context to `$sdlc-docs`. The docs role should update repository documentation only and return `docs_updated`, `docs_not_needed`, or `needs_human`. Keep docs updates in the same PR unless the user asks for a separate documentation follow-up.
+
 ## Persistence
 
 Do not write `.agent-sdlc/reviews/` logs unless the user explicitly asks to persist project-local review records. If persistence is requested, save the handoff, reviewer response, verdict, and cycle number under `.agent-sdlc/reviews/`.
