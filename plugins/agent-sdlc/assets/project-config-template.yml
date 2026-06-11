@@ -1,0 +1,15 @@
+projectName: "{{PROJECT_NAME}}"
+defaultBase: {{DEFAULT_BASE}}
+
+commands:
+{{VERIFY_COMMANDS}}
+
+threads:
+  reviewer:
+    mode: reuse-or-create
+    title: "Reviewer: {{PROJECT_NAME}}"
+
+review:
+  maxCycles: 2
+  requireCleanWorkingTree: false
+  requireInlineFindings: true

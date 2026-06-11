@@ -11,12 +11,16 @@
       "always",
       [
         "amazon",
+        "agent-sdlc",
         "find-orders",
         "shop-amazon",
         "write-reviews",
         "audit-rendered-ui",
         "design-frontend",
         "refactor-ui",
+        "sdlc-project-init",
+        "sdlc-review-loop",
+        "sdlc-reviewer",
         "release",
         "deps",
         "subtractive-ui"

@@ -1,0 +1,42 @@
+{
+  "name": "agent-sdlc",
+  "version": "0.1.0+codex.20260611050122",
+  "description": "Reusable multi-thread software development lifecycle workflows.",
+  "author": {
+    "name": "James Lave",
+    "url": "https://github.com/jlave-dev"
+  },
+  "homepage": "https://github.com/jlave-dev/agent-plugins",
+  "repository": "https://github.com/jlave-dev/agent-plugins",
+  "license": "MIT",
+  "keywords": [
+    "sdlc",
+    "code-review",
+    "multi-agent",
+    "thread-workflows"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Agent SDLC",
+    "shortDescription": "Coordinate repeatable SDLC thread workflows.",
+    "longDescription": "Agent SDLC helps Codex run repeatable software development workflows across communicating threads, starting with an implementer and independent reviewer loop that produces structured handoffs, review findings, and re-review cycles.",
+    "developerName": "James Lave",
+    "category": "Productivity",
+    "capabilities": [
+      "multi-thread review loop",
+      "code review handoffs",
+      "project workflow initialization",
+      "review verdict classification",
+      "SDLC role prompts"
+    ],
+    "websiteURL": "https://github.com/jlave-dev/agent-plugins",
+    "privacyPolicyURL": "https://github.com/jlave-dev/agent-plugins/blob/main/PRIVACY.md",
+    "termsOfServiceURL": "https://github.com/jlave-dev/agent-plugins/blob/main/TERMS.md",
+    "defaultPrompt": [
+      "Use Agent SDLC to run a structured implementer and reviewer workflow."
+    ],
+    "brandColor": "#315C9A",
+    "composerIcon": "./assets/icon.svg",
+    "logo": "./assets/icon.svg"
+  }
+}
