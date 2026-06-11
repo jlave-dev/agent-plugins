@@ -6,6 +6,8 @@
 - Directory: {{PROJECT_DIR}}
 - Branch: {{BRANCH}}
 - Base: {{BASE_BRANCH}}
+- Base ref: {{BASE_REF}}
+- Comparison: {{COMPARE_RANGE}}
 - Generated: {{GENERATED_AT}}
 
 ## Request
@@ -18,13 +20,13 @@ Please review the current working tree as an independent reviewer. Focus on corr
 {{STATUS_SUMMARY}}
 ```
 
-## Changed Files
+## Changed Files From Base
 
 ```text
 {{CHANGED_FILES}}
 ```
 
-## Diff Stat
+## Diff Stat From Base
 
 ```text
 {{DIFF_STAT}}

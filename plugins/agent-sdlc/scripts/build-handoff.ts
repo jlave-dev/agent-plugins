@@ -217,6 +217,75 @@ function valueOrNone(value, noneText) {
   return value && value.trim() ? value.trim() : noneText;
 }
 
+function uniqueValues(values) {
+  return values.filter((value, index) => value && values.indexOf(value) === index);
+}
+
+function resolveCommit(repoRoot, ref) {
+  return tryGit(repoRoot, ["rev-parse", "--verify", `${ref}^{commit}`]);
+}
+
+function resolveBaseRef(repoRoot, defaultBase) {
+  const requested = String(defaultBase || "main").trim();
+  const candidates = requested.includes("/")
+    ? [requested]
+    : [`origin/${requested}`, `refs/remotes/origin/${requested}`, requested, `refs/heads/${requested}`];
+
+  for (const candidate of uniqueValues(candidates)) {
+    const sha = resolveCommit(repoRoot, candidate);
+    if (sha) {
+      return {
+        requested,
+        ref: candidate,
+        sha,
+      };
+    }
+  }
+
+  return {
+    requested,
+    ref: "",
+    sha: "",
+  };
+}
+
+function getBranchDiff(repoRoot, defaultBase) {
+  const base = resolveBaseRef(repoRoot, defaultBase);
+  if (!base.sha) {
+    return {
+      baseRef: `unresolved: ${base.requested}`,
+      compareRange: "unavailable",
+      changedFiles: `Base ref "${base.requested}" was not found; committed branch diff unavailable.`,
+      diffStat: `Base ref "${base.requested}" was not found; committed branch diff unavailable.`,
+    };
+  }
+
+  const mergeBase = tryGit(repoRoot, ["merge-base", base.ref, "HEAD"]);
+  if (!mergeBase) {
+    return {
+      baseRef: base.ref,
+      compareRange: "unavailable",
+      changedFiles: `Could not find a merge-base between ${base.ref} and HEAD.`,
+      diffStat: `Could not find a merge-base between ${base.ref} and HEAD.`,
+    };
+  }
+
+  const compareRange = `${mergeBase}..HEAD`;
+
+  return {
+    baseRef: base.ref,
+    compareRange,
+    changedFiles: valueOrNone(
+      tryGit(repoRoot, ["diff", "--name-status", compareRange, "--"]),
+      "No committed changes from base."
+    ),
+    diffStat: valueOrNone(
+      tryGit(repoRoot, ["diff", "--stat", compareRange, "--"]),
+      "No committed diff from base."
+    ),
+  };
+}
+
 function formatVerifyCommands(commands) {
   if (!commands.length) return "No verification commands configured.";
   return commands.map((command) => `not run by handoff helper: ${command}`).join("\n");
@@ -235,16 +304,19 @@ function buildHandoff(repoRoot) {
     valueOrNone(tryGit(repoRoot, ["rev-parse", "--short", "HEAD"]), "unknown")
   );
   const status = tryGit(repoRoot, ["status", "--short", "--branch"]);
+  const branchDiff = getBranchDiff(repoRoot, config.defaultBase);
 
   return fillTemplate(template, {
     PROJECT_NAME: String(config.projectName),
     PROJECT_DIR: repoRoot,
     BRANCH: branch,
     BASE_BRANCH: String(config.defaultBase),
+    BASE_REF: branchDiff.baseRef,
+    COMPARE_RANGE: branchDiff.compareRange,
     GENERATED_AT: new Date().toISOString(),
     STATUS_SUMMARY: valueOrNone(status, "No status output."),
-    CHANGED_FILES: porcelainToFiles(status.split(/\r?\n/).slice(1).join("\n")),
-    DIFF_STAT: valueOrNone(tryGit(repoRoot, ["diff", "--stat", "HEAD", "--"]), "No tracked diff stat."),
+    CHANGED_FILES: branchDiff.changedFiles,
+    DIFF_STAT: branchDiff.diffStat,
     STAGED_SUMMARY: valueOrNone(tryGit(repoRoot, ["diff", "--cached", "--name-status"]), "No staged changes."),
     UNSTAGED_SUMMARY: valueOrNone(tryGit(repoRoot, ["diff", "--name-status"]), "No unstaged tracked changes."),
     VERIFY_COMMANDS: formatVerifyCommands(config.commands.verify),
@@ -268,6 +340,8 @@ if (require.main === module) {
 
 module.exports = {
   buildHandoff,
+  getBranchDiff,
   parseKnownConfig,
   readConfig,
+  resolveBaseRef,
 };

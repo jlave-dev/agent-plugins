@@ -1,6 +1,6 @@
 {
   "name": "agent-sdlc",
-  "version": "0.1.0+codex.20260611052356",
+  "version": "0.1.0+codex.20260611061248",
   "description": "Reusable multi-thread software development lifecycle workflows.",
   "author": {
     "name": "James Lave",
