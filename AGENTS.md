@@ -99,6 +99,14 @@ This project uses Conventional Commits to drive semantic-release.
 <type>[optional scope]: <description>
 ```
 
+Use Conventional Commit-style prefixes for branch names too:
+
+```text
+<type>/<scope-or-short-description>
+```
+
+Prefer a configured scope when the branch is for one plugin or skill. Use short, lowercase, hyphen-separated branch names.
+
 Use these types:
 
 - `feat`: new skill, plugin, or feature
@@ -115,6 +123,7 @@ Use these types:
 Current scopes include:
 
 - `amazon`
+- `agent-sdlc`
 - `shop-amazon`
 - `find-orders`
 - `write-reviews`
@@ -122,12 +131,17 @@ Current scopes include:
 - `design-frontend`
 - `audit-rendered-ui`
 - `refactor-ui`
+- `sdlc-project-init`
+- `sdlc-review-loop`
+- `sdlc-reviewer`
 - `release`
 - `deps`
 
 Examples:
 
 ```bash
+feat/agent-sdlc-plugin
+fix/shop-amazon-empty-results
 feat(amazon): add order workflow plugin
 fix(shop-amazon): handle empty search results correctly
 docs(write-reviews): clarify review submission approval
