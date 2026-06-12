@@ -1,6 +1,6 @@
 {
   "name": "subtractive-ui",
-  "version": "0.1.0+codex.20260610085301",
+  "version": "0.1.0+codex.20260612190928",
   "description": "Reference-led frontend design, rendered UI audit, and behavior-preserving UI cleanup.",
   "author": {
     "name": "James Lave",

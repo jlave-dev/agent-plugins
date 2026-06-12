@@ -1,0 +1,4 @@
+interface:
+  display_name: "Reference Ruler UI"
+  short_description: "Match frontend screens to visual references"
+  default_prompt: "Use $reference-ruler-ui to match this frontend to the provided mockup."
