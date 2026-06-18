@@ -48,13 +48,13 @@ Included Codex skills:
 
 ### Agent SDLC
 
-Issue intake, review, and documentation roles for mostly agentic software development.
+Issue intake, CI-tiered review, and documentation roles for mostly agentic software development.
 
 Included Codex skills:
 
-- `sdlc-issue-intake`: turn rough requests into scoped GitHub Issues and implementation handoffs.
-- `sdlc-project-init`: propose a project-local `.agent-sdlc.yml` workflow config.
-- `sdlc-review-loop`: send current changes through an implementer/reviewer loop.
+- `sdlc-issue-intake`: turn rough requests into scoped GitHub Issues and implementation handoffs with declared CI tiers.
+- `sdlc-project-init`: propose a project-local `.agent-sdlc.yml` workflow and CI policy config.
+- `sdlc-review-loop`: send current changes through an implementer/reviewer loop with CI evidence expectations.
 - `sdlc-docs`: update repository docs after implementation changes.
 - `sdlc-reviewer`: review a change handoff and return an explicit verdict.
 

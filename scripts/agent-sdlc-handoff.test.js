@@ -91,6 +91,12 @@ test("handoff includes supplied GitHub issue context", async (t) => {
         "Depends on: none",
         "Mode: independent",
         "",
+        "## CI Tier",
+        "Tier: full-ci-before-merge",
+        "Reason: stack layer can be reviewed with fast checks.",
+        "Full integration evidence: top-of-stack PR",
+        "Stack position: stack layer",
+        "",
         "## Verification",
         "- npm run check",
       ].join("\n"),
@@ -101,6 +107,9 @@ test("handoff includes supplied GitHub issue context", async (t) => {
   assert.match(output, /Issue: #42/);
   assert.match(output, /Title: feat: add onboarding empty state/);
   assert.match(output, /Labels: agent:active, area:frontend/);
+  assert.match(output, /Tier: full-ci-before-merge/);
+  assert.match(output, /Evidence source: top-of-stack PR/);
+  assert.match(output, /Stack position: stack layer/);
   assert.match(output, /Empty state appears when no invitations exist\./);
   assert.match(output, /Depends on: none/);
   assert.match(output, /npm run check/);
@@ -119,6 +128,10 @@ test("issue context extraction finds task sections", () => {
       "## Acceptance Criteria",
       "- Cards render.",
       "",
+      "## CI Tier",
+      "Tier: fast-check-only",
+      "Fast checks: npm test",
+      "",
       "## Verification",
       "- npm test",
     ].join("\n"),
@@ -127,6 +140,7 @@ test("issue context extraction finds task sections", () => {
   assert.equal(context.ref, "#7");
   assert.equal(context.labels, "agent:ready");
   assert.equal(context.acceptanceCriteria, "- Cards render.");
+  assert.equal(context.ciTier, "fast-check-only");
   assert.equal(context.verification, "- npm test");
   assert.equal(context.dependencies, "No dependencies section found.");
 });
@@ -137,7 +151,133 @@ test("config parser includes issue workflow defaults", async (t) => {
 
   assert.equal(config.github.issues, true);
   assert.equal(config.github.labels.ready, "agent:ready");
+  assert.equal(config.github.labels.fullCi, "full-ci");
+  assert.deepEqual(config.ci.fastChecks, []);
+  assert.equal(config.ci.integration.labels.fullCi, "full-ci");
   assert.equal(config.workflow.maxActiveIssues, 5);
   assert.equal(config.merge.mode, "auto");
   assert(config.merge.requireHumanFor.includes("security"));
+});
+
+test("config parser includes configured CI policy", async (t) => {
+  const fixture = await createCommittedFeatureBranch(t);
+  await writeText(
+    path.join(fixture, ".agent-sdlc.yml"),
+    [
+      "projectName: fixture",
+      "defaultBase: main",
+      "",
+      "commands:",
+      "  verify:",
+      "    - npm test",
+      "",
+      "ci:",
+      "  fastChecks:",
+      "    - npm run check",
+      "  integration:",
+      "    labels:",
+      "      fullCi: full-ci",
+      "      readyToMerge: ready-to-merge",
+      "    mergeQueue: true",
+      "    mergeGroup: true",
+      "  humanReviewRisks:",
+      "    - auth",
+      "    - data",
+      "  riskyPaths:",
+      "    native:",
+      "      - ios/**",
+      "      - android/**",
+      "    data:",
+      "      - db/migrations/**",
+      "",
+    ].join("\n")
+  );
+
+  const config = readConfig(fixture);
+
+  assert.deepEqual(config.commands.verify, ["npm test"]);
+  assert.deepEqual(config.ci.fastChecks, ["npm run check"]);
+  assert.equal(config.ci.integration.mergeQueue, true);
+  assert.equal(config.ci.integration.mergeGroup, true);
+  assert.deepEqual(config.ci.humanReviewRisks, ["auth", "data"]);
+  assert.deepEqual(config.ci.riskyPaths.native, ["ios/**", "android/**"]);
+});
+
+test("CI human-review risks inherit existing merge risk config", async (t) => {
+  const fixture = await createCommittedFeatureBranch(t);
+  await writeText(
+    path.join(fixture, ".agent-sdlc.yml"),
+    [
+      "projectName: fixture",
+      "defaultBase: main",
+      "",
+      "merge:",
+      "  requireHumanFor:",
+      "    - privacy",
+      "    - billing",
+      "",
+    ].join("\n")
+  );
+
+  const config = readConfig(fixture);
+
+  assert.deepEqual(config.merge.requireHumanFor, ["privacy", "billing"]);
+  assert.deepEqual(config.ci.humanReviewRisks, ["privacy", "billing"]);
+});
+
+test("handoff includes CI tier and configured CI policy", async (t) => {
+  const fixture = await createCommittedFeatureBranch(t);
+  await writeText(
+    path.join(fixture, ".agent-sdlc.yml"),
+    [
+      "projectName: fixture",
+      "defaultBase: main",
+      "",
+      "ci:",
+      "  fastChecks:",
+      "    - npm run check",
+      "  integration:",
+      "    labels:",
+      "      fullCi: full-ci",
+      "      readyToMerge: ready-to-merge",
+      "    mergeQueue: true",
+      "    mergeGroup: true",
+      "  humanReviewRisks:",
+      "    - security",
+      "  riskyPaths:",
+      "    native:",
+      "      - ios/**",
+      "",
+    ].join("\n")
+  );
+
+  const output = buildHandoff(fixture, {
+    issueContext: {
+      number: 9,
+      title: "feat: add native bridge",
+      state: "OPEN",
+      labels: [{ name: "agent:active" }, { name: "full-ci" }],
+      body: [
+        "## Goal",
+        "Add a native bridge.",
+        "",
+        "## CI Tier",
+        "Tier: full-ci-required",
+        "Reason: native bridge touches configured risky paths.",
+        "Full integration evidence: current head SHA",
+        "Stack position: top-of-stack",
+      ].join("\n"),
+    },
+  });
+
+  assert.match(output, /## Configured CI Policy/);
+  assert.match(output, /Tier: full-ci-required/);
+  assert.match(output, /Evidence source: current head SHA/);
+  assert.match(output, /Stack position: top-of-stack/);
+  assert.match(output, /Fast checks:\n  - npm run check/);
+  assert.match(output, /Integration labels: fullCi=full-ci, readyToMerge=ready-to-merge/);
+  assert.match(output, /Merge queue evidence accepted: yes/);
+  assert.match(output, /Merge group evidence accepted: yes/);
+  assert.match(output, /Human-review risks:\n  - security/);
+  assert.match(output, /native: ios\/\*\*/);
 });
