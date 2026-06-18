@@ -73,9 +73,17 @@ function getProjectName(projectDir) {
   return packageJson && packageJson.name ? packageJson.name : path.basename(projectDir);
 }
 
+function renderCommandList(name, commands) {
+  if (!commands.length) return `  ${name}: []`;
+  return [`  ${name}:`, ...commands.map((command) => `    - ${command}`)].join("\n");
+}
+
 function renderVerifyCommands(commands) {
-  if (!commands.length) return "  verify: []";
-  return ["  verify:", ...commands.map((command) => `    - ${command}`)].join("\n");
+  return renderCommandList("verify", commands);
+}
+
+function renderFastChecks(commands) {
+  return renderCommandList("fastChecks", commands);
 }
 
 function fillTemplate(template, values) {
@@ -86,11 +94,13 @@ function buildConfig(projectDir) {
   const templatePath = path.join(__dirname, "..", "assets", "project-config-template.yml");
   const template = fs.readFileSync(templatePath, "utf8");
   const projectName = getProjectName(projectDir);
+  const verifyCommands = detectVerifyCommands(projectDir);
 
   return fillTemplate(template, {
     PROJECT_NAME: projectName,
     DEFAULT_BASE: getDefaultBranch(projectDir),
-    VERIFY_COMMANDS: renderVerifyCommands(detectVerifyCommands(projectDir)),
+    VERIFY_COMMANDS: renderVerifyCommands(verifyCommands),
+    CI_FAST_CHECKS: renderFastChecks(verifyCommands),
   });
 }
 

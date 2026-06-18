@@ -1,6 +1,6 @@
 ---
 name: sdlc-project-init
-description: Use when the user wants to initialize or propose an `.agent-sdlc.yml` config for a repository so Agent SDLC workflows can discover project name, default base branch, verification commands, GitHub issue labels, workflow defaults, reviewer/docs thread titles, and review loop settings.
+description: Use when the user wants to initialize or propose an `.agent-sdlc.yml` config for a repository so Agent SDLC workflows can discover project name, default base branch, verification commands, CI tier policy, GitHub issue labels, workflow defaults, reviewer/docs thread titles, and review loop settings.
 ---
 
 # SDLC Project Init
@@ -16,7 +16,7 @@ Create or propose a project-local `.agent-sdlc.yml` config for Agent SDLC workfl
 
 ## Detection Rules
 
-The helper detects common package managers from lockfiles, reads `package.json` scripts, and prefers an existing `verify` script. If no `verify` script exists, it proposes common test, typecheck, lint, and build commands that are actually present. The generated config also includes default GitHub Issue labels and human-review risk categories for `$sdlc-issue-intake`.
+The helper detects common package managers from lockfiles, reads `package.json` scripts, and prefers an existing `verify` script. If no `verify` script exists, it proposes common test, typecheck, lint, and build commands that are actually present. The generated config also includes default GitHub Issue labels, CI fast-check commands, integration labels, merge queue/group evidence flags, risky path categories, and human-review risk categories for `$sdlc-issue-intake`.
 
 ## Safety
 

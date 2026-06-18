@@ -22,78 +22,20 @@ Turn messy intent into one traceable GitHub Issue before implementation starts. 
    - `git status --short --branch`
    - `git fetch origin` when network/remote access is available
    - `git rev-parse --verify origin/<base>` using `.agent-sdlc.yml` `defaultBase` when present, otherwise `main`
-2. Inspect active work:
+2. Read `references/issue-and-ci-template.md` before drafting or updating the issue body or worker prompt.
+3. Inspect active work:
    - `gh issue list --label agent:active --state open`
    - `gh issue list --label agent:blocked --state open`
    - `gh pr list --state open`
-3. Convert the request into a scoped issue with goal, acceptance criteria, scope boundaries, dependency notes, risk labels, and verification plan.
-4. Classify the task:
+4. Convert the request into a scoped issue with goal, acceptance criteria, scope boundaries, dependency notes, risk labels, CI tier, and verification plan.
+5. Classify the task:
    - `independent`: branch from latest base.
    - `stacked`: depends on one unmerged PR; stack on that PR branch.
    - `speculative`: explores an approach or competing design; draft PR only until promoted.
    - `blocked`: depends on multiple unmerged PRs, conflicts with active work, or needs a human decision.
-5. Create or update the GitHub Issue only after the issue body is coherent. Add labels from `.agent-sdlc.yml` when configured; otherwise use the defaults in this skill.
-6. Return the implementation prompt for the worker agent, including issue number, base SHA, branch name, dependency mode, touched areas, and verification commands.
-
-## Default Labels
-
-Use these unless `.agent-sdlc.yml` overrides them:
-
-```text
-agent:ready
-agent:active
-agent:blocked
-agent:review
-agent:speculative
-needs-human
-ready-to-merge
-stacked
-```
-
-Area labels are optional and repo-specific, for example `area:frontend`, `area:backend`, `area:docs`, and `area:infra`.
-
-## Issue Shape
-
-Use this body:
-
-```markdown
-## Goal
-[What should be true when this is done.]
-
-## Acceptance Criteria
-- [Observable outcome]
-- [Test, doc, or verification requirement]
-
-## Scope
-Likely touched areas:
-- `[path or domain]`
-
-Out of scope:
-- [Explicit exclusions]
-
-## Dependencies
-Depends on: none / #issue / PR #number
-Mode: independent / stacked / speculative / blocked
-
-## Plan
-- [Small implementation steps]
-
-## Verification
-- `[repo verify command]`
-- [Targeted test or smoke check]
-
-## Human Review Triggers
-- [auth/data/security/public API/migration/product decision, if any]
-
-## Agent State
-Status: ready
-Owner:
-Base:
-Branch:
-PR:
-Checks:
-Blockers:
-```
+6. Classify CI tier from `.agent-sdlc.yml` when present: `fast-check-only`, `full-ci-required`, `full-ci-before-merge`, or `human-decision`.
+7. Create or update the GitHub Issue only after the issue body is coherent. Add labels from `.agent-sdlc.yml` when configured; otherwise use the defaults in the reference.
+8. Return the implementation prompt for the worker agent, including issue number, base SHA, branch name, dependency mode, CI tier, touched areas, and verification commands.
 
 ## Branch And Dependency Rules
 
@@ -103,26 +45,14 @@ Blockers:
 - If an issue depends on multiple open PRs, mark it `agent:blocked` and ask the user to choose an integration path.
 - If another active issue touches the same files or domain, stop and report the overlap unless this is explicitly speculative.
 
-## Implementation Prompt Output
+## CI Tier Rules
 
-End with a worker prompt shaped like:
+- Start at `fast-check-only` for docs, tests, prompts, local refactors, and changes covered by configured `ci.fastChecks`.
+- Use `full-ci-required` when the change touches configured `ci.riskyPaths`, alters integration contracts, or needs full-system proof before a reviewer can trust it.
+- Use `full-ci-before-merge` for stack layers or changes where review can proceed on fast evidence but merge must wait for the top-of-stack PR, current head SHA, or configured merge queue/merge group proof.
+- Use `human-decision` when the task matches `ci.humanReviewRisks` or `merge.requireHumanFor`, when branch-protection policy is ambiguous, or when required CI access is unavailable.
+- Record the evidence source explicitly. Do not collapse current-head, top-of-stack, and merge-queue evidence into the same proof claim.
 
-```text
-Implement GitHub issue #<number> in <repo>.
+## Output
 
-Base: origin/<base> @ <sha>
-Branch: <type>/<short-description>
-Dependency mode: independent / stacked on PR #... / speculative
-Scope:
-- ...
-
-Before editing, re-check active issues and PRs for overlap. If the dependency mode has changed, stop and report it.
-
-Acceptance criteria:
-- ...
-
-Verification:
-- ...
-
-Open a draft PR linked to the issue when the first coherent implementation exists. Before review, run verification, update the issue Agent State, and use $sdlc-review-loop for an independent review.
-```
+Use the issue body and worker prompt shapes from `references/issue-and-ci-template.md`. End with a concise implementation prompt, not a strategy essay.

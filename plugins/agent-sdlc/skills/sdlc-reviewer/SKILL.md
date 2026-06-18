@@ -21,6 +21,11 @@ Avoid style-only comments unless they hide a defect, ambiguity, or maintenance h
 
 - Inspect the changed files and nearby code before forming conclusions.
 - If the handoff includes GitHub Issue context, verify the implementation against the issue goal and acceptance criteria.
+- If the handoff includes CI tier context, verify the submitted checks against that tier:
+  - `fast-check-only`: configured fast checks are enough unless the diff reveals higher risk.
+  - `full-ci-required`: request changes when full integration evidence from the declared source is missing.
+  - `full-ci-before-merge`: allow approval only when missing full integration evidence is clearly recorded as a pre-merge requirement, not as completed proof.
+  - `human-decision`: return `needs_human` unless explicit user risk acceptance or a narrower decision is present.
 - Prefer concrete file and line references.
 - Distinguish confirmed defects from questions or residual risk.
 - Do not propose broad refactors unless the current change makes them necessary.
@@ -41,7 +46,9 @@ Questions
 - ...
 
 Verification Notes
-- ...
+- CI tier: ...
+- Evidence inspected: ...
+- Missing or deferred evidence: ...
 
 Verdict: approved
 ```

@@ -4,6 +4,13 @@ const { execFileSync } = require("node:child_process");
 const fs = require("node:fs");
 const path = require("node:path");
 
+const CI_TIERS = [
+  "fast-check-only",
+  "full-ci-required",
+  "full-ci-before-merge",
+  "human-decision",
+];
+
 function runGit(repoRoot, args) {
   try {
     return execFileSync("git", args, {
@@ -60,6 +67,23 @@ function parseKnownConfig(raw) {
         config.commands.verify = config.commands.verify || [];
         config.commands.verify.push(stripQuotes(line.slice(2).trim()));
       }
+      if (parent === "ci.fastChecks") {
+        config.ci = config.ci || {};
+        config.ci.fastChecks = config.ci.fastChecks || [];
+        config.ci.fastChecks.push(stripQuotes(line.slice(2).trim()));
+      }
+      if (parent === "ci.humanReviewRisks") {
+        config.ci = config.ci || {};
+        config.ci.humanReviewRisks = config.ci.humanReviewRisks || [];
+        config.ci.humanReviewRisks.push(stripQuotes(line.slice(2).trim()));
+      }
+      if (parent.startsWith("ci.riskyPaths.")) {
+        const category = parent.split(".").pop();
+        config.ci = config.ci || {};
+        config.ci.riskyPaths = config.ci.riskyPaths || {};
+        config.ci.riskyPaths[category] = config.ci.riskyPaths[category] || [];
+        config.ci.riskyPaths[category].push(stripQuotes(line.slice(2).trim()));
+      }
       if (parent === "merge.requireHumanFor") {
         config.merge = config.merge || {};
         config.merge.requireHumanFor = config.merge.requireHumanFor || [];
@@ -87,6 +111,14 @@ function parseKnownConfig(raw) {
       config.commands = config.commands || {};
       config.commands.verify = [];
     }
+    if (pathName === "ci.fastChecks" && value === "[]") {
+      config.ci = config.ci || {};
+      config.ci.fastChecks = [];
+    }
+    if (pathName === "ci.humanReviewRisks" && value === "[]") {
+      config.ci = config.ci || {};
+      config.ci.humanReviewRisks = [];
+    }
     if (pathName === "github.issues") {
       config.github = config.github || {};
       config.github.issues = parseScalar(value);
@@ -95,6 +127,22 @@ function parseKnownConfig(raw) {
       config.github = config.github || {};
       config.github.labels = config.github.labels || {};
       config.github.labels[key] = parseScalar(value);
+    }
+    if (pathName.startsWith("ci.integration.labels.")) {
+      config.ci = config.ci || {};
+      config.ci.integration = config.ci.integration || {};
+      config.ci.integration.labels = config.ci.integration.labels || {};
+      config.ci.integration.labels[key] = parseScalar(value);
+    }
+    if (pathName === "ci.integration.mergeQueue") {
+      config.ci = config.ci || {};
+      config.ci.integration = config.ci.integration || {};
+      config.ci.integration.mergeQueue = parseScalar(value);
+    }
+    if (pathName === "ci.integration.mergeGroup") {
+      config.ci = config.ci || {};
+      config.ci.integration = config.ci.integration || {};
+      config.ci.integration.mergeGroup = parseScalar(value);
     }
     if (pathName === "workflow.maxActiveIssues") {
       config.workflow = config.workflow || {};
@@ -186,9 +234,23 @@ function readConfig(repoRoot) {
         review: "agent:review",
         speculative: "agent:speculative",
         needsHuman: "needs-human",
+        fullCi: "full-ci",
         readyToMerge: "ready-to-merge",
         stacked: "stacked",
       },
+    },
+    ci: {
+      fastChecks: [],
+      integration: {
+        labels: {
+          fullCi: "full-ci",
+          readyToMerge: "ready-to-merge",
+        },
+        mergeQueue: false,
+        mergeGroup: false,
+      },
+      humanReviewRisks: ["auth", "data", "migration", "security", "public-api", "billing"],
+      riskyPaths: {},
     },
     workflow: {
       maxActiveIssues: 5,
@@ -222,14 +284,19 @@ function readConfig(repoRoot) {
 
   const parsed = parseKnownConfig(fs.readFileSync(configPath, "utf8"));
   const projectName = parsed.projectName || defaults.projectName;
+  const verifyCommands =
+    parsed.commands && Array.isArray(parsed.commands.verify)
+      ? parsed.commands.verify
+      : defaults.commands.verify;
+  const requireHumanFor = Array.isArray(parsed.merge?.requireHumanFor)
+    ? parsed.merge.requireHumanFor
+    : defaults.merge.requireHumanFor;
 
   return {
     projectName,
     defaultBase: parsed.defaultBase || defaults.defaultBase,
     commands: {
-      verify: parsed.commands && Array.isArray(parsed.commands.verify)
-        ? parsed.commands.verify
-        : defaults.commands.verify,
+      verify: verifyCommands,
     },
     github: {
       issues: parsed.github?.issues ?? defaults.github.issues,
@@ -237,6 +304,23 @@ function readConfig(repoRoot) {
         ...defaults.github.labels,
         ...(parsed.github?.labels || {}),
       },
+    },
+    ci: {
+      fastChecks: Array.isArray(parsed.ci?.fastChecks)
+        ? parsed.ci.fastChecks
+        : verifyCommands,
+      integration: {
+        labels: {
+          ...defaults.ci.integration.labels,
+          ...(parsed.ci?.integration?.labels || {}),
+        },
+        mergeQueue: parsed.ci?.integration?.mergeQueue ?? defaults.ci.integration.mergeQueue,
+        mergeGroup: parsed.ci?.integration?.mergeGroup ?? defaults.ci.integration.mergeGroup,
+      },
+      humanReviewRisks: Array.isArray(parsed.ci?.humanReviewRisks)
+        ? parsed.ci.humanReviewRisks
+        : requireHumanFor,
+      riskyPaths: parsed.ci?.riskyPaths || defaults.ci.riskyPaths,
     },
     workflow: {
       maxActiveIssues: parsed.workflow?.maxActiveIssues ?? defaults.workflow.maxActiveIssues,
@@ -249,9 +333,7 @@ function readConfig(repoRoot) {
     },
     merge: {
       mode: parsed.merge?.mode || defaults.merge.mode,
-      requireHumanFor: Array.isArray(parsed.merge?.requireHumanFor)
-        ? parsed.merge.requireHumanFor
-        : defaults.merge.requireHumanFor,
+      requireHumanFor,
     },
     threads: {
       reviewer: {
@@ -370,6 +452,41 @@ function formatVerifyCommands(commands) {
   return commands.map((command) => `not run by handoff helper: ${command}`).join("\n");
 }
 
+function formatNamedList(title, values) {
+  if (!values || !values.length) return `${title}: none configured`;
+  return [`${title}:`, ...values.map((value) => `  - ${value}`)].join("\n");
+}
+
+function formatRiskyPathCategories(riskyPaths) {
+  const entries = Object.entries(riskyPaths || {}).filter(
+    ([, patterns]) => Array.isArray(patterns) && patterns.length
+  );
+
+  if (!entries.length) return "Risky path categories: none configured";
+
+  return [
+    "Risky path categories:",
+    ...entries.map(([category, patterns]) => `  - ${category}: ${patterns.join(", ")}`),
+  ].join("\n");
+}
+
+function formatCiPolicy(config) {
+  const ci = config.ci || {};
+  const integration = ci.integration || {};
+  const labels = integration.labels || {};
+
+  return [
+    formatNamedList("Fast checks", ci.fastChecks || []),
+    `Integration labels: fullCi=${labels.fullCi || "not configured"}, readyToMerge=${
+      labels.readyToMerge || "not configured"
+    }`,
+    `Merge queue evidence accepted: ${integration.mergeQueue ? "yes" : "no"}`,
+    `Merge group evidence accepted: ${integration.mergeGroup ? "yes" : "no"}`,
+    formatNamedList("Human-review risks", ci.humanReviewRisks || []),
+    formatRiskyPathCategories(ci.riskyPaths),
+  ].join("\n");
+}
+
 function extractMarkdownSection(body, names) {
   if (!body || !body.trim()) return "";
 
@@ -409,6 +526,38 @@ function truncateText(value, maxLength = 12000) {
   return `${text.slice(0, maxLength).trimEnd()}\n\n[truncated by handoff helper]`;
 }
 
+function extractSectionField(section, names) {
+  if (!section) return "";
+  const wanted = names.map((name) => name.toLowerCase());
+
+  for (const line of section.split(/\r?\n/)) {
+    const match = line.match(/^[-*]?\s*([^:]+):\s*(.+?)\s*$/);
+    if (!match) continue;
+    if (wanted.includes(match[1].trim().toLowerCase())) return match[2].trim();
+  }
+
+  return "";
+}
+
+function normalizeCiTier(value) {
+  const normalized = String(value || "").trim().toLowerCase();
+  return CI_TIERS.includes(normalized) ? normalized : "";
+}
+
+function ciTierFromLabels(labelNames) {
+  for (const label of labelNames) {
+    const normalized = String(label || "")
+      .trim()
+      .toLowerCase()
+      .replace(/^ci[:/]/, "")
+      .replace(/^tier[:/]/, "");
+    const tier = normalizeCiTier(normalized);
+    if (tier) return tier;
+  }
+
+  return "";
+}
+
 function emptyIssueContext() {
   return {
     ref: "Not provided.",
@@ -420,14 +569,33 @@ function emptyIssueContext() {
     acceptanceCriteria: "No issue context provided.",
     dependencies: "No issue context provided.",
     verification: "No issue context provided.",
+    ciTier: "No CI tier declared.",
+    ciEvidenceSource: "No CI evidence source declared.",
+    ciStackPosition: "No stack position declared.",
+    ciTierSection: "No CI tier context provided.",
   };
 }
 
 function issueContextFromPayload(payload) {
-  const labels = Array.isArray(payload.labels)
-    ? payload.labels.map((label) => label.name || label).filter(Boolean).join(", ")
-    : "";
+  const labelNames = Array.isArray(payload.labels)
+    ? payload.labels.map((label) => label.name || label).filter(Boolean)
+    : [];
+  const labels = labelNames.join(", ");
   const body = truncateText(payload.body || "");
+  const ciTierSection = extractMarkdownSection(body, ["CI Tier", "CI Tiers", "CI Policy"]);
+  const ciTier =
+    normalizeCiTier(extractSectionField(ciTierSection, ["Tier", "CI Tier"])) ||
+    ciTierFromLabels(labelNames);
+  const ciEvidenceSource = extractSectionField(ciTierSection, [
+    "Evidence source",
+    "Full integration evidence",
+    "Integration evidence",
+  ]);
+  const ciStackPosition = extractSectionField(ciTierSection, [
+    "Stack position",
+    "Stack status",
+    "Stack",
+  ]);
 
   return {
     ref: payload.number ? `#${payload.number}` : "GitHub issue",
@@ -445,6 +613,10 @@ function issueContextFromPayload(payload) {
     verification:
       extractMarkdownSection(body, ["Verification", "Checks", "Test Plan"]) ||
       "No verification section found.",
+    ciTier: ciTier || "No CI tier declared.",
+    ciEvidenceSource: ciEvidenceSource || "No CI evidence source declared.",
+    ciStackPosition: ciStackPosition || "No stack position declared.",
+    ciTierSection: ciTierSection || "No CI tier section found.",
   };
 }
 
@@ -472,6 +644,10 @@ function readIssueContext(repoRoot, issueRef) {
       acceptanceCriteria: "Issue context unavailable from gh.",
       dependencies: "Issue context unavailable from gh.",
       verification: "Issue context unavailable from gh.",
+      ciTier: "Issue context unavailable from gh.",
+      ciEvidenceSource: "Issue context unavailable from gh.",
+      ciStackPosition: "Issue context unavailable from gh.",
+      ciTierSection: "Issue context unavailable from gh.",
     };
   }
 }
@@ -516,7 +692,12 @@ function buildHandoff(repoRoot, options = {}) {
     ISSUE_ACCEPTANCE_CRITERIA: issueContext.acceptanceCriteria,
     ISSUE_DEPENDENCIES: issueContext.dependencies,
     ISSUE_VERIFICATION: issueContext.verification,
+    ISSUE_CI_TIER: issueContext.ciTier,
+    ISSUE_CI_EVIDENCE_SOURCE: issueContext.ciEvidenceSource,
+    ISSUE_CI_STACK_POSITION: issueContext.ciStackPosition,
+    ISSUE_CI_TIER_SECTION: issueContext.ciTierSection,
     ISSUE_BODY: issueContext.body,
+    CI_POLICY: formatCiPolicy(config),
   });
 }
 

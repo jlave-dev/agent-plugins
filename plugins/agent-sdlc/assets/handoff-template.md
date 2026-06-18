@@ -22,6 +22,16 @@ Please review the current working tree as an independent reviewer. Focus on corr
 - URL: {{ISSUE_URL}}
 - Labels: {{ISSUE_LABELS}}
 
+### CI Tier
+
+- Tier: {{ISSUE_CI_TIER}}
+- Evidence source: {{ISSUE_CI_EVIDENCE_SOURCE}}
+- Stack position: {{ISSUE_CI_STACK_POSITION}}
+
+```text
+{{ISSUE_CI_TIER_SECTION}}
+```
+
 ### Acceptance Criteria
 
 ```text
@@ -80,6 +90,12 @@ Please review the current working tree as an independent reviewer. Focus on corr
 
 ```text
 {{VERIFY_COMMANDS}}
+```
+
+## Configured CI Policy
+
+```text
+{{CI_POLICY}}
 ```
 
 ## Reviewer Output Contract
