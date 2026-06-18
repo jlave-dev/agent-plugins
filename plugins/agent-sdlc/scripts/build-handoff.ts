@@ -60,6 +60,11 @@ function parseKnownConfig(raw) {
         config.commands.verify = config.commands.verify || [];
         config.commands.verify.push(stripQuotes(line.slice(2).trim()));
       }
+      if (parent === "merge.requireHumanFor") {
+        config.merge = config.merge || {};
+        config.merge.requireHumanFor = config.merge.requireHumanFor || [];
+        config.merge.requireHumanFor.push(stripQuotes(line.slice(2).trim()));
+      }
       continue;
     }
 
@@ -81,6 +86,35 @@ function parseKnownConfig(raw) {
     if (pathName === "commands.verify" && value === "[]") {
       config.commands = config.commands || {};
       config.commands.verify = [];
+    }
+    if (pathName === "github.issues") {
+      config.github = config.github || {};
+      config.github.issues = parseScalar(value);
+    }
+    if (pathName.startsWith("github.labels.")) {
+      config.github = config.github || {};
+      config.github.labels = config.github.labels || {};
+      config.github.labels[key] = parseScalar(value);
+    }
+    if (pathName === "workflow.maxActiveIssues") {
+      config.workflow = config.workflow || {};
+      config.workflow.maxActiveIssues = parseScalar(value);
+    }
+    if (pathName === "workflow.requireIssueBeforeImplementation") {
+      config.workflow = config.workflow || {};
+      config.workflow.requireIssueBeforeImplementation = parseScalar(value);
+    }
+    if (pathName === "workflow.defaultBranchType") {
+      config.workflow = config.workflow || {};
+      config.workflow.defaultBranchType = parseScalar(value);
+    }
+    if (pathName === "workflow.allowSpeculativeBranches") {
+      config.workflow = config.workflow || {};
+      config.workflow.allowSpeculativeBranches = parseScalar(value);
+    }
+    if (pathName === "merge.mode") {
+      config.merge = config.merge || {};
+      config.merge.mode = parseScalar(value);
     }
     if (pathName === "threads.reviewer.mode") {
       config.threads = config.threads || {};
@@ -143,6 +177,29 @@ function readConfig(repoRoot) {
     projectName: getProjectName(repoRoot),
     defaultBase: getDefaultBranch(repoRoot),
     commands: { verify: [] },
+    github: {
+      issues: true,
+      labels: {
+        ready: "agent:ready",
+        active: "agent:active",
+        blocked: "agent:blocked",
+        review: "agent:review",
+        speculative: "agent:speculative",
+        needsHuman: "needs-human",
+        readyToMerge: "ready-to-merge",
+        stacked: "stacked",
+      },
+    },
+    workflow: {
+      maxActiveIssues: 5,
+      requireIssueBeforeImplementation: true,
+      defaultBranchType: "short-lived",
+      allowSpeculativeBranches: true,
+    },
+    merge: {
+      mode: "auto",
+      requireHumanFor: ["auth", "data", "migration", "security", "public-api", "billing"],
+    },
     threads: {
       reviewer: {
         mode: "reuse-or-create",
@@ -173,6 +230,28 @@ function readConfig(repoRoot) {
       verify: parsed.commands && Array.isArray(parsed.commands.verify)
         ? parsed.commands.verify
         : defaults.commands.verify,
+    },
+    github: {
+      issues: parsed.github?.issues ?? defaults.github.issues,
+      labels: {
+        ...defaults.github.labels,
+        ...(parsed.github?.labels || {}),
+      },
+    },
+    workflow: {
+      maxActiveIssues: parsed.workflow?.maxActiveIssues ?? defaults.workflow.maxActiveIssues,
+      requireIssueBeforeImplementation:
+        parsed.workflow?.requireIssueBeforeImplementation ??
+        defaults.workflow.requireIssueBeforeImplementation,
+      defaultBranchType: parsed.workflow?.defaultBranchType || defaults.workflow.defaultBranchType,
+      allowSpeculativeBranches:
+        parsed.workflow?.allowSpeculativeBranches ?? defaults.workflow.allowSpeculativeBranches,
+    },
+    merge: {
+      mode: parsed.merge?.mode || defaults.merge.mode,
+      requireHumanFor: Array.isArray(parsed.merge?.requireHumanFor)
+        ? parsed.merge.requireHumanFor
+        : defaults.merge.requireHumanFor,
     },
     threads: {
       reviewer: {
@@ -291,11 +370,117 @@ function formatVerifyCommands(commands) {
   return commands.map((command) => `not run by handoff helper: ${command}`).join("\n");
 }
 
+function extractMarkdownSection(body, names) {
+  if (!body || !body.trim()) return "";
+
+  const wanted = names.map((name) => name.toLowerCase());
+  const lines = body.split(/\r?\n/);
+  let start = -1;
+  let startLevel = 0;
+
+  for (let index = 0; index < lines.length; index += 1) {
+    const match = lines[index].match(/^(#{1,6})\s+(.+?)\s*$/);
+    if (!match) continue;
+
+    const heading = match[2].trim().toLowerCase();
+    if (wanted.includes(heading)) {
+      start = index + 1;
+      startLevel = match[1].length;
+      break;
+    }
+  }
+
+  if (start === -1) return "";
+
+  const section = [];
+  for (let index = start; index < lines.length; index += 1) {
+    const match = lines[index].match(/^(#{1,6})\s+(.+?)\s*$/);
+    if (match && match[1].length <= startLevel) break;
+    section.push(lines[index]);
+  }
+
+  return section.join("\n").trim();
+}
+
+function truncateText(value, maxLength = 12000) {
+  const text = value && value.trim() ? value.trim() : "";
+  if (!text) return "";
+  if (text.length <= maxLength) return text;
+  return `${text.slice(0, maxLength).trimEnd()}\n\n[truncated by handoff helper]`;
+}
+
+function emptyIssueContext() {
+  return {
+    ref: "Not provided.",
+    title: "Not provided.",
+    state: "Not provided.",
+    url: "Not provided.",
+    labels: "Not provided.",
+    body: "No issue context provided.",
+    acceptanceCriteria: "No issue context provided.",
+    dependencies: "No issue context provided.",
+    verification: "No issue context provided.",
+  };
+}
+
+function issueContextFromPayload(payload) {
+  const labels = Array.isArray(payload.labels)
+    ? payload.labels.map((label) => label.name || label).filter(Boolean).join(", ")
+    : "";
+  const body = truncateText(payload.body || "");
+
+  return {
+    ref: payload.number ? `#${payload.number}` : "GitHub issue",
+    title: payload.title || "Untitled issue",
+    state: payload.state || "unknown",
+    url: payload.url || "Not provided.",
+    labels: labels || "none",
+    body: body || "No issue body provided.",
+    acceptanceCriteria:
+      extractMarkdownSection(body, ["Acceptance Criteria", "Acceptance"]) ||
+      "No acceptance criteria section found.",
+    dependencies:
+      extractMarkdownSection(body, ["Dependencies", "Dependency", "Stacking"]) ||
+      "No dependencies section found.",
+    verification:
+      extractMarkdownSection(body, ["Verification", "Checks", "Test Plan"]) ||
+      "No verification section found.",
+  };
+}
+
+function readIssueContext(repoRoot, issueRef) {
+  if (!issueRef) return emptyIssueContext();
+
+  try {
+    const raw = execFileSync(
+      "gh",
+      ["issue", "view", String(issueRef), "--json", "number,title,body,labels,url,state"],
+      {
+        cwd: repoRoot,
+        encoding: "utf8",
+        stdio: ["ignore", "pipe", "pipe"],
+        maxBuffer: 1024 * 1024 * 4,
+      }
+    );
+    return issueContextFromPayload(JSON.parse(raw));
+  } catch (error) {
+    const stderr = error.stderr ? String(error.stderr).trim() : "";
+    return {
+      ...emptyIssueContext(),
+      ref: String(issueRef),
+      body: `Issue context unavailable from gh.${stderr ? `\n${stderr}` : ""}`,
+      acceptanceCriteria: "Issue context unavailable from gh.",
+      dependencies: "Issue context unavailable from gh.",
+      verification: "Issue context unavailable from gh.",
+    };
+  }
+}
+
 function fillTemplate(template, values) {
   return template.replace(/\{\{([A-Z_]+)\}\}/g, (_, key) => values[key] ?? "");
 }
 
-function buildHandoff(repoRoot) {
+function buildHandoff(repoRoot, options = {}) {
   const config = readConfig(repoRoot);
   const templatePath = path.join(__dirname, "..", "assets", "handoff-template.md");
   const template = fs.readFileSync(templatePath, "utf8");
@@ -305,6 +490,9 @@ function buildHandoff(repoRoot) {
   );
   const status = tryGit(repoRoot, ["status", "--short", "--branch"]);
   const branchDiff = getBranchDiff(repoRoot, config.defaultBase);
+  const issueContext = options.issueContext
+    ? issueContextFromPayload(options.issueContext)
+    : readIssueContext(repoRoot, options.issue);
 
   return fillTemplate(template, {
     PROJECT_NAME: String(config.projectName),
@@ -320,13 +508,44 @@ function buildHandoff(repoRoot) {
     STAGED_SUMMARY: valueOrNone(tryGit(repoRoot, ["diff", "--cached", "--name-status"]), "No staged changes."),
     UNSTAGED_SUMMARY: valueOrNone(tryGit(repoRoot, ["diff", "--name-status"]), "No unstaged tracked changes."),
     VERIFY_COMMANDS: formatVerifyCommands(config.commands.verify),
+    ISSUE_REF: issueContext.ref,
+    ISSUE_TITLE: issueContext.title,
+    ISSUE_STATE: issueContext.state,
+    ISSUE_URL: issueContext.url,
+    ISSUE_LABELS: issueContext.labels,
+    ISSUE_ACCEPTANCE_CRITERIA: issueContext.acceptanceCriteria,
+    ISSUE_DEPENDENCIES: issueContext.dependencies,
+    ISSUE_VERIFICATION: issueContext.verification,
+    ISSUE_BODY: issueContext.body,
   });
+}
+
+function parseArgs(argv) {
+  const args = {
+    repoRoot: process.cwd(),
+    issue: "",
+  };
+
+  for (let index = 0; index < argv.length; index += 1) {
+    const arg = argv[index];
+    if (arg === "--issue") {
+      index += 1;
+      args.issue = argv[index] || "";
+    } else if (arg.startsWith("--issue=")) {
+      args.issue = arg.slice("--issue=".length);
+    } else {
+      args.repoRoot = arg;
+    }
+  }
+
+  return args;
 }
 
 function main() {
   try {
-    const repoRoot = normalizeRepoRoot(process.argv[2]);
-    process.stdout.write(buildHandoff(repoRoot));
+    const args = parseArgs(process.argv.slice(2));
+    const repoRoot = normalizeRepoRoot(args.repoRoot);
+    process.stdout.write(buildHandoff(repoRoot, { issue: args.issue }));
     process.stdout.write("\n");
   } catch (error) {
     console.error(error.message);
@@ -341,7 +560,9 @@ if (require.main === module) {
 module.exports = {
   buildHandoff,
   getBranchDiff,
+  issueContextFromPayload,
   parseKnownConfig,
   readConfig,
+  readIssueContext,
   resolveBaseRef,
 };

@@ -1,7 +1,7 @@
 {
   "name": "agent-sdlc",
-  "version": "0.1.0+codex.20260611061248",
-  "description": "Reusable multi-thread software development lifecycle workflows.",
+  "version": "0.1.0+codex.20260618165521",
+  "description": "Reusable issue intake, review, documentation, and merge-ready software development lifecycle workflows.",
   "author": {
     "name": "James Lave",
     "url": "https://github.com/jlave-dev"
@@ -19,10 +19,12 @@
   "interface": {
     "displayName": "Agent SDLC",
     "shortDescription": "Coordinate repeatable SDLC thread workflows.",
-    "longDescription": "Agent SDLC helps Codex run repeatable software development workflows across communicating threads, starting with an implementer and independent reviewer loop, plus a dedicated docs role for keeping repository documentation aligned with implementation changes.",
+    "longDescription": "Agent SDLC helps Codex run repeatable software development workflows across GitHub Issues, branches, pull requests, and communicating threads. It can turn rough requests into scoped issues, run an implementer and independent reviewer loop, and use a dedicated docs role to keep repository documentation aligned with implementation changes.",
     "developerName": "James Lave",
     "category": "Productivity",
     "capabilities": [
+      "GitHub issue intake",
+      "agent task coordination",
       "multi-thread review loop",
       "code review handoffs",
       "documentation update role",

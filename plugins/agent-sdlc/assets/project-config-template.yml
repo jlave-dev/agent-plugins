@@ -4,6 +4,34 @@ defaultBase: {{DEFAULT_BASE}}
 commands:
 {{VERIFY_COMMANDS}}
 
+github:
+  issues: true
+  labels:
+    ready: "agent:ready"
+    active: "agent:active"
+    blocked: "agent:blocked"
+    review: "agent:review"
+    speculative: "agent:speculative"
+    needsHuman: "needs-human"
+    readyToMerge: "ready-to-merge"
+    stacked: "stacked"
+
+workflow:
+  maxActiveIssues: 5
+  requireIssueBeforeImplementation: true
+  defaultBranchType: short-lived
+  allowSpeculativeBranches: true
+
+merge:
+  mode: auto
+  requireHumanFor:
+    - auth
+    - data
+    - migration
+    - security
+    - public-api
+    - billing
+
 threads:
   reviewer:
     mode: reuse-or-create

@@ -16,6 +16,7 @@ Before creating or messaging threads, make sure the target repository and change
 1. Inspect the repo with non-destructive commands: `git status --short --branch`, `git diff --stat HEAD`, and targeted file reads as needed.
 2. Generate the handoff:
    - Run `node <plugin-root>/scripts/build-handoff.ts <repo-root>`.
+   - If a GitHub Issue number is known, run `node <plugin-root>/scripts/build-handoff.ts <repo-root> --issue <number>` so the reviewer sees the issue goal, acceptance criteria, dependencies, and verification plan.
    - If the script fails, fix the handoff manually from git status, changed files, diff stat, and `.agent-sdlc.yml` if present.
 3. Prepare the reviewer prompt:
    - Include the generated handoff.
@@ -32,6 +33,16 @@ Before creating or messaging threads, make sure the target repository and change
 ## Documentation Lane
 
 When the user asks for documentation coverage, or the change adds or changes public behavior, hand the same change context to `$sdlc-docs`. The docs role should update repository documentation only and return `docs_updated`, `docs_not_needed`, or `needs_human`. Keep docs updates in the same PR unless the user asks for a separate documentation follow-up.
+
+## GitHub Issue Lane
+
+When the current change came from `$sdlc-issue-intake` or a GitHub Issue, treat the issue as the task record:
+
+- Include the issue number in the handoff when generating reviewer context.
+- Judge the implementation against the issue acceptance criteria, not only the diff.
+- If review is approved, update the issue or ask the implementer to update it with the PR, checks run, and remaining risk.
+- If review requests changes, keep the issue in an active or review state.
+- If the reviewer returns `needs_human`, mark or request `needs-human` on the issue when GitHub access is available.
 
 ## Persistence
 
