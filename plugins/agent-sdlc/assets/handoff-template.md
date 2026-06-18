@@ -14,6 +14,38 @@
 
 Please review the current working tree as an independent reviewer. Focus on correctness, regressions, missing tests, maintainability, and local project conventions.
 
+## Issue Context
+
+- Issue: {{ISSUE_REF}}
+- Title: {{ISSUE_TITLE}}
+- State: {{ISSUE_STATE}}
+- URL: {{ISSUE_URL}}
+- Labels: {{ISSUE_LABELS}}
+
+### Acceptance Criteria
+
+```text
+{{ISSUE_ACCEPTANCE_CRITERIA}}
+```
+
+### Dependencies
+
+```text
+{{ISSUE_DEPENDENCIES}}
+```
+
+### Verification From Issue
+
+```text
+{{ISSUE_VERIFICATION}}
+```
+
+### Issue Body
+
+```markdown
+{{ISSUE_BODY}}
+```
+
 ## Git Summary
 
 ```text

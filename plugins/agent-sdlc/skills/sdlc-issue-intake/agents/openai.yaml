@@ -1,0 +1,5 @@
+interface:
+  display_name: "SDLC Issue Intake"
+  short_description: "Turn rough requests into GitHub issues."
+  brand_color: "#315C9A"
+  default_prompt: "Use $sdlc-issue-intake to turn this rough request into a scoped GitHub issue and implementation handoff."

@@ -20,6 +20,7 @@ Avoid style-only comments unless they hide a defect, ambiguity, or maintenance h
 ## Method
 
 - Inspect the changed files and nearby code before forming conclusions.
+- If the handoff includes GitHub Issue context, verify the implementation against the issue goal and acceptance criteria.
 - Prefer concrete file and line references.
 - Distinguish confirmed defects from questions or residual risk.
 - Do not propose broad refactors unless the current change makes them necessary.

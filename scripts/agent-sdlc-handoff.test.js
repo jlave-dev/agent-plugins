@@ -16,6 +16,7 @@ const buildHandoffScript = path.join(
   "scripts",
   "build-handoff.ts"
 );
+const { buildHandoff, issueContextFromPayload, readConfig } = require(buildHandoffScript);
 
 async function run(command, args, cwd) {
   const { stdout } = await execFileAsync(command, args, { cwd });
@@ -66,4 +67,77 @@ test("handoff includes committed feature-branch diff from base", async (t) => {
   assert.doesNotMatch(output, /No committed changes from base\./);
   assert.match(output, /No staged changes\./);
   assert.match(output, /No unstaged tracked changes\./);
+});
+
+test("handoff includes supplied GitHub issue context", async (t) => {
+  const fixture = await createCommittedFeatureBranch(t);
+
+  const output = buildHandoff(fixture, {
+    issueContext: {
+      number: 42,
+      title: "feat: add onboarding empty state",
+      state: "OPEN",
+      url: "https://github.com/example/repo/issues/42",
+      labels: [{ name: "agent:active" }, { name: "area:frontend" }],
+      body: [
+        "## Goal",
+        "Make onboarding less blank.",
+        "",
+        "## Acceptance Criteria",
+        "- Empty state appears when no invitations exist.",
+        "- Empty state links to invite creation.",
+        "",
+        "## Dependencies",
+        "Depends on: none",
+        "Mode: independent",
+        "",
+        "## Verification",
+        "- npm run check",
+      ].join("\n"),
+    },
+  });
+
+  assert.match(output, /## Issue Context/);
+  assert.match(output, /Issue: #42/);
+  assert.match(output, /Title: feat: add onboarding empty state/);
+  assert.match(output, /Labels: agent:active, area:frontend/);
+  assert.match(output, /Empty state appears when no invitations exist\./);
+  assert.match(output, /Depends on: none/);
+  assert.match(output, /npm run check/);
+});
+
+test("issue context extraction finds task sections", () => {
+  const context = issueContextFromPayload({
+    number: 7,
+    title: "fix: repair dashboard",
+    state: "OPEN",
+    labels: ["agent:ready"],
+    body: [
+      "## Goal",
+      "Repair dashboard.",
+      "",
+      "## Acceptance Criteria",
+      "- Cards render.",
+      "",
+      "## Verification",
+      "- npm test",
+    ].join("\n"),
+  });
+
+  assert.equal(context.ref, "#7");
+  assert.equal(context.labels, "agent:ready");
+  assert.equal(context.acceptanceCriteria, "- Cards render.");
+  assert.equal(context.verification, "- npm test");
+  assert.equal(context.dependencies, "No dependencies section found.");
+});
+
+test("config parser includes issue workflow defaults", async (t) => {
+  const fixture = await createCommittedFeatureBranch(t);
+  const config = readConfig(fixture);
+
+  assert.equal(config.github.issues, true);
+  assert.equal(config.github.labels.ready, "agent:ready");
+  assert.equal(config.workflow.maxActiveIssues, 5);
+  assert.equal(config.merge.mode, "auto");
+  assert(config.merge.requireHumanFor.includes("security"));
 });

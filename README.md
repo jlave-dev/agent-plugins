@@ -2,7 +2,7 @@
 
 [![Release](https://github.com/jlave-dev/agent-plugins/actions/workflows/release.yml/badge.svg)](https://github.com/jlave-dev/agent-plugins/releases)
 
-A repo-local Codex plugin marketplace for reusable agent workflows. The marketplace currently packages Amazon account workflows and Subtractive UI frontend-review workflows as installable Codex plugins.
+A repo-local Codex plugin marketplace for reusable agent workflows. The marketplace currently packages Amazon account workflows, Subtractive UI frontend-review workflows, and Agent SDLC development workflows as installable Codex plugins.
 
 ## Install The Marketplace
 
@@ -45,6 +45,18 @@ Included Codex skills:
 - `design-frontend`: design frontend screens from specs, screenshots, and visual references.
 - `audit-rendered-ui`: review real rendered UI for leaky copy, redundancy, layout issues, and handoff polish.
 - `refactor-ui`: remove UI clutter and implementation-detail copy while preserving behavior.
+
+### Agent SDLC
+
+Issue intake, review, and documentation roles for mostly agentic software development.
+
+Included Codex skills:
+
+- `sdlc-issue-intake`: turn rough requests into scoped GitHub Issues and implementation handoffs.
+- `sdlc-project-init`: propose a project-local `.agent-sdlc.yml` workflow config.
+- `sdlc-review-loop`: send current changes through an implementer/reviewer loop.
+- `sdlc-docs`: update repository docs after implementation changes.
+- `sdlc-reviewer`: review a change handoff and return an explicit verdict.
 
 ## Development
 
@@ -89,6 +101,12 @@ agent-plugins/
 │   ├── amazon/
 │   │   ├── .codex-plugin/
 │   │   │   └── plugin.json
+│   │   └── skills/
+│   ├── agent-sdlc/
+│   │   ├── .codex-plugin/
+│   │   │   └── plugin.json
+│   │   ├── assets/
+│   │   ├── scripts/
 │   │   └── skills/
 │   └── subtractive-ui/
 │       ├── .codex-plugin/
