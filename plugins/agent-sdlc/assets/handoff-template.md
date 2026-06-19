@@ -50,6 +50,12 @@ Please review the current working tree as an independent reviewer. Focus on corr
 {{ISSUE_VERIFICATION}}
 ```
 
+### Simulator Evidence
+
+```text
+{{ISSUE_SIMULATOR_EVIDENCE}}
+```
+
 ### Issue Body
 
 ```markdown

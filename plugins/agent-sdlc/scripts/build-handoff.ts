@@ -569,6 +569,7 @@ function emptyIssueContext() {
     acceptanceCriteria: "No issue context provided.",
     dependencies: "No issue context provided.",
     verification: "No issue context provided.",
+    simulatorEvidence: "No issue context provided.",
     ciTier: "No CI tier declared.",
     ciEvidenceSource: "No CI evidence source declared.",
     ciStackPosition: "No stack position declared.",
@@ -613,6 +614,9 @@ function issueContextFromPayload(payload) {
     verification:
       extractMarkdownSection(body, ["Verification", "Checks", "Test Plan"]) ||
       "No verification section found.",
+    simulatorEvidence:
+      extractMarkdownSection(body, ["Simulator Evidence", "Device Evidence", "Visual Evidence"]) ||
+      "No simulator evidence section found.",
     ciTier: ciTier || "No CI tier declared.",
     ciEvidenceSource: ciEvidenceSource || "No CI evidence source declared.",
     ciStackPosition: ciStackPosition || "No stack position declared.",
@@ -644,6 +648,7 @@ function readIssueContext(repoRoot, issueRef) {
       acceptanceCriteria: "Issue context unavailable from gh.",
       dependencies: "Issue context unavailable from gh.",
       verification: "Issue context unavailable from gh.",
+      simulatorEvidence: "Issue context unavailable from gh.",
       ciTier: "Issue context unavailable from gh.",
       ciEvidenceSource: "Issue context unavailable from gh.",
       ciStackPosition: "Issue context unavailable from gh.",
@@ -692,6 +697,7 @@ function buildHandoff(repoRoot, options = {}) {
     ISSUE_ACCEPTANCE_CRITERIA: issueContext.acceptanceCriteria,
     ISSUE_DEPENDENCIES: issueContext.dependencies,
     ISSUE_VERIFICATION: issueContext.verification,
+    ISSUE_SIMULATOR_EVIDENCE: issueContext.simulatorEvidence,
     ISSUE_CI_TIER: issueContext.ciTier,
     ISSUE_CI_EVIDENCE_SOURCE: issueContext.ciEvidenceSource,
     ISSUE_CI_STACK_POSITION: issueContext.ciStackPosition,

@@ -97,6 +97,11 @@ test("handoff includes supplied GitHub issue context", async (t) => {
         "Full integration evidence: top-of-stack PR",
         "Stack position: stack layer",
         "",
+        "## Simulator Evidence",
+        "Required: conditional for app UI or native flow changes",
+        "Targets: iOS Simulator",
+        "Artifact: screenshot or screen recording attached to PR",
+        "",
         "## Verification",
         "- npm run check",
       ].join("\n"),
@@ -110,6 +115,9 @@ test("handoff includes supplied GitHub issue context", async (t) => {
   assert.match(output, /Tier: full-ci-before-merge/);
   assert.match(output, /Evidence source: top-of-stack PR/);
   assert.match(output, /Stack position: stack layer/);
+  assert.match(output, /## Simulator Evidence/);
+  assert.match(output, /Required: conditional for app UI or native flow changes/);
+  assert.match(output, /Artifact: screenshot or screen recording attached to PR/);
   assert.match(output, /Empty state appears when no invitations exist\./);
   assert.match(output, /Depends on: none/);
   assert.match(output, /npm run check/);
@@ -132,6 +140,10 @@ test("issue context extraction finds task sections", () => {
       "Tier: fast-check-only",
       "Fast checks: npm test",
       "",
+      "## Simulator Evidence",
+      "Required: no",
+      "Targets: not applicable",
+      "",
       "## Verification",
       "- npm test",
     ].join("\n"),
@@ -141,6 +153,7 @@ test("issue context extraction finds task sections", () => {
   assert.equal(context.labels, "agent:ready");
   assert.equal(context.acceptanceCriteria, "- Cards render.");
   assert.equal(context.ciTier, "fast-check-only");
+  assert.equal(context.simulatorEvidence, "Required: no\nTargets: not applicable");
   assert.equal(context.verification, "- npm test");
   assert.equal(context.dependencies, "No dependencies section found.");
 });

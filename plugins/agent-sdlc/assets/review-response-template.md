@@ -14,5 +14,6 @@
 ## Verification Notes
 
 - State which tests, builds, or checks were inspected or not available.
+- State whether required simulator screenshots or screen recordings were attached to the PR, or why simulator evidence was not applicable.
 
 Verdict: approved | changes_requested | needs_human

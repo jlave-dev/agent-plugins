@@ -52,7 +52,8 @@ Issue intake, CI-tiered review, and documentation roles for mostly agentic softw
 
 Included Codex skills:
 
-- `sdlc-issue-intake`: turn rough requests into scoped GitHub Issues and implementation handoffs with declared CI tiers.
+- `sdlc-issue-intake`: turn rough requests into scoped GitHub Issues with saved worker dispatch prompts and declared CI tiers.
+- `sdlc-dispatch-issue`: pick a ready SDLC issue, create its branch/worktree, launch the worker thread, and record the worker state on the issue.
 - `sdlc-project-init`: propose a project-local `.agent-sdlc.yml` workflow and CI policy config.
 - `sdlc-review-loop`: send current changes through an implementer/reviewer loop with CI evidence expectations.
 - `sdlc-docs`: update repository docs after implementation changes.

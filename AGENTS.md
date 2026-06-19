@@ -132,6 +132,7 @@ Current scopes include:
 - `audit-rendered-ui`
 - `refactor-ui`
 - `sdlc-docs`
+- `sdlc-dispatch-issue`
 - `sdlc-issue-intake`
 - `sdlc-project-init`
 - `sdlc-review-loop`

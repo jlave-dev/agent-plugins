@@ -23,6 +23,7 @@ Before creating or messaging threads, make sure the target repository and change
    - Include the reviewer role contract from `$sdlc-reviewer` or `../sdlc-reviewer/SKILL.md`.
    - State whether the PR is standalone, a stack layer, or the top-of-stack when known.
    - State whether full integration evidence is required from the current head SHA, the top-of-stack PR, or the configured merge queue/merge group.
+   - State whether simulator evidence is required and where the PR-attached screenshot or screen recording can be found.
 4. Find or create the reviewer thread:
    - Prefer the configured `threads.reviewer.title`.
    - If no config exists, use `Reviewer: <projectName>`.
@@ -47,9 +48,21 @@ When the current change came from `$sdlc-issue-intake` or a GitHub Issue, treat 
 - If review requests changes, keep the issue in an active or review state.
 - If the reviewer returns `needs_human`, mark or request `needs-human` on the issue when GitHub access is available.
 
+## Worker Self-Review Lane
+
+When a worker was launched by `$sdlc-dispatch-issue`, the worker should start this review loop after it has a coherent implementation, has run the declared verification, and has opened or updated the PR.
+
+- Use the issue number from the dispatch prompt when generating the handoff.
+- Include the PR URL, worker thread ID when known, and declared CI tier in the reviewer prompt.
+- Include simulator evidence status when the issue declares it or the change affects app UI/native behavior.
+- If review is approved, update `## Agent State` with the reviewer verdict, checks, and attached evidence before handing control back to the orchestrator.
+- If review requests changes, keep the issue `agent:active`, fix the findings, and resubmit through this same review loop.
+- If review needs a human, mark or request `needs-human` and leave a concise blocker note on the issue.
+
 ## CI Evidence Lane
 
 - Read `## CI Tier` from the issue context and `## Configured CI Policy` from the generated handoff.
+- Read `## Simulator Evidence` from the issue context. If it is required or conditional and the diff affects an app UI/native flow, the PR should contain an attached screenshot or screen recording, not only a local path.
 - For stack layers, make clear whether full integration can wait for the top-of-stack PR or must run on the current layer's head SHA.
 - Treat merge-queue or merge-group checks as acceptable evidence only when `.agent-sdlc.yml` says that evidence is supported.
 - Do not run, rerun, or manage GitHub Actions from this skill. Record what evidence exists, what is missing, and whether the missing evidence blocks review or only blocks merge.
