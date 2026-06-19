@@ -22,7 +22,7 @@ Area labels are optional and repo-specific, for example `area:frontend`, `area:b
 
 ## Issue Body
 
-```markdown
+````markdown
 ## Goal
 [What should be true when this is done.]
 
@@ -64,23 +64,18 @@ Status: ready
 Owner:
 Base:
 Branch:
+Worktree:
+Worker Thread:
 PR:
 Checks:
 Blockers:
-```
 
-## CI Tier Notes
-
-- `fast-check-only`: configured fast checks are enough for review and merge.
-- `full-ci-required`: full integration evidence is required before reviewer approval, usually because touched paths match `ci.riskyPaths` or the change crosses integration boundaries.
-- `full-ci-before-merge`: fast checks are enough for implementation review, but full integration must pass on the top-of-stack PR, current head SHA, or merge queue before merge.
-- `human-decision`: policy, risk, or missing access requires the user to choose acceptable CI evidence.
-
-## Worker Prompt
+## Worker Dispatch
 
 ```text
 Implement GitHub issue #<number> in <repo>.
 
+Issue: <issue URL>
 Base: origin/<base> @ <sha>
 Branch: <type>/<short-description>
 Dependency mode: independent / stacked on PR #... / speculative
@@ -97,5 +92,46 @@ Acceptance criteria:
 Verification:
 - ...
 
-Open a draft PR linked to the issue when the first coherent implementation exists. Before review, run verification, update the issue Agent State, and use $sdlc-review-loop for an independent review.
+Implementation workflow:
+- Use the worktree created by the orchestrator. Do not edit the orchestrator's main checkout.
+- Open a draft PR linked to the issue when the first coherent implementation exists.
+- Before review, run the declared verification, update the issue Agent State, and use $sdlc-review-loop for an independent review.
+- After review approval, update the PR and issue with checks, review result, and remaining risk. Do not merge unless the dispatching prompt explicitly asks you to merge.
+```
+````
+
+## CI Tier Notes
+
+- `fast-check-only`: configured fast checks are enough for review and merge.
+- `full-ci-required`: full integration evidence is required before reviewer approval, usually because touched paths match `ci.riskyPaths` or the change crosses integration boundaries.
+- `full-ci-before-merge`: fast checks are enough for implementation review, but full integration must pass on the top-of-stack PR, current head SHA, or merge queue before merge.
+- `human-decision`: policy, risk, or missing access requires the user to choose acceptable CI evidence.
+
+## Worker Dispatch Prompt
+
+```text
+Implement GitHub issue #<number> in <repo>.
+
+Issue: <issue URL>
+Base: origin/<base> @ <sha>
+Branch: <type>/<short-description>
+Dependency mode: independent / stacked on PR #... / speculative
+CI tier: fast-check-only / full-ci-required / full-ci-before-merge / human-decision
+CI evidence source: fast checks / current head SHA / top-of-stack PR / merge queue or merge group / human decision
+Scope:
+- ...
+
+Before editing, re-check active issues and PRs for overlap. If the dependency mode has changed, stop and report it.
+
+Acceptance criteria:
+- ...
+
+Verification:
+- ...
+
+Implementation workflow:
+- Use the worktree created by the orchestrator. Do not edit the orchestrator's main checkout.
+- Open a draft PR linked to the issue when the first coherent implementation exists.
+- Before review, run the declared verification, update the issue Agent State, and use $sdlc-review-loop for an independent review.
+- After review approval, update the PR and issue with checks, review result, and remaining risk. Do not merge unless the dispatching prompt explicitly asks you to merge.
 ```

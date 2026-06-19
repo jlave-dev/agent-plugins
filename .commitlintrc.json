@@ -20,6 +20,7 @@
         "refactor-ui",
         "reference-ruler-ui",
         "sdlc-docs",
+        "sdlc-dispatch-issue",
         "sdlc-issue-intake",
         "sdlc-project-init",
         "sdlc-review-loop",

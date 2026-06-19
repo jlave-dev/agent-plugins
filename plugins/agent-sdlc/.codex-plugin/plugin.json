@@ -1,7 +1,7 @@
 {
   "name": "agent-sdlc",
-  "version": "0.1.0+codex.20260618183501",
-  "description": "Reusable issue intake, review, documentation, and merge-ready software development lifecycle workflows.",
+  "version": "0.1.0+codex.20260619074953",
+  "description": "Reusable issue intake, worker dispatch, review, documentation, and merge-ready software development lifecycle workflows.",
   "author": {
     "name": "James Lave",
     "url": "https://github.com/jlave-dev"
@@ -19,13 +19,15 @@
   "interface": {
     "displayName": "Agent SDLC",
     "shortDescription": "Coordinate repeatable SDLC thread workflows.",
-    "longDescription": "Agent SDLC helps Codex run repeatable software development workflows across GitHub Issues, branches, pull requests, and communicating threads. It can turn rough requests into scoped issues with CI tiers, run an implementer and independent reviewer loop, and use a dedicated docs role to keep repository documentation aligned with implementation changes.",
+    "longDescription": "Agent SDLC helps Codex run repeatable software development workflows across GitHub Issues, branches, pull requests, and communicating threads. It can turn rough requests into scoped issues with saved worker dispatch prompts and CI tiers, launch implementation workers from ready issues, run an implementer and independent reviewer loop, and use a dedicated docs role to keep repository documentation aligned with implementation changes.",
     "developerName": "James Lave",
     "category": "Productivity",
     "capabilities": [
       "GitHub issue intake",
+      "GitHub issue worker dispatch",
       "CI tier policy handoffs",
       "agent task coordination",
+      "worker branch and worktree setup",
       "multi-thread review loop",
       "code review handoffs",
       "documentation update role",
@@ -37,7 +39,7 @@
     "privacyPolicyURL": "https://github.com/jlave-dev/agent-plugins/blob/main/PRIVACY.md",
     "termsOfServiceURL": "https://github.com/jlave-dev/agent-plugins/blob/main/TERMS.md",
     "defaultPrompt": [
-      "Use Agent SDLC to run a structured implementer and reviewer workflow."
+      "Use Agent SDLC to intake issues, dispatch workers, and run structured implementer/reviewer workflows."
     ],
     "brandColor": "#315C9A",
     "composerIcon": "./assets/icon.svg",

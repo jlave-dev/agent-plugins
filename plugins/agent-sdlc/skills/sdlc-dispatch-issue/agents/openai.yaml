@@ -1,0 +1,5 @@
+interface:
+  display_name: "SDLC Dispatch Issue"
+  short_description: "Launch a worker from a ready SDLC issue."
+  brand_color: "#315C9A"
+  default_prompt: "Use $sdlc-dispatch-issue to pick a ready GitHub issue, create its worker branch/worktree, and launch the implementation thread."

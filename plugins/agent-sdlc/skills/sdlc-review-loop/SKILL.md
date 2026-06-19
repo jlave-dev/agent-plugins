@@ -47,6 +47,16 @@ When the current change came from `$sdlc-issue-intake` or a GitHub Issue, treat 
 - If review requests changes, keep the issue in an active or review state.
 - If the reviewer returns `needs_human`, mark or request `needs-human` on the issue when GitHub access is available.
 
+## Worker Self-Review Lane
+
+When a worker was launched by `$sdlc-dispatch-issue`, the worker should start this review loop after it has a coherent implementation, has run the declared verification, and has opened or updated the PR.
+
+- Use the issue number from the dispatch prompt when generating the handoff.
+- Include the PR URL, worker thread ID when known, and declared CI tier in the reviewer prompt.
+- If review is approved, update `## Agent State` with the reviewer verdict and checks before handing control back to the orchestrator.
+- If review requests changes, keep the issue `agent:active`, fix the findings, and resubmit through this same review loop.
+- If review needs a human, mark or request `needs-human` and leave a concise blocker note on the issue.
+
 ## CI Evidence Lane
 
 - Read `## CI Tier` from the issue context and `## Configured CI Policy` from the generated handoff.

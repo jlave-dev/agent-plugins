@@ -1,13 +1,13 @@
 ---
 name: sdlc-issue-intake
-description: Use when turning a rough feature request, bug report, cleanup idea, or agent task into a scoped GitHub Issue for Agent SDLC workflows, including active-work overlap checks, dependency classification, labels, branch naming, and an implementation handoff prompt.
+description: Use when turning a rough feature request, bug report, cleanup idea, or agent task into a scoped GitHub Issue for Agent SDLC workflows, including active-work overlap checks, dependency classification, labels, branch naming, CI tiering, and a worker dispatch prompt saved into the issue.
 ---
 
 # SDLC Issue Intake
 
 ## Overview
 
-Turn messy intent into one traceable GitHub Issue before implementation starts. Keep this lightweight: the issue is the coordination record, the PR is the review surface, and branches/worktrees remain disposable execution spaces.
+Turn messy intent into one traceable GitHub Issue before implementation starts. Keep this lightweight: the issue is the coordination record, the PR is the review surface, and branches/worktrees remain disposable execution spaces. The worker prompt must be saved in the issue so an orchestrator can dispatch it later without asking the user to copy/paste anything.
 
 ## Requirements Gate
 
@@ -27,15 +27,15 @@ Turn messy intent into one traceable GitHub Issue before implementation starts. 
    - `gh issue list --label agent:active --state open`
    - `gh issue list --label agent:blocked --state open`
    - `gh pr list --state open`
-4. Convert the request into a scoped issue with goal, acceptance criteria, scope boundaries, dependency notes, risk labels, CI tier, and verification plan.
+4. Convert the request into a scoped issue with goal, acceptance criteria, scope boundaries, dependency notes, risk labels, CI tier, verification plan, and worker dispatch prompt.
 5. Classify the task:
    - `independent`: branch from latest base.
    - `stacked`: depends on one unmerged PR; stack on that PR branch.
    - `speculative`: explores an approach or competing design; draft PR only until promoted.
    - `blocked`: depends on multiple unmerged PRs, conflicts with active work, or needs a human decision.
 6. Classify CI tier from `.agent-sdlc.yml` when present: `fast-check-only`, `full-ci-required`, `full-ci-before-merge`, or `human-decision`.
-7. Create or update the GitHub Issue only after the issue body is coherent. Add labels from `.agent-sdlc.yml` when configured; otherwise use the defaults in the reference.
-8. Return the implementation prompt for the worker agent, including issue number, base SHA, branch name, dependency mode, CI tier, touched areas, and verification commands.
+7. Create or update the GitHub Issue only after the issue body is coherent and includes `## Worker Dispatch` from the reference template. Add labels from `.agent-sdlc.yml` when configured; otherwise use the defaults in the reference.
+8. Do not require the human to handle the worker prompt. Return the issue URL, dependency mode, branch, base SHA, and a concise next step such as `Ready for $sdlc-dispatch-issue`.
 
 ## Branch And Dependency Rules
 
@@ -55,4 +55,4 @@ Turn messy intent into one traceable GitHub Issue before implementation starts. 
 
 ## Output
 
-Use the issue body and worker prompt shapes from `references/issue-and-ci-template.md`. End with a concise implementation prompt, not a strategy essay.
+Use the issue body and worker dispatch shapes from `references/issue-and-ci-template.md`. End with a concise status summary, not a worker prompt dump. The durable worker prompt belongs in the GitHub Issue under `## Worker Dispatch`.
