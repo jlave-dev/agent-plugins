@@ -62,7 +62,7 @@ When a worker was launched by `$sdlc-dispatch-issue`, the worker should start th
 ## CI Evidence Lane
 
 - Read `## CI Tier` from the issue context and `## Configured CI Policy` from the generated handoff.
-- Read `## Simulator Evidence` from the issue context. If it is required or conditional and the diff affects an app UI/native flow, the PR should contain an attached screenshot or screen recording, not only a local path.
+- Read `## Simulator Evidence` from the issue context. If it is required or conditional and the diff affects an app UI/native flow, the PR should contain an attached screenshot or screen recording, not only a local path. For screenshots, a `gh-image` Markdown image link in the PR body or a PR comment counts as attached evidence.
 - For stack layers, make clear whether full integration can wait for the top-of-stack PR or must run on the current layer's head SHA.
 - Treat merge-queue or merge-group checks as acceptable evidence only when `.agent-sdlc.yml` says that evidence is supported.
 - Do not run, rerun, or manage GitHub Actions from this skill. Record what evidence exists, what is missing, and whether the missing evidence blocks review or only blocks merge.

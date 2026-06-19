@@ -104,6 +104,7 @@ Implementation workflow:
 - Use the worktree created by the orchestrator. Do not edit the orchestrator's main checkout.
 - Open a draft PR linked to the issue when the first coherent implementation exists.
 - When simulator evidence is required or the change affects an app UI/native flow, build and run the app in the declared simulator/emulator, capture a screenshot or screen recording of the relevant flow, and attach that artifact to the PR body or a PR comment. Do not rely on a local file path as evidence.
+- For screenshots, use `gh-image` when a GitHub-hosted attachment URL is needed: install it with `gh extension install drogers0/gh-image` if `gh image` is unavailable, run `gh image <artifact-path> --repo <owner>/<repo>`, and paste the returned Markdown image link into the PR. Do not include local absolute paths in PR or issue text.
 - Before review, run the declared verification, update the issue Agent State, and use $sdlc-review-loop for an independent review.
 - After review approval, update the PR and issue with checks, review result, and remaining risk. Do not merge unless the dispatching prompt explicitly asks you to merge.
 ```
@@ -143,6 +144,7 @@ Implementation workflow:
 - Use the worktree created by the orchestrator. Do not edit the orchestrator's main checkout.
 - Open a draft PR linked to the issue when the first coherent implementation exists.
 - When simulator evidence is required or the change affects an app UI/native flow, build and run the app in the declared simulator/emulator, capture a screenshot or screen recording of the relevant flow, and attach that artifact to the PR body or a PR comment. Do not rely on a local file path as evidence.
+- For screenshots, use `gh-image` when a GitHub-hosted attachment URL is needed: install it with `gh extension install drogers0/gh-image` if `gh image` is unavailable, run `gh image <artifact-path> --repo <owner>/<repo>`, and paste the returned Markdown image link into the PR. Do not include local absolute paths in PR or issue text.
 - Before review, run the declared verification, update the issue Agent State, and use $sdlc-review-loop for an independent review.
 - After review approval, update the PR and issue with checks, review result, and remaining risk. Do not merge unless the dispatching prompt explicitly asks you to merge.
 ```

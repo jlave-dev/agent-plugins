@@ -14,6 +14,7 @@ Turn a ready Agent SDLC issue into a live worker thread without asking the human
 - Use thread-management tools when available. If they are not already listed, search for `create_thread`, `list_projects`, and related thread tools before falling back.
 - Do not implement the issue in the orchestrator thread. This skill creates or resumes the worker lane.
 - Do not merge the worker PR unless the issue or user explicitly asks for merging.
+- When simulator evidence needs a GitHub-hosted image attachment and `gh image` is unavailable, install the GitHub CLI extension with `gh extension install drogers0/gh-image`.
 
 ## Issue Selection
 
@@ -84,6 +85,7 @@ Use the provided worktree and branch. Do not edit the orchestrator's main checko
 After implementation:
 - Run the declared verification.
 - If simulator evidence is required, or if your implementation changes app UI/native behavior, build and run the app in the declared iOS Simulator or Android Emulator, capture a screenshot or screen recording of the relevant flow, and attach the artifact to the PR body or a PR comment. A local filesystem path alone does not count as evidence.
+- To attach a screenshot with GitHub CLI, install `gh-image` if needed using `gh extension install drogers0/gh-image`, run `gh image <artifact-path> --repo <owner>/<repo>`, and paste the returned Markdown image link into the PR. Do not include local absolute paths in the PR or issue text.
 - Commit with a Conventional Commit message.
 - Push the branch and open or update a PR linked to the issue.
 - Update the issue Agent State with PR, checks, attached evidence, blockers, and any residual risk.
