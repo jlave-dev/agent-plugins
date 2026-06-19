@@ -49,6 +49,12 @@ Full integration evidence: not required / current head SHA / top-of-stack PR / m
 Stack position: standalone / stack layer / top-of-stack / unknown
 Labels: [full-ci, ready-to-merge, or repo-specific labels when applicable]
 
+## Simulator Evidence
+Required: no / yes / conditional for app UI or native flow changes
+Targets: iOS Simulator / Android Emulator / browser only / not applicable
+Artifact: screenshot or screen recording attached to PR / not required
+Notes: [Which user flow needs visual proof, or why simulator evidence is not applicable.]
+
 ## Plan
 - [Small implementation steps]
 
@@ -68,6 +74,7 @@ Worktree:
 Worker Thread:
 PR:
 Checks:
+Evidence:
 Blockers:
 
 ## Worker Dispatch
@@ -81,6 +88,7 @@ Branch: <type>/<short-description>
 Dependency mode: independent / stacked on PR #... / speculative
 CI tier: fast-check-only / full-ci-required / full-ci-before-merge / human-decision
 CI evidence source: fast checks / current head SHA / top-of-stack PR / merge queue or merge group / human decision
+Simulator evidence: no / yes / conditional for app UI or native flow changes
 Scope:
 - ...
 
@@ -95,6 +103,7 @@ Verification:
 Implementation workflow:
 - Use the worktree created by the orchestrator. Do not edit the orchestrator's main checkout.
 - Open a draft PR linked to the issue when the first coherent implementation exists.
+- When simulator evidence is required or the change affects an app UI/native flow, build and run the app in the declared simulator/emulator, capture a screenshot or screen recording of the relevant flow, and attach that artifact to the PR body or a PR comment. Do not rely on a local file path as evidence.
 - Before review, run the declared verification, update the issue Agent State, and use $sdlc-review-loop for an independent review.
 - After review approval, update the PR and issue with checks, review result, and remaining risk. Do not merge unless the dispatching prompt explicitly asks you to merge.
 ```
@@ -118,6 +127,7 @@ Branch: <type>/<short-description>
 Dependency mode: independent / stacked on PR #... / speculative
 CI tier: fast-check-only / full-ci-required / full-ci-before-merge / human-decision
 CI evidence source: fast checks / current head SHA / top-of-stack PR / merge queue or merge group / human decision
+Simulator evidence: no / yes / conditional for app UI or native flow changes
 Scope:
 - ...
 
@@ -132,6 +142,7 @@ Verification:
 Implementation workflow:
 - Use the worktree created by the orchestrator. Do not edit the orchestrator's main checkout.
 - Open a draft PR linked to the issue when the first coherent implementation exists.
+- When simulator evidence is required or the change affects an app UI/native flow, build and run the app in the declared simulator/emulator, capture a screenshot or screen recording of the relevant flow, and attach that artifact to the PR body or a PR comment. Do not rely on a local file path as evidence.
 - Before review, run the declared verification, update the issue Agent State, and use $sdlc-review-loop for an independent review.
 - After review approval, update the PR and issue with checks, review result, and remaining risk. Do not merge unless the dispatching prompt explicitly asks you to merge.
 ```

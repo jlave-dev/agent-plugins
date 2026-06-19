@@ -35,7 +35,7 @@ Turn a ready Agent SDLC issue into a live worker thread without asking the human
 2. Read the issue:
    - `gh issue view <number> --json number,title,body,labels,url,state`
    - Extract `## Worker Dispatch`.
-   - Extract `## Dependencies`, `## Agent State`, `Base`, `Branch`, and `Mode`.
+   - Extract `## Dependencies`, `## CI Tier`, `## Simulator Evidence`, `## Agent State`, `Base`, `Branch`, and `Mode`.
 3. If `## Worker Dispatch` is missing:
    - Reconstruct it from the issue body using the template in `$sdlc-issue-intake`.
    - Update the issue body so future dispatches do not need reconstruction.
@@ -61,12 +61,13 @@ Turn a ready Agent SDLC issue into a live worker thread without asking the human
      - exact worktree path
      - branch name
      - live overlap snapshot
+     - simulator evidence requirement from the issue
      - instruction to update the issue and PR
      - instruction to use `$sdlc-review-loop` after implementation verification
      - instruction not to merge unless explicitly requested
 8. Record the worker:
-   - Update `Worker Thread` in `## Agent State`.
-   - Add a brief issue comment with worker thread ID, worktree path, branch, and dispatch time.
+- Update `Worker Thread` in `## Agent State`.
+- Add a brief issue comment with worker thread ID, worktree path, branch, simulator evidence requirement, and dispatch time.
 9. Report the dispatch:
    - Provide the issue URL, branch, worktree, worker thread ID, and whether the worker was newly created or resumed.
    - Emit the created-thread directive if the thread tool returned a new thread ID.
@@ -82,9 +83,10 @@ Use the provided worktree and branch. Do not edit the orchestrator's main checko
 
 After implementation:
 - Run the declared verification.
+- If simulator evidence is required, or if your implementation changes app UI/native behavior, build and run the app in the declared iOS Simulator or Android Emulator, capture a screenshot or screen recording of the relevant flow, and attach the artifact to the PR body or a PR comment. A local filesystem path alone does not count as evidence.
 - Commit with a Conventional Commit message.
 - Push the branch and open or update a PR linked to the issue.
-- Update the issue Agent State with PR, checks, blockers, and any residual risk.
+- Update the issue Agent State with PR, checks, attached evidence, blockers, and any residual risk.
 - Start `$sdlc-review-loop` from the worker thread and iterate until the reviewer returns `Verdict: approved`, `Verdict: needs_human`, or the configured max cycle count is reached.
 - Do not merge the PR unless this dispatch prompt explicitly says merging is in scope.
 ```

@@ -1,6 +1,6 @@
 {
   "name": "agent-sdlc",
-  "version": "0.1.0+codex.20260619074953",
+  "version": "0.1.0+codex.20260619075521",
   "description": "Reusable issue intake, worker dispatch, review, documentation, and merge-ready software development lifecycle workflows.",
   "author": {
     "name": "James Lave",
