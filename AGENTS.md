@@ -95,6 +95,10 @@ agent-plugins/
 
 This project uses Conventional Commits to drive semantic-release.
 
+When asked to open, merge, or publish a PR in this repository, finish the full
+workflow before stopping: validate, commit, push, open the PR if needed, check
+CI, merge when safe, or report the concrete blocker.
+
 ```text
 <type>[optional scope]: <description>
 ```
