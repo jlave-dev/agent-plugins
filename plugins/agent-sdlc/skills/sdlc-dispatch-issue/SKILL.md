@@ -1,6 +1,6 @@
 ---
 name: sdlc-dispatch-issue
-description: Use when an orchestrator should pick or receive an Agent SDLC GitHub Issue, create the implementation branch/worktree, spawn the worker thread from the issue's saved Worker Dispatch prompt, and record the worker state back on the issue.
+description: Use when an orchestrator should pick or receive an Agent SDLC GitHub Issue, create the implementation branch/worktree, spawn the worker thread from the issue's saved Worker Dispatch prompt, record worker state back on the issue, or coordinate an approved PR merge queue without doing worker fixes inline.
 ---
 
 # SDLC Dispatch Issue
@@ -72,6 +72,45 @@ Turn a ready Agent SDLC issue into a live worker thread without asking the human
 9. Report the dispatch:
    - Provide the issue URL, branch, worktree, worker thread ID, and whether the worker was newly created or resumed.
    - Emit the created-thread directive if the thread tool returned a new thread ID.
+
+## Merge Queue Workflow
+
+Use this lane when the user asks an orchestrator to merge multiple open PRs, such as "merge these PRs in order." The orchestrator coordinates merges only; it does not fix conflicts, failed checks, stale branches, tests, or code.
+
+1. Refresh live state:
+   - `git status --short --branch`
+   - `git fetch origin --prune`
+   - open PRs in the requested order, or oldest/dependency order when no order is given
+   - each PR's draft state, current head SHA, required checks, review-loop verdict, linked issue `## Agent State`, associated worker thread, and mergeability/conflicts
+2. For each PR in order:
+   - Confirm the linked issue, worker thread, and `Verdict: approved` or explicit `Verdict: needs_human`; for `needs_human`, require the human acceptance before merge.
+   - Confirm required checks are green on the current PR head. If checks are pending, wait and poll; do not skip required checks.
+   - If the PR is draft but otherwise ready, mark it ready.
+   - Merge using the repository's configured merge helper when one exists; otherwise use the repository's normal GitHub merge path.
+   - Verify the PR is merged/closed and the issue closed, or update the issue with why it remains open.
+3. If checks fail:
+   - Stop that PR.
+   - Hand it back to the original worker thread with failing check links and a concise fix request.
+   - Require the worker to push fixes, rerun verification, update Agent State, and rerun `$sdlc-review-loop`.
+   - Continue only to later PRs that are truly independent and safe.
+4. If merge conflicts or stale-branch code fixes are needed:
+   - Do not resolve them in the orchestrator thread.
+   - Hand back to the original worker with PR number, base branch/head, conflict files, required rebase/merge target, and instructions to fix, verify, push, and rerun `$sdlc-review-loop`.
+5. If the original worker thread is unavailable:
+   - Update the issue as blocked.
+   - Ask the human whether to spawn a replacement worker.
+   - Do not silently fix the PR in the orchestrator thread.
+
+Example conflict handoff:
+
+```text
+PR #79 conflicts with current `origin/main` after earlier queue merges.
+
+Please resume the original worker branch, rebase/merge onto `origin/main`, resolve only these conflict files:
+- src/app.tsx
+
+Then run the declared verification, push the updated branch, update the issue Agent State with the new head/checks, and rerun `$sdlc-review-loop`. The orchestrator will resume the merge queue only after review is approved or explicitly needs_human.
+```
 
 ## Worker Prompt Addendum
 
