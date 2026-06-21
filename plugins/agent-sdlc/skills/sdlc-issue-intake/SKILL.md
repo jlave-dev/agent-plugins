@@ -34,7 +34,7 @@ Turn messy intent into one traceable GitHub Issue before implementation starts. 
    - `speculative`: explores an approach or competing design; draft PR only until promoted.
    - `blocked`: depends on multiple unmerged PRs, conflicts with active work, or needs a human decision.
 6. Classify CI tier from `.agent-sdlc.yml` when present: `fast-check-only`, `full-ci-required`, `full-ci-before-merge`, or `human-decision`.
-7. Create or update the GitHub Issue only after the issue body is coherent and includes `## Worker Dispatch` from the reference template. Add labels from `.agent-sdlc.yml` when configured; otherwise use the defaults in the reference.
+7. Create or update the GitHub Issue only after the issue body is coherent and includes `## Worker Dispatch` from the reference template. If a script transforms an existing issue body before `gh issue edit --body-file`, verify the generated body is non-empty and still includes the expected headings before applying it. Add labels from `.agent-sdlc.yml` when configured; otherwise use the defaults in the reference.
 8. After creating a new issue, read it back and patch the saved `Worker Dispatch` block so it includes the final issue number and URL assigned by GitHub.
 9. Do not require the human to handle the worker prompt. Return the issue URL, dependency mode, branch, base SHA, and a concise next step such as `Ready for $sdlc-dispatch-issue`.
 
