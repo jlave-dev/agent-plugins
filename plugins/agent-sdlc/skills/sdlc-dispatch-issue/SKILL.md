@@ -15,6 +15,7 @@ Turn a ready Agent SDLC issue into a live worker thread without asking the human
 - Do not implement the issue in the orchestrator thread. This skill creates or resumes the worker lane.
 - Do not merge the worker PR unless the issue or user explicitly asks for merging.
 - When simulator evidence needs a GitHub-hosted image attachment and `gh image` is unavailable, install the GitHub CLI extension with `gh extension install drogers0/gh-image`.
+- Do not write local absolute worktree paths into GitHub issue bodies, issue comments, PR bodies, or PR comments. Keep those paths only in the private worker prompt and local orchestrator notes.
 
 ## Issue Selection
 
@@ -54,7 +55,8 @@ Turn a ready Agent SDLC issue into a live worker thread without asking the human
 6. Update the issue before dispatch:
    - Add `agent:active`.
    - Remove `agent:ready` when present.
-   - Fill `Owner`, `Base`, `Branch`, and `Worktree` in `## Agent State`.
+   - Fill `Owner`, `Base`, and `Branch` in `## Agent State`.
+   - If the issue has a `Worktree` field, use `local worker worktree assigned (not recorded in GitHub)` instead of a local absolute path.
 7. Spawn the worker thread:
    - Use `list_projects` to find the current repository's project.
    - Use `create_thread` to create a project worker thread. Prefer a worktree environment when the available tool supports the desired branch; otherwise create a project-local thread and put the worktree path at the top of the prompt.
@@ -68,7 +70,7 @@ Turn a ready Agent SDLC issue into a live worker thread without asking the human
      - instruction not to merge unless explicitly requested
 8. Record the worker:
 - Update `Worker Thread` in `## Agent State`.
-- Add a brief issue comment with worker thread ID, worktree path, branch, simulator evidence requirement, and dispatch time.
+- Add a brief issue comment with worker thread ID, branch, simulator evidence requirement, and dispatch time. Do not include the local worktree path.
 9. Report the dispatch:
    - Provide the issue URL, branch, worktree, worker thread ID, and whether the worker was newly created or resumed.
    - Emit the created-thread directive if the thread tool returned a new thread ID.
