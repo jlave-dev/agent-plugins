@@ -12,6 +12,7 @@ Turn a ready Agent SDLC issue into a live worker thread without asking the human
 - Use the current repository unless the user names another repo.
 - Require `gh` for reading and updating GitHub Issues.
 - Use thread-management tools when available. If they are not already listed, search for `create_thread`, `list_projects`, and related thread tools before falling back.
+- Do not use multi-agent subagents as implementation workers for Agent SDLC issue dispatch. If Codex thread creation is unavailable, mark/report the issue as blocked instead of substituting a subagent.
 - Do not implement the issue in the orchestrator thread. This skill creates or resumes the worker lane.
 - Do not merge the worker PR unless the issue or user explicitly asks for merging.
 - When simulator evidence needs a GitHub-hosted image attachment and `gh image` is unavailable, install the GitHub CLI extension with `gh extension install drogers0/gh-image`.
@@ -60,6 +61,8 @@ Turn a ready Agent SDLC issue into a live worker thread without asking the human
 7. Spawn the worker thread:
    - Use `list_projects` to find the current repository's project.
    - Use `create_thread` to create a project worker thread. Prefer a worktree environment when the available tool supports the desired branch; otherwise create a project-local thread and put the worktree path at the top of the prompt.
+   - If `create_thread` returns a pending worktree instead of an immediate thread ID, record the pending worktree setup and follow up with the actual thread ID when it becomes available.
+   - Do not use `multi_agent`/subagent tools for this implementation worker dispatch path.
    - The worker prompt must include the issue's saved `Worker Dispatch` text plus:
      - exact worktree path
      - branch name
@@ -86,7 +89,7 @@ Use this lane when the user asks an orchestrator to merge multiple open PRs, suc
    - each PR's draft state, current head SHA, required checks, review-loop verdict, linked issue `## Agent State`, associated worker thread, and mergeability/conflicts
 2. For each PR in order:
    - Confirm the linked issue, worker thread, and `Verdict: approved` or explicit `Verdict: needs_human`; for `needs_human`, require the human acceptance before merge.
-   - Inspect the actual PR diff before marking ready or merging: run `gh pr diff <number> --stat` plus targeted `gh pr diff <number> -- <path>` for the highest-risk touched files. Do not rely only on worker summaries, issue state, or review-loop approval.
+   - Inspect the actual PR diff before marking ready or merging: run `gh pr diff <number> --name-only` plus `gh pr diff <number> --patch` for the highest-risk touched files. Do not rely only on worker summaries, issue state, or review-loop approval.
    - Confirm required checks are green on the current PR head. If checks are pending, wait and poll; do not skip required checks.
    - If the PR is draft but otherwise ready, mark it ready.
    - Merge using the repository's configured merge helper when one exists; otherwise use the repository's normal GitHub merge path.
@@ -140,4 +143,4 @@ After implementation:
 - If GitHub cannot be read or updated, do not create a worker from stale local assumptions.
 - If the issue lacks enough dispatch context and cannot be reconstructed safely, label it `needs-human` and explain what is missing.
 - If branch creation fails because the branch already exists in another worktree, inspect that worktree and either reuse it or stop with the exact path and status.
-- If thread creation is unavailable, leave the issue updated with the worktree and branch, but report that dispatch could not create the worker thread.
+- If thread creation is unavailable, leave the issue updated with the worktree and branch, mark/report the dispatch as blocked, and do not spawn a subagent replacement.
