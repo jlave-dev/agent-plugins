@@ -86,6 +86,7 @@ Use this lane when the user asks an orchestrator to merge multiple open PRs, suc
    - each PR's draft state, current head SHA, required checks, review-loop verdict, linked issue `## Agent State`, associated worker thread, and mergeability/conflicts
 2. For each PR in order:
    - Confirm the linked issue, worker thread, and `Verdict: approved` or explicit `Verdict: needs_human`; for `needs_human`, require the human acceptance before merge.
+   - Inspect the actual PR diff before marking ready or merging: run `gh pr diff <number> --stat` plus targeted `gh pr diff <number> -- <path>` for the highest-risk touched files. Do not rely only on worker summaries, issue state, or review-loop approval.
    - Confirm required checks are green on the current PR head. If checks are pending, wait and poll; do not skip required checks.
    - If the PR is draft but otherwise ready, mark it ready.
    - Merge using the repository's configured merge helper when one exists; otherwise use the repository's normal GitHub merge path.
