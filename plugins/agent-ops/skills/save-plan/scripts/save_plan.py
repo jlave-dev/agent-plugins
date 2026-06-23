@@ -15,13 +15,13 @@ def slugify(value: str) -> str:
 
 
 def unique_path(plans_dir: pathlib.Path, slug: str, date_text: str) -> pathlib.Path:
-    candidate = plans_dir / f"{slug}-{date_text}.md"
+    candidate = plans_dir / f"{date_text}-{slug}.md"
     if not candidate.exists():
         return candidate
 
     counter = 2
     while True:
-        candidate = plans_dir / f"{slug}-{date_text}-{counter}.md"
+        candidate = plans_dir / f"{date_text}-{slug}-{counter}.md"
         if not candidate.exists():
             return candidate
         counter += 1
@@ -39,7 +39,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--date",
         default=dt.date.today().isoformat(),
-        help="Date suffix for the filename, formatted YYYY-MM-DD",
+        help="Date prefix for the filename, formatted YYYY-MM-DD",
     )
     return parser.parse_args()
 

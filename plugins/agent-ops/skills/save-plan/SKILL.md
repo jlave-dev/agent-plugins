@@ -13,7 +13,7 @@ Turn the plan the user and agent just agreed on into a durable Markdown document
 
 2. Capture only durable planning context: agreed direction, decisions, assumptions, constraints, file or system touchpoints, phases, risks, mitigations, validation, and next steps. Remove stale assumptions after direction changes. Do not use this directory for temporary scratch notes.
 
-3. Choose the filename. Use a concise descriptive filename, for example `fwj-monorepo-merge-plan-2026-04-13.md`. Use lowercase words, hyphens, and a `YYYY-MM-DD` date suffix for new plans unless updating.
+3. Choose the filename. Use a concise descriptive filename, for example `2026-04-13-feature-plan.md`. Use a `YYYY-MM-DD` date prefix, lowercase words, and hyphens for new plans unless updating.
 
 4. Write an implementation-oriented plan with a clear H1. Prefer concrete sections such as `Summary`, `Phases`, `Risks`, `Mitigations`, `Next Steps`, and `Done When`; omit empty sections. Keep it actionable so a later agent can continue without reconstructing the chat.
 
@@ -30,7 +30,7 @@ Turn the plan the user and agent just agreed on into a durable Markdown document
    EOF
    ```
 
-   The script creates the plans directory when needed and writes a collision-safe filename with a date suffix.
+   The script creates the plans directory when needed and writes a collision-safe filename with a date prefix.
 
 6. Tell the user the exact saved path and give a one-sentence summary of what the plan preserves.
 

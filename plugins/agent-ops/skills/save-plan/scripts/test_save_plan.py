@@ -29,14 +29,14 @@ class SavePlanTest(unittest.TestCase):
         )
         return pathlib.Path(completed.stdout.strip())
 
-    def test_writes_date_suffixed_slug_and_collision_suffix(self) -> None:
+    def test_writes_date_prefixed_slug_and_collision_suffix(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             plans_dir = pathlib.Path(temp_dir)
             first = self.run_script(plans_dir)
             second = self.run_script(plans_dir)
 
-        self.assertEqual(first.name, "feature-plan-2026-04-13.md")
-        self.assertEqual(second.name, "feature-plan-2026-04-13-2.md")
+        self.assertEqual(first.name, "2026-04-13-feature-plan.md")
+        self.assertEqual(second.name, "2026-04-13-feature-plan-2.md")
 
 
 if __name__ == "__main__":
