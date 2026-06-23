@@ -1,0 +1,4 @@
+interface:
+  display_name: "Save Plan"
+  short_description: "Save implementation plans to Markdown"
+  default_prompt: "Use $save-plan to save the agreed plan as a Markdown file."
