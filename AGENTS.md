@@ -21,25 +21,25 @@ npm test
 Validate an edited skill:
 
 ```bash
-python3 /Users/james/.codex/skills/.system/skill-creator/scripts/quick_validate.py plugins/<plugin-name>/skills/<skill-name>
+python3 <codex-home>/skills/.system/skill-creator/scripts/quick_validate.py plugins/<plugin-name>/skills/<skill-name>
 ```
 
 Validate an edited plugin:
 
 ```bash
-python3 /Users/james/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py plugins/<plugin-name>
+python3 <codex-home>/skills/.system/plugin-creator/scripts/validate_plugin.py plugins/<plugin-name>
 ```
 
 Refresh a plugin cachebuster version while preparing local plugin changes:
 
 ```bash
-python3 /Users/james/.codex/skills/.system/plugin-creator/scripts/update_plugin_cachebuster.py plugins/<plugin-name>
+python3 <codex-home>/skills/.system/plugin-creator/scripts/update_plugin_cachebuster.py plugins/<plugin-name>
 ```
 
 When available, run Plugin Eval from the cached script for skill-quality checks:
 
 ```bash
-node /Users/james/.codex/plugins/cache/openai-curated/plugin-eval/c6ea566d/scripts/plugin-eval.js analyze plugins/<plugin-name>/skills/<skill-name> --format markdown
+node <codex-home>/plugins/cache/openai-curated/plugin-eval/<version>/scripts/plugin-eval.js analyze plugins/<plugin-name>/skills/<skill-name> --format markdown
 ```
 
 ## Validation
@@ -48,6 +48,7 @@ node /Users/james/.codex/plugins/cache/openai-curated/plugin-eval/c6ea566d/scrip
 - For plugin manifest, marketplace, or plugin layout changes, run `validate_plugin.py` on the edited plugin.
 - For release helper or package-script changes, run `npm test`.
 - For README or AGENTS updates, verify documented commands against `package.json`, `.releaserc.json`, `.github/workflows/`, and the current plugin layout.
+- For personal or machine-specific reference checks, keep private deny terms out of repository files. Pass them at runtime through `REPO_PRIVATE_DENYLIST` when running `npm test`; do not encode them directly in tests, docs, fixtures, or examples.
 
 ## Repository Structure
 
@@ -55,6 +56,14 @@ node /Users/james/.codex/plugins/cache/openai-curated/plugin-eval/c6ea566d/scrip
 agent-plugins/
 ├── .agents/plugins/marketplace.json
 ├── plugins/
+│   ├── agent-dev/
+│   │   ├── .codex-plugin/plugin.json
+│   │   ├── assets/
+│   │   └── skills/
+│   ├── agent-ops/
+│   │   ├── .codex-plugin/plugin.json
+│   │   ├── assets/
+│   │   └── skills/
 │   ├── amazon/
 │   │   ├── .codex-plugin/plugin.json
 │   │   ├── assets/
@@ -84,12 +93,13 @@ agent-plugins/
 
 ## Plugin Icons
 
-- Put plugin presentation icons in `plugins/<plugin-name>/assets/` and reference them from `.codex-plugin/plugin.json` under `interface.composerIcon` and `interface.logo`.
-- Prefer a single scalable SVG such as `./assets/icon.svg` unless the icon requires a raster source; keep paths relative to the plugin root and starting with `./`.
-- Before drawing, decide what the icon should communicate for the plugin, then inspect current plugin/app icon examples for style calibration. Do not jump straight to the first obvious metaphor.
-- Keep icons minimal and legible at small sizes: one centered symbol, strong silhouette, limited palette, no text, no screenshots-in-miniature, and no decorative badges unless the badge is the core metaphor.
+- Put plugin presentation icons in `plugins/<plugin-name>/assets/icon.png` and reference that path from `.codex-plugin/plugin.json` under `interface.composerIcon` and `interface.logo`.
+- Follow `docs/icon-style.md`: flat raster PNGs, solid tiles, one centered geometric metaphor, 3-5 colors, no text, no realism, no 3D, no gradients, no shadows, and no SVG icon assets.
+- Before generating, decide what the icon should communicate for the plugin. Do not jump straight to the first obvious metaphor.
+- When feedback targets one icon or one defect, patch only that icon or defect. Do not redraw approved icons as collateral cleanup.
+- Keep icons minimal and legible at small sizes: one centered symbol, strong silhouette, limited palette, no screenshots-in-miniature, and no decorative badges unless the badge is the core metaphor.
 - Avoid copying protected brand marks, logos, or trade dress unless the plugin is first-party for that brand or the user explicitly supplies and approves the asset.
-- After icon changes, render-check the SVG at both large and small sizes, refresh the plugin cachebuster with `update_plugin_cachebuster.py`, and run `validate_plugin.py` for each edited plugin.
+- After icon changes, inspect the PNG at 1024px and 32px, refresh the plugin cachebuster with `update_plugin_cachebuster.py`, and run `validate_plugin.py` for each edited plugin.
 
 ## Commit Conventions
 
@@ -126,11 +136,18 @@ Use these types:
 
 Current scopes include:
 
+- `agent-dev`
+- `agent-ops`
 - `amazon`
 - `agent-sdlc`
+- `create-agents-md`
+- `create-readme`
 - `shop-amazon`
 - `find-orders`
+- `note`
+- `pdf`
 - `write-reviews`
+- `write-prompt`
 - `subtractive-ui`
 - `design-frontend`
 - `audit-rendered-ui`
@@ -141,6 +158,7 @@ Current scopes include:
 - `sdlc-project-init`
 - `sdlc-review-loop`
 - `sdlc-reviewer`
+- `yagni`
 - `release`
 - `deps`
 

@@ -170,6 +170,29 @@ test("config parser includes issue workflow defaults", async (t) => {
   assert.equal(config.workflow.maxActiveIssues, 5);
   assert.equal(config.merge.mode, "auto");
   assert(config.merge.requireHumanFor.includes("security"));
+  assert.equal(config.threads.reviewer.title, "Reviewer: handoff-fixture");
+});
+
+test("reviewer thread title is a project singleton", async (t) => {
+  const fixture = await createCommittedFeatureBranch(t);
+  await writeText(
+    path.join(fixture, ".agent-sdlc.yml"),
+    [
+      "projectName: sample-project",
+      "",
+      "threads:",
+      "  reviewer:",
+      "    title: \"Reviewer: issue-specific-review\"",
+      "  docs:",
+      "    title: \"Docs: custom\"",
+      "",
+    ].join("\n")
+  );
+
+  const config = readConfig(fixture);
+
+  assert.equal(config.threads.reviewer.title, "Reviewer: sample-project");
+  assert.equal(config.threads.docs.title, "Docs: custom");
 });
 
 test("config parser includes configured CI policy", async (t) => {

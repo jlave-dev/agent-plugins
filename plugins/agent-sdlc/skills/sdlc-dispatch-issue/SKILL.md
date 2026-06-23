@@ -51,7 +51,7 @@ Turn a ready Agent SDLC issue into a live worker thread without asking the human
    - For independent issues, start from the declared `Base` when it resolves; otherwise use the current `origin/<base>`.
    - For stacked issues, start from the parent PR head branch.
    - Create or reuse the declared branch.
-   - Prefer a disposable worktree path under `~/.codex/worktrees/<issue-number>-<short-slug>/<repo-name>`.
+   - Prefer a disposable worktree path supplied by the thread/worktree tool or under a repo-local ignored worktree directory.
    - If the branch or worktree already exists, verify it belongs to this issue and inspect `git status --short --branch` before reusing it.
 6. Update the issue before dispatch:
    - Add `agent:active`.

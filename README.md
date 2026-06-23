@@ -1,8 +1,6 @@
 # Agent Plugins
 
-[![Release](https://github.com/jlave-dev/agent-plugins/actions/workflows/release.yml/badge.svg)](https://github.com/jlave-dev/agent-plugins/releases)
-
-A repo-local Codex plugin marketplace for reusable agent workflows. The marketplace currently packages Amazon account workflows, Subtractive UI frontend-review workflows, and Agent SDLC development workflows as installable Codex plugins.
+A repo-local Codex plugin marketplace for reusable agent workflows. The marketplace currently packages Agent Ops helpers, Agent Dev cleanup workflows, Amazon account workflows, Subtractive UI frontend-review workflows, and Agent SDLC development workflows as installable Codex plugins.
 
 ## Install The Marketplace
 
@@ -15,16 +13,36 @@ This repo exposes its Codex marketplace at:
 From a local checkout, add the marketplace root to Codex:
 
 ```bash
-codex plugin marketplace add /path/to/agent-plugins
+codex plugin marketplace add <agent-plugins-checkout>
 ```
 
 After changes are pushed, Codex can also add it from GitHub:
 
 ```bash
-codex plugin marketplace add jlave-dev/agent-plugins
+codex plugin marketplace add <owner>/agent-plugins
 ```
 
 ## Available Plugins
+
+### Agent Ops
+
+Operational helpers for repo documentation, note capture, prompt drafting, and PDF work.
+
+Included Codex skills:
+
+- `create-agents-md`: create or refresh high-signal `AGENTS.md` files.
+- `create-readme`: create or refresh useful project `README.md` files.
+- `note`: save relevant thread context as local Markdown notes.
+- `pdf`: create, read, and visually verify PDF artifacts.
+- `write-prompt`: turn rough asks into copy-ready prompts.
+
+### Agent Dev
+
+Developer maintenance workflows for repo cleanup and simplification.
+
+Included Codex skills:
+
+- `yagni`: audit or remove stale, unused, duplicated, speculative, or misleading repo surfaces.
 
 ### Amazon
 
@@ -76,19 +94,19 @@ npm test
 Validate a skill after editing its `SKILL.md`, references, or `agents/openai.yaml`:
 
 ```bash
-python3 /Users/james/.codex/skills/.system/skill-creator/scripts/quick_validate.py plugins/<plugin-name>/skills/<skill-name>
+python3 <codex-home>/skills/.system/skill-creator/scripts/quick_validate.py plugins/<plugin-name>/skills/<skill-name>
 ```
 
 Validate a plugin after editing its manifest, marketplace metadata, or skill layout:
 
 ```bash
-python3 /Users/james/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py plugins/<plugin-name>
+python3 <codex-home>/skills/.system/plugin-creator/scripts/validate_plugin.py plugins/<plugin-name>
 ```
 
 Refresh a plugin cachebuster version during local plugin development:
 
 ```bash
-python3 /Users/james/.codex/skills/.system/plugin-creator/scripts/update_plugin_cachebuster.py plugins/<plugin-name>
+python3 <codex-home>/skills/.system/plugin-creator/scripts/update_plugin_cachebuster.py plugins/<plugin-name>
 ```
 
 ## Project Structure
@@ -102,6 +120,16 @@ agent-plugins/
 │   ├── amazon/
 │   │   ├── .codex-plugin/
 │   │   │   └── plugin.json
+│   │   └── skills/
+│   ├── agent-dev/
+│   │   ├── .codex-plugin/
+│   │   │   └── plugin.json
+│   │   ├── assets/
+│   │   └── skills/
+│   ├── agent-ops/
+│   │   ├── .codex-plugin/
+│   │   │   └── plugin.json
+│   │   ├── assets/
 │   │   └── skills/
 │   ├── agent-sdlc/
 │   │   ├── .codex-plugin/
@@ -129,7 +157,7 @@ This project uses automated semantic versioning powered by [semantic-release](ht
 - a GitHub Release with generated notes
 - a downloadable archive named `agent-plugins-vX.Y.Z.tar.gz`
 
-Release notes live in [GitHub Releases](https://github.com/jlave-dev/agent-plugins/releases); there is no committed `CHANGELOG.md`. The committed `package.json` keeps the development placeholder version `0.0.0-development`. During CI release preparation, semantic-release temporarily rewrites `package.json` to the computed release version before packaging the uploaded archive. The temporary version bump is not committed back to `main`.
+Release notes live in the repository's GitHub Releases page; there is no committed `CHANGELOG.md`. The committed `package.json` keeps the development placeholder version `0.0.0-development`. During CI release preparation, semantic-release temporarily rewrites `package.json` to the computed release version before packaging the uploaded archive. The temporary version bump is not committed back to `main`.
 
 ## Commit Conventions
 

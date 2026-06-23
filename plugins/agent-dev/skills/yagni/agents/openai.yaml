@@ -1,0 +1,4 @@
+interface:
+  display_name: "YAGNI"
+  short_description: "Ruthless repo cleanup planning"
+  default_prompt: "Use $yagni to audit this repo ruthlessly for stale, unused, duplicated, speculative, or misleading surfaces and produce a prioritized cleanup plan."

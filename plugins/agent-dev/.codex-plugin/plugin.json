@@ -1,0 +1,35 @@
+{
+  "name": "agent-dev",
+  "version": "0.1.0+codex.20260623195627",
+  "description": "Developer-focused repo cleanup and simplification workflows.",
+  "author": {
+    "name": "Agent Plugins contributors"
+  },
+  "license": "MIT",
+  "keywords": [
+    "agent-dev",
+    "cleanup",
+    "yagni",
+    "maintenance"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Agent Dev",
+    "shortDescription": "Trim stale repo surfaces.",
+    "longDescription": "Agent Dev packages developer maintenance workflows for ruthless but evidence-backed repo cleanup. It starts with YAGNI audits that identify stale docs, unused code, duplicate scripts, dead flags, speculative abstractions, and implementation drift.",
+    "developerName": "Agent Plugins contributors",
+    "category": "Productivity",
+    "capabilities": [
+      "YAGNI cleanup planning",
+      "dead surface detection",
+      "stale documentation cleanup",
+      "repo simplification"
+    ],
+    "defaultPrompt": [
+      "Use Agent Dev to find stale, unused, duplicated, speculative, or misleading repo surfaces."
+    ],
+    "brandColor": "#7C3AED",
+    "composerIcon": "./assets/icon.png",
+    "logo": "./assets/icon.png"
+  }
+}

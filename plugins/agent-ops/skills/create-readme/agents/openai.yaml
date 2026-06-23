@@ -1,0 +1,4 @@
+interface:
+  display_name: "Create README"
+  short_description: "Create and refresh useful README files"
+  default_prompt: "Use $create-readme to create or update a README for this project."

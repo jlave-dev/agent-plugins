@@ -338,7 +338,7 @@ function readConfig(repoRoot) {
     threads: {
       reviewer: {
         mode: parsed.threads?.reviewer?.mode || defaults.threads.reviewer.mode,
-        title: parsed.threads?.reviewer?.title || `Reviewer: ${projectName}`,
+        title: `Reviewer: ${projectName}`,
       },
       docs: {
         mode: parsed.threads?.docs?.mode || defaults.threads.docs.mode,
