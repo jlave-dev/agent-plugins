@@ -1,13 +1,10 @@
 {
   "name": "amazon",
-  "version": "0.1.0+codex.20260610085301",
+  "version": "0.1.0+codex.20260623200736",
   "description": "Amazon product research, order lookup, and review workflows.",
   "author": {
-    "name": "James Lave",
-    "url": "https://github.com/jlave-dev"
+    "name": "Agent Plugins contributors"
   },
-  "homepage": "https://github.com/jlave-dev/agent-plugins",
-  "repository": "https://github.com/jlave-dev/agent-plugins",
   "license": "MIT",
   "keywords": [
     "amazon",
@@ -20,7 +17,7 @@
     "displayName": "Amazon",
     "shortDescription": "Shop, inspect orders, and draft reviews.",
     "longDescription": "Amazon helps Codex research products, verify product-page details, inspect past orders and invoices, and draft or submit product reviews only with explicit user approval.",
-    "developerName": "James Lave",
+    "developerName": "Agent Plugins contributors",
     "category": "Productivity",
     "capabilities": [
       "Amazon product research",
@@ -29,14 +26,11 @@
       "return and warranty lookup",
       "review drafting"
     ],
-    "websiteURL": "https://github.com/jlave-dev/agent-plugins",
-    "privacyPolicyURL": "https://github.com/jlave-dev/agent-plugins/blob/main/PRIVACY.md",
-    "termsOfServiceURL": "https://github.com/jlave-dev/agent-plugins/blob/main/TERMS.md",
     "defaultPrompt": [
       "Use Amazon to research products, inspect orders, or draft a product review."
     ],
     "brandColor": "#FF9900",
-    "composerIcon": "./assets/icon.svg",
-    "logo": "./assets/icon.svg"
+    "composerIcon": "./assets/icon.png",
+    "logo": "./assets/icon.png"
   }
 }

@@ -25,9 +25,8 @@ Before creating or messaging threads, make sure the target repository and change
    - State whether full integration evidence is required from the current head SHA, the top-of-stack PR, or the configured merge queue/merge group.
    - State whether simulator evidence is required and where the PR-attached screenshot or screen recording can be found.
 4. Find or create the reviewer thread:
-   - Prefer the configured `threads.reviewer.title`.
-   - If no config exists, use `Reviewer: <projectName>`.
-   - Reuse an existing matching reviewer thread when available; otherwise create one in the same project.
+   - Use the singleton title `Reviewer: <projectName>` exactly, ignoring arbitrary configured reviewer titles.
+   - Reuse an existing matching reviewer thread when available; otherwise create exactly one thread with that title in the same project.
 5. Send the reviewer prompt and wait for feedback.
 6. Classify the response by its final verdict line: `approved`, `changes_requested`, or `needs_human`.
 7. If changes are requested, present the findings to the implementer, fix them, and resubmit until approved or `review.maxCycles` is reached.

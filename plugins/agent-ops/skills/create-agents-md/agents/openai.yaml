@@ -1,0 +1,4 @@
+interface:
+  display_name: "Create AGENTS.md"
+  short_description: "Create and refresh agent instruction files"
+  default_prompt: "Use $create-agents-md to create or update AGENTS.md for this repository."

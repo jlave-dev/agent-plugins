@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Subtractive UI plugin icon">
-  <rect width="512" height="512" rx="112" fill="#2F7D57"/>
-  <rect x="138" y="142" width="236" height="74" rx="28" fill="#F7FBF4" opacity="0.32"/>
-  <rect x="116" y="214" width="280" height="82" rx="30" fill="#F7FBF4" opacity="0.54"/>
-  <rect x="92" y="292" width="328" height="92" rx="34" fill="#F7FBF4"/>
-  <path d="M174 338h164" fill="none" stroke="#163E2D" stroke-width="30" stroke-linecap="round"/>
-</svg>

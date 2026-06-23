@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Amazon plugin icon">
-  <rect width="512" height="512" rx="112" fill="#FF9900"/>
-  <path d="M128 176 256 102l128 74v148l-128 74-128-74V176Z" fill="#FFF3DA"/>
-  <path d="m128 176 128 74 128-74M256 250v148" fill="none" stroke="#232F3E" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="330" cy="328" r="48" fill="#FFF3DA" stroke="#232F3E" stroke-width="26"/>
-  <path d="m365 363 45 45" fill="none" stroke="#232F3E" stroke-width="26" stroke-linecap="round"/>
-</svg>

@@ -19,7 +19,7 @@ If the user already supplied enough constraints, proceed.
 
 ## Browser Access
 
-Open Amazon through the normal browser surface available in the current environment. Prefer Chrome when that is how Codex usually interacts with web pages here; if another browser or page-interaction path is available, use that.
+Open Amazon through the normal browser surface available in the current environment. Use the available page-interaction path that can reliably search, open product pages, and verify product details.
 
 Keep the same browser page or session for search and product verification when possible. Leave Amazon open only when the user explicitly asks for it.
 
