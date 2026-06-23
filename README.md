@@ -26,13 +26,14 @@ codex plugin marketplace add <owner>/agent-plugins
 
 ### Agent Ops
 
-Operational helpers for repo documentation, note capture, prompt drafting, and PDF work.
+Operational helpers for repo documentation, note and plan capture, prompt drafting, and PDF work.
 
 Included Codex skills:
 
 - `create-agents-md`: create or refresh high-signal `AGENTS.md` files.
 - `create-readme`: create or refresh useful project `README.md` files.
-- `note`: save relevant thread context as local Markdown notes.
+- `save-note`: save relevant thread context as local Markdown notes.
+- `save-plan`: save durable planning documents as local Markdown files.
 - `pdf`: create, read, and visually verify PDF artifacts.
 - `write-prompt`: turn rough asks into copy-ready prompts.
 

@@ -5,6 +5,7 @@ const path = require("node:path");
 
 const repoRoot = path.join(__dirname, "..");
 const skipDirectories = new Set([".git", ".omc", "dist", "node_modules"]);
+const skipFiles = new Set([".git"]);
 const textExtensions = new Set([
   "",
   ".cjs",
@@ -33,6 +34,13 @@ const privateTerms = (process.env.REPO_PRIVATE_DENYLIST || "")
   .split(",")
   .map((term) => term.trim().toLowerCase())
   .filter(Boolean);
+const agentOpsSaveSurfacePaths = [
+  "README.md",
+  "plugins/agent-ops/.codex-plugin/plugin.json",
+  "plugins/agent-ops/skills/save-note",
+  "plugins/agent-ops/skills/save-plan",
+];
+const blockedAgentOpsSaveTerms = [["pony", "tail"].join("")];
 
 async function collectRepoFiles(dir) {
   const entries = await fs.readdir(dir, { withFileTypes: true });
@@ -44,7 +52,7 @@ async function collectRepoFiles(dir) {
       if (!skipDirectories.has(entry.name)) {
         files.push(...(await collectRepoFiles(entryPath)));
       }
-    } else {
+    } else if (!skipFiles.has(entry.name)) {
       files.push(entryPath);
     }
   }
@@ -67,6 +75,29 @@ test("repo text files do not include personal or machine-specific references", a
     }
     for (const term of privateTerms) {
       assert(!content.toLowerCase().includes(term), `${relativePath} contains private denylist term`);
+    }
+  }
+});
+
+test("agent ops save surfaces do not include mode-specific trigger terms", async () => {
+  const files = [];
+  for (const relativePath of agentOpsSaveSurfacePaths) {
+    const filePath = path.join(repoRoot, relativePath);
+    const stat = await fs.stat(filePath);
+    if (stat.isDirectory()) {
+      files.push(...(await collectRepoFiles(filePath)));
+    } else {
+      files.push(filePath);
+    }
+  }
+
+  for (const filePath of files) {
+    if (!textExtensions.has(path.extname(filePath))) continue;
+
+    const relativePath = path.relative(repoRoot, filePath);
+    const content = (await fs.readFile(filePath, "utf8")).toLowerCase();
+    for (const term of blockedAgentOpsSaveTerms) {
+      assert(!content.includes(term), `${relativePath} contains a mode-specific trigger term`);
     }
   }
 });

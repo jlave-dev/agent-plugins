@@ -1,0 +1,4 @@
+interface:
+  display_name: "Save Note"
+  short_description: "Save thread context to Markdown notes"
+  default_prompt: "Use $save-note to save the relevant context from this thread as a Markdown note."
