@@ -48,6 +48,7 @@ node <codex-home>/plugins/cache/openai-curated/plugin-eval/<version>/scripts/plu
 - For plugin manifest, marketplace, or plugin layout changes, run `validate_plugin.py` on the edited plugin.
 - For release helper or package-script changes, run `npm test`.
 - For README or AGENTS updates, verify documented commands against `package.json`, `.releaserc.json`, `.github/workflows/`, and the current plugin layout.
+- For shell-based release or archive verification, use `set -euo pipefail` or an equivalent fail-fast pattern so intermediate check failures cannot be masked by later successful commands.
 - For personal or machine-specific reference checks, keep private deny terms out of repository files. Pass them at runtime through `REPO_PRIVATE_DENYLIST` when running `npm test`; do not encode them directly in tests, docs, fixtures, or examples.
 - For privacy-purge history rewrites, do not create a remote backup ref that preserves the private content being removed. Verify scope with `git status`, rewrite the offending commit, use `--force-with-lease`, delete any release/tag artifacts that pointed at the bad commit, and verify current refs plus release archives with a runtime `REPO_PRIVATE_DENYLIST` scan.
 
