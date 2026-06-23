@@ -1,6 +1,6 @@
 {
   "name": "agent-plugins",
-  "version": "0.0.0-development",
+  "version": "1.12.3",
   "description": "Installable agent plugins and a Codex plugin marketplace",
   "private": true,
   "license": "MIT",
