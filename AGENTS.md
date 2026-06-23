@@ -64,6 +64,11 @@ agent-plugins/
 │   │   ├── .codex-plugin/plugin.json
 │   │   ├── assets/
 │   │   └── skills/
+│   ├── agent-sdlc/
+│   │   ├── .codex-plugin/plugin.json
+│   │   ├── assets/
+│   │   ├── scripts/
+│   │   └── skills/
 │   ├── amazon/
 │   │   ├── .codex-plugin/plugin.json
 │   │   ├── assets/

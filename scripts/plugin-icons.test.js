@@ -108,6 +108,14 @@ function isWhiteOrBlack([red, green, blue]) {
   );
 }
 
+function colorDistance(left, right) {
+  return (
+    Math.abs(left[0] - right[0]) +
+    Math.abs(left[1] - right[1]) +
+    Math.abs(left[2] - right[2])
+  );
+}
+
 test("plugin presentation icons use flat PNG assets", async () => {
   const pluginNames = await fs.readdir(pluginsRoot);
 
@@ -141,6 +149,23 @@ test("plugin presentation icons use flat PNG assets", async () => {
     assert(!isWhiteOrBlack(corners[0]), `${pluginName} icon has a white/black corner`);
     for (const corner of corners) {
       assert(!isWhiteOrBlack(corner), `${pluginName} icon has a white/black corner`);
+    }
+
+    const inset = 64;
+    const rimSamples = [
+      [image.pixelAt(0, 0), image.pixelAt(inset, inset)],
+      [image.pixelAt(image.width - 1, 0), image.pixelAt(image.width - 1 - inset, inset)],
+      [image.pixelAt(0, image.height - 1), image.pixelAt(inset, image.height - 1 - inset)],
+      [
+        image.pixelAt(image.width - 1, image.height - 1),
+        image.pixelAt(image.width - 1 - inset, image.height - 1 - inset),
+      ],
+    ];
+    for (const [corner, insideCorner] of rimSamples) {
+      assert(
+        colorDistance(corner, insideCorner) <= 20,
+        `${pluginName} icon appears to have a rounded-tile corner rim`
+      );
     }
 
     await assert.rejects(
