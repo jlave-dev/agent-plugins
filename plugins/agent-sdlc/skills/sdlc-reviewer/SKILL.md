@@ -21,6 +21,8 @@ Avoid style-only comments unless they hide a defect, ambiguity, or maintenance h
 
 - Inspect the changed files and nearby code before forming conclusions.
 - If the handoff includes GitHub Issue context, verify the implementation against the issue goal and acceptance criteria.
+- If the handoff includes Agent State or evidence context, verify the PR head, checks, evidence, and blockers describe the current head. Missing or stale evidence should block approval according to the declared CI tier.
+- Verify explicit out-of-scope boundaries from the issue when present.
 - If the handoff includes simulator evidence requirements, verify that the PR has an attached screenshot or screen recording for the relevant simulator/emulator flow. A GitHub-hosted image from `gh-image` is acceptable when it appears in the PR body or a PR comment. A local filesystem path without a GitHub attachment is missing evidence.
 - If the handoff includes CI tier context, verify the submitted checks against that tier:
   - `fast-check-only`: configured fast checks are enough unless the diff reveals higher risk.

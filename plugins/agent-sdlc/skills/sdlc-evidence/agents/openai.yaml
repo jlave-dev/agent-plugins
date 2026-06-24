@@ -1,0 +1,5 @@
+interface:
+  display_name: "SDLC Evidence"
+  short_description: "Refresh PR and issue evidence."
+  brand_color: "#315C9A"
+  default_prompt: "Use $sdlc-evidence to refresh current-head checks, proof, and blocker state for this SDLC PR."

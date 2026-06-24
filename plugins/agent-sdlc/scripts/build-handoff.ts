@@ -33,174 +33,6 @@ function tryGit(repoRoot, args, fallback = "") {
   }
 }
 
-function stripQuotes(value) {
-  return value.replace(/^["']|["']$/g, "");
-}
-
-function parseScalar(value) {
-  const trimmed = stripQuotes(value.trim());
-  if (trimmed === "true") return true;
-  if (trimmed === "false") return false;
-  if (/^\d+$/.test(trimmed)) return Number(trimmed);
-  return trimmed;
-}
-
-function parseKnownConfig(raw) {
-  const config = {};
-  const stack = [];
-
-  for (const originalLine of raw.split(/\r?\n/)) {
-    const withoutComment = originalLine.replace(/\s+#.*$/, "");
-    if (!withoutComment.trim()) continue;
-
-    const indent = withoutComment.match(/^ */)[0].length;
-    const line = withoutComment.trim();
-
-    while (stack.length && stack[stack.length - 1].indent >= indent) {
-      stack.pop();
-    }
-
-    if (line.startsWith("- ")) {
-      const parent = stack.map((entry) => entry.key).join(".");
-      if (parent === "commands.verify") {
-        config.commands = config.commands || {};
-        config.commands.verify = config.commands.verify || [];
-        config.commands.verify.push(stripQuotes(line.slice(2).trim()));
-      }
-      if (parent === "ci.fastChecks") {
-        config.ci = config.ci || {};
-        config.ci.fastChecks = config.ci.fastChecks || [];
-        config.ci.fastChecks.push(stripQuotes(line.slice(2).trim()));
-      }
-      if (parent === "ci.humanReviewRisks") {
-        config.ci = config.ci || {};
-        config.ci.humanReviewRisks = config.ci.humanReviewRisks || [];
-        config.ci.humanReviewRisks.push(stripQuotes(line.slice(2).trim()));
-      }
-      if (parent.startsWith("ci.riskyPaths.")) {
-        const category = parent.split(".").pop();
-        config.ci = config.ci || {};
-        config.ci.riskyPaths = config.ci.riskyPaths || {};
-        config.ci.riskyPaths[category] = config.ci.riskyPaths[category] || [];
-        config.ci.riskyPaths[category].push(stripQuotes(line.slice(2).trim()));
-      }
-      if (parent === "merge.requireHumanFor") {
-        config.merge = config.merge || {};
-        config.merge.requireHumanFor = config.merge.requireHumanFor || [];
-        config.merge.requireHumanFor.push(stripQuotes(line.slice(2).trim()));
-      }
-      continue;
-    }
-
-    const match = line.match(/^([^:]+):(.*)$/);
-    if (!match) continue;
-
-    const key = match[1].trim();
-    const value = match[2].trim();
-    const pathKeys = stack.map((entry) => entry.key).concat(key);
-    const pathName = pathKeys.join(".");
-
-    if (!value) {
-      stack.push({ key, indent });
-      continue;
-    }
-
-    if (pathName === "projectName") config.projectName = parseScalar(value);
-    if (pathName === "defaultBase") config.defaultBase = parseScalar(value);
-    if (pathName === "commands.verify" && value === "[]") {
-      config.commands = config.commands || {};
-      config.commands.verify = [];
-    }
-    if (pathName === "ci.fastChecks" && value === "[]") {
-      config.ci = config.ci || {};
-      config.ci.fastChecks = [];
-    }
-    if (pathName === "ci.humanReviewRisks" && value === "[]") {
-      config.ci = config.ci || {};
-      config.ci.humanReviewRisks = [];
-    }
-    if (pathName === "github.issues") {
-      config.github = config.github || {};
-      config.github.issues = parseScalar(value);
-    }
-    if (pathName.startsWith("github.labels.")) {
-      config.github = config.github || {};
-      config.github.labels = config.github.labels || {};
-      config.github.labels[key] = parseScalar(value);
-    }
-    if (pathName.startsWith("ci.integration.labels.")) {
-      config.ci = config.ci || {};
-      config.ci.integration = config.ci.integration || {};
-      config.ci.integration.labels = config.ci.integration.labels || {};
-      config.ci.integration.labels[key] = parseScalar(value);
-    }
-    if (pathName === "ci.integration.mergeQueue") {
-      config.ci = config.ci || {};
-      config.ci.integration = config.ci.integration || {};
-      config.ci.integration.mergeQueue = parseScalar(value);
-    }
-    if (pathName === "ci.integration.mergeGroup") {
-      config.ci = config.ci || {};
-      config.ci.integration = config.ci.integration || {};
-      config.ci.integration.mergeGroup = parseScalar(value);
-    }
-    if (pathName === "workflow.maxActiveIssues") {
-      config.workflow = config.workflow || {};
-      config.workflow.maxActiveIssues = parseScalar(value);
-    }
-    if (pathName === "workflow.requireIssueBeforeImplementation") {
-      config.workflow = config.workflow || {};
-      config.workflow.requireIssueBeforeImplementation = parseScalar(value);
-    }
-    if (pathName === "workflow.defaultBranchType") {
-      config.workflow = config.workflow || {};
-      config.workflow.defaultBranchType = parseScalar(value);
-    }
-    if (pathName === "workflow.allowSpeculativeBranches") {
-      config.workflow = config.workflow || {};
-      config.workflow.allowSpeculativeBranches = parseScalar(value);
-    }
-    if (pathName === "merge.mode") {
-      config.merge = config.merge || {};
-      config.merge.mode = parseScalar(value);
-    }
-    if (pathName === "threads.reviewer.mode") {
-      config.threads = config.threads || {};
-      config.threads.reviewer = config.threads.reviewer || {};
-      config.threads.reviewer.mode = parseScalar(value);
-    }
-    if (pathName === "threads.reviewer.title") {
-      config.threads = config.threads || {};
-      config.threads.reviewer = config.threads.reviewer || {};
-      config.threads.reviewer.title = parseScalar(value);
-    }
-    if (pathName === "threads.docs.mode") {
-      config.threads = config.threads || {};
-      config.threads.docs = config.threads.docs || {};
-      config.threads.docs.mode = parseScalar(value);
-    }
-    if (pathName === "threads.docs.title") {
-      config.threads = config.threads || {};
-      config.threads.docs = config.threads.docs || {};
-      config.threads.docs.title = parseScalar(value);
-    }
-    if (pathName === "review.maxCycles") {
-      config.review = config.review || {};
-      config.review.maxCycles = parseScalar(value);
-    }
-    if (pathName === "review.requireCleanWorkingTree") {
-      config.review = config.review || {};
-      config.review.requireCleanWorkingTree = parseScalar(value);
-    }
-    if (pathName === "review.requireInlineFindings") {
-      config.review = config.review || {};
-      config.review.requireInlineFindings = parseScalar(value);
-    }
-  }
-
-  return config;
-}
-
 function readJsonIfPresent(filePath) {
   try {
     return JSON.parse(fs.readFileSync(filePath, "utf8"));
@@ -220,27 +52,37 @@ function getDefaultBranch(repoRoot) {
   return "main";
 }
 
+function detectPackageManager(repoRoot) {
+  if (fs.existsSync(path.join(repoRoot, "pnpm-lock.yaml"))) return "pnpm";
+  if (fs.existsSync(path.join(repoRoot, "yarn.lock"))) return "yarn";
+  if (fs.existsSync(path.join(repoRoot, "bun.lockb")) || fs.existsSync(path.join(repoRoot, "bun.lock"))) return "bun";
+  if (fs.existsSync(path.join(repoRoot, "package-lock.json")) || fs.existsSync(path.join(repoRoot, "package.json"))) return "npm";
+  return "";
+}
+
+function scriptCommand(packageManager, scriptName) {
+  if (scriptName === "test") return packageManager === "npm" ? "npm test" : `${packageManager} test`;
+  return `${packageManager} run ${scriptName}`;
+}
+
+function detectVerifyCommands(repoRoot) {
+  const packageJson = readJsonIfPresent(path.join(repoRoot, "package.json"));
+  const packageManager = detectPackageManager(repoRoot);
+  if (!packageJson?.scripts || !packageManager) return [];
+  if (packageJson.scripts.verify) return [scriptCommand(packageManager, "verify")];
+  return ["typecheck", "lint", "test", "build"]
+    .filter((scriptName) => packageJson.scripts[scriptName])
+    .map((scriptName) => scriptCommand(packageManager, scriptName));
+}
+
 function readConfig(repoRoot) {
-  const defaults = {
+  const detectedVerifyCommands = detectVerifyCommands(repoRoot);
+  return {
     projectName: getProjectName(repoRoot),
     defaultBase: getDefaultBranch(repoRoot),
-    commands: { verify: [] },
-    github: {
-      issues: true,
-      labels: {
-        ready: "agent:ready",
-        active: "agent:active",
-        blocked: "agent:blocked",
-        review: "agent:review",
-        speculative: "agent:speculative",
-        needsHuman: "needs-human",
-        fullCi: "full-ci",
-        readyToMerge: "ready-to-merge",
-        stacked: "stacked",
-      },
-    },
+    commands: { verify: detectedVerifyCommands },
     ci: {
-      fastChecks: [],
+      fastChecks: detectedVerifyCommands,
       integration: {
         labels: {
           fullCi: "full-ci",
@@ -252,126 +94,12 @@ function readConfig(repoRoot) {
       humanReviewRisks: ["auth", "data", "migration", "security", "public-api", "billing"],
       riskyPaths: {},
     },
-    workflow: {
-      maxActiveIssues: 5,
-      requireIssueBeforeImplementation: true,
-      defaultBranchType: "short-lived",
-      allowSpeculativeBranches: true,
-    },
-    merge: {
-      mode: "auto",
-      requireHumanFor: ["auth", "data", "migration", "security", "public-api", "billing"],
-    },
-    threads: {
-      reviewer: {
-        mode: "reuse-or-create",
-        title: `Reviewer: ${getProjectName(repoRoot)}`,
-      },
-      docs: {
-        mode: "reuse-or-create",
-        title: `Docs: ${getProjectName(repoRoot)}`,
-      },
-    },
-    review: {
-      maxCycles: 2,
-      requireCleanWorkingTree: false,
-      requireInlineFindings: true,
-    },
-  };
-
-  const configPath = path.join(repoRoot, ".agent-sdlc.yml");
-  if (!fs.existsSync(configPath)) return defaults;
-
-  const parsed = parseKnownConfig(fs.readFileSync(configPath, "utf8"));
-  const projectName = parsed.projectName || defaults.projectName;
-  const verifyCommands =
-    parsed.commands && Array.isArray(parsed.commands.verify)
-      ? parsed.commands.verify
-      : defaults.commands.verify;
-  const requireHumanFor = Array.isArray(parsed.merge?.requireHumanFor)
-    ? parsed.merge.requireHumanFor
-    : defaults.merge.requireHumanFor;
-
-  return {
-    projectName,
-    defaultBase: parsed.defaultBase || defaults.defaultBase,
-    commands: {
-      verify: verifyCommands,
-    },
-    github: {
-      issues: parsed.github?.issues ?? defaults.github.issues,
-      labels: {
-        ...defaults.github.labels,
-        ...(parsed.github?.labels || {}),
-      },
-    },
-    ci: {
-      fastChecks: Array.isArray(parsed.ci?.fastChecks)
-        ? parsed.ci.fastChecks
-        : verifyCommands,
-      integration: {
-        labels: {
-          ...defaults.ci.integration.labels,
-          ...(parsed.ci?.integration?.labels || {}),
-        },
-        mergeQueue: parsed.ci?.integration?.mergeQueue ?? defaults.ci.integration.mergeQueue,
-        mergeGroup: parsed.ci?.integration?.mergeGroup ?? defaults.ci.integration.mergeGroup,
-      },
-      humanReviewRisks: Array.isArray(parsed.ci?.humanReviewRisks)
-        ? parsed.ci.humanReviewRisks
-        : requireHumanFor,
-      riskyPaths: parsed.ci?.riskyPaths || defaults.ci.riskyPaths,
-    },
-    workflow: {
-      maxActiveIssues: parsed.workflow?.maxActiveIssues ?? defaults.workflow.maxActiveIssues,
-      requireIssueBeforeImplementation:
-        parsed.workflow?.requireIssueBeforeImplementation ??
-        defaults.workflow.requireIssueBeforeImplementation,
-      defaultBranchType: parsed.workflow?.defaultBranchType || defaults.workflow.defaultBranchType,
-      allowSpeculativeBranches:
-        parsed.workflow?.allowSpeculativeBranches ?? defaults.workflow.allowSpeculativeBranches,
-    },
-    merge: {
-      mode: parsed.merge?.mode || defaults.merge.mode,
-      requireHumanFor,
-    },
-    threads: {
-      reviewer: {
-        mode: parsed.threads?.reviewer?.mode || defaults.threads.reviewer.mode,
-        title: `Reviewer: ${projectName}`,
-      },
-      docs: {
-        mode: parsed.threads?.docs?.mode || defaults.threads.docs.mode,
-        title: parsed.threads?.docs?.title || `Docs: ${projectName}`,
-      },
-    },
-    review: {
-      maxCycles: parsed.review?.maxCycles ?? defaults.review.maxCycles,
-      requireCleanWorkingTree:
-        parsed.review?.requireCleanWorkingTree ?? defaults.review.requireCleanWorkingTree,
-      requireInlineFindings:
-        parsed.review?.requireInlineFindings ?? defaults.review.requireInlineFindings,
-    },
   };
 }
 
 function normalizeRepoRoot(inputDir) {
   const resolved = path.resolve(inputDir || process.cwd());
   return runGit(resolved, ["rev-parse", "--show-toplevel"]);
-}
-
-function porcelainToFiles(status) {
-  if (!status.trim()) return "No changed files reported by git status.";
-
-  return status
-    .split(/\r?\n/)
-    .filter(Boolean)
-    .map((line) => {
-      const code = line.slice(0, 2);
-      const file = line.slice(3).replace(/^"|"$/g, "");
-      return `${code} ${file}`;
-    })
-    .join("\n");
 }
 
 function valueOrNone(value, noneText) {
@@ -746,9 +474,9 @@ if (require.main === module) {
 
 module.exports = {
   buildHandoff,
+  detectVerifyCommands,
   getBranchDiff,
   issueContextFromPayload,
-  parseKnownConfig,
   readConfig,
   readIssueContext,
   resolveBaseRef,

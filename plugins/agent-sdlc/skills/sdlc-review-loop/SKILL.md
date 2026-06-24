@@ -1,6 +1,6 @@
 ---
 name: sdlc-review-loop
-description: Use when the user wants to run a structured implementer/reviewer workflow across Codex threads for the current repository or change set, including creating or reusing a reviewer thread, sending a review handoff, reading feedback, iterating on fixes, and resubmitting for review.
+description: Use when running an Agent SDLC implementer/reviewer loop for a git-backed change, including generating a handoff, reusing the singleton reviewer thread, classifying review verdicts, iterating fixes, and keeping evidence/issue state current.
 ---
 
 # SDLC Review Loop
@@ -9,67 +9,38 @@ Run an implementer/reviewer loop from the current thread.
 
 ## Requirements Gate
 
-Before creating or messaging threads, make sure the target repository and change set are clear. If the user did not specify a repository, use the current working directory. If there is no git repository, stop and explain that the handoff helper expects git-backed changes.
+- Use the current repo unless the user names another repo.
+- Stop if there is no git repo.
+- For Agent SDLC issue/PR work, require fresh `$sdlc-evidence` first unless Agent State already says `evidence_ready` or `merge_ready` for the current PR head.
 
 ## Workflow
 
-1. Inspect the repo with non-destructive commands: `git status --short --branch`, `git diff --stat HEAD`, and targeted file reads as needed.
-2. Generate the handoff:
-   - Run `node <plugin-root>/scripts/build-handoff.ts <repo-root>`.
-   - If a GitHub Issue number is known, run `node <plugin-root>/scripts/build-handoff.ts <repo-root> --issue <number>` so the reviewer sees the issue goal, acceptance criteria, dependencies, CI tier, configured CI policy, and verification plan.
-   - If the script fails, fix the handoff manually from git status, changed files, diff stat, and `.agent-sdlc.yml` if present.
-3. Prepare the reviewer prompt:
-   - Include the generated handoff.
-   - Include the reviewer role contract from `$sdlc-reviewer` or `../sdlc-reviewer/SKILL.md`.
-   - State whether the PR is standalone, a stack layer, or the top-of-stack when known.
-   - State whether full integration evidence is required from the current head SHA, the top-of-stack PR, or the configured merge queue/merge group.
-   - State whether simulator evidence is required and where the PR-attached screenshot or screen recording can be found.
-4. Find or create the reviewer thread:
-   - Use the singleton title `Reviewer: <projectName>` exactly, ignoring arbitrary configured reviewer titles.
-   - Reuse an existing matching reviewer thread when available; otherwise create exactly one thread with that title in the same project.
-5. Send the reviewer prompt and wait for feedback.
-6. Classify the response by its final verdict line: `approved`, `changes_requested`, or `needs_human`.
-7. If changes are requested, present the findings to the implementer, fix them, and resubmit until approved or `review.maxCycles` is reached.
-8. Escalate to the user when the reviewer asks an unanswerable product question, the verdict is `needs_human`, or the max cycle count is reached.
+1. Inspect the change with `git status --short --branch`, branch diff, and targeted file reads.
+2. Generate handoff context:
+   - `node <plugin-root>/scripts/build-handoff.ts <repo-root>`
+   - Add `--issue <number>` when a GitHub Issue is known.
+3. Prepare the reviewer prompt with:
+   - generated handoff
+   - `$sdlc-reviewer` role contract
+   - PR URL, worker thread ID when known, stack position, CI tier, evidence source, and simulator evidence status
+4. Reuse exactly one reviewer thread named `Reviewer: <projectName>`. Create it only when none exists.
+5. Send the prompt and wait for a final verdict line: `approved`, `changes_requested`, or `needs_human`.
+6. After every verdict, run or request `$sdlc-evidence` so the issue and PR record the current head, checks, evidence, blockers, and review result.
+7. If changes are requested, fix only the findings, refresh evidence, and resubmit until approved or `review.maxCycles` is reached.
+8. Escalate when the reviewer returns `needs_human`, asks an unanswerable product/risk question, or max cycles are reached.
 
-## Documentation Lane
+## Docs Lane
 
-When the user asks for documentation coverage, or the change adds or changes public behavior, hand the same change context to `$sdlc-docs`. The docs role should update repository documentation only and return `docs_updated`, `docs_not_needed`, or `needs_human`. Keep docs updates in the same PR unless the user asks for a separate documentation follow-up.
+Use `$sdlc-docs` in the same PR when the change affects docs, public behavior, commands, CI/release policy, repo guidance, operational behavior, or user-facing workflows.
 
-## GitHub Issue Lane
+## Evidence Rules
 
-When the current change came from `$sdlc-issue-intake` or a GitHub Issue, treat the issue as the task record:
-
-- Include the issue number in the handoff when generating reviewer context.
-- Judge the implementation against the issue acceptance criteria, not only the diff.
-- Judge verification against the declared CI tier. `fast-check-only` needs configured fast checks; `full-ci-required` needs full integration evidence before approval; `full-ci-before-merge` may be approved with clear pre-merge evidence still pending; `human-decision` needs explicit user risk acceptance or a smaller blocking question.
-- If review is approved, update the issue or ask the implementer to update it with the PR, checks run, and remaining risk.
-- If review requests changes, keep the issue in an active or review state.
-- If the reviewer returns `needs_human`, mark or request `needs-human` on the issue when GitHub access is available.
-
-## Worker Self-Review Lane
-
-When a worker was launched by `$sdlc-dispatch-issue`, the worker should start this review loop after it has a coherent implementation, has run the declared verification, and has opened or updated the PR.
-
-- Use the issue number from the dispatch prompt when generating the handoff.
-- Include the PR URL, worker thread ID when known, and declared CI tier in the reviewer prompt.
-- Include simulator evidence status when the issue declares it or the change affects app UI/native behavior.
-- If review is approved, update `## Agent State` with the reviewer verdict, checks, and attached evidence before handing control back to the orchestrator.
-- If review requests changes, keep the issue `agent:active`, fix the findings, and resubmit through this same review loop.
-- If review needs a human, mark or request `needs-human` and leave a concise blocker note on the issue.
-
-## CI Evidence Lane
-
-- Read `## CI Tier` from the issue context and `## Configured CI Policy` from the generated handoff.
-- Read `## Simulator Evidence` from the issue context. If it is required or conditional and the diff affects an app UI/native flow, the PR should contain an attached screenshot or screen recording, not only a local path. For screenshots, a `gh-image` Markdown image link in the PR body or a PR comment counts as attached evidence.
-- For stack layers, make clear whether full integration can wait for the top-of-stack PR or must run on the current layer's head SHA.
-- Treat merge-queue or merge-group checks as acceptable evidence only when `.agent-sdlc.yml` says that evidence is supported.
-- Do not run, rerun, or manage GitHub Actions from this skill. Record what evidence exists, what is missing, and whether the missing evidence blocks review or only blocks merge.
-
-## Persistence
-
-Do not write `.agent-sdlc/reviews/` logs unless the user explicitly asks to persist project-local review records. If persistence is requested, save the handoff, reviewer response, verdict, and cycle number under `.agent-sdlc/reviews/`.
+- Judge implementation against issue acceptance criteria, not only the diff.
+- Judge verification against the declared CI tier.
+- For simulator-required changes, require PR-attached screenshot/video evidence; local paths do not count.
+- Missing full integration evidence for `full-ci-before-merge` may be approval-compatible only when recorded as a merge blocker.
+- Do not run or rerun GitHub Actions from this skill; record existing evidence and blocker class.
 
 ## Output
 
-Keep the user oriented with short status updates: reviewer thread used, verdict, requested changes, and whether another cycle is needed. Do not claim a review is clean unless the reviewer returned `Verdict: approved`.
+Report the reviewer thread used, verdict, requested changes, evidence status, and whether another cycle is needed. Do not claim the review is clean unless the reviewer returned `Verdict: approved`.
