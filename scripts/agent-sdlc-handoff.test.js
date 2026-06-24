@@ -158,133 +158,46 @@ test("issue context extraction finds task sections", () => {
   assert.equal(context.dependencies, "No dependencies section found.");
 });
 
-test("config parser includes issue workflow defaults", async (t) => {
+test("zero-config includes CI policy defaults", async (t) => {
   const fixture = await createCommittedFeatureBranch(t);
   const config = readConfig(fixture);
 
-  assert.equal(config.github.issues, true);
-  assert.equal(config.github.labels.ready, "agent:ready");
-  assert.equal(config.github.labels.fullCi, "full-ci");
+  assert.equal(config.projectName, "handoff-fixture");
+  assert.equal(config.defaultBase, "main");
+  assert.deepEqual(config.commands.verify, []);
   assert.deepEqual(config.ci.fastChecks, []);
   assert.equal(config.ci.integration.labels.fullCi, "full-ci");
-  assert.equal(config.workflow.maxActiveIssues, 5);
-  assert.equal(config.merge.mode, "auto");
-  assert(config.merge.requireHumanFor.includes("security"));
-  assert.equal(config.threads.reviewer.title, "Reviewer: handoff-fixture");
+  assert.equal(config.ci.integration.mergeQueue, false);
+  assert.equal(config.ci.integration.mergeGroup, false);
+  assert(config.ci.humanReviewRisks.includes("security"));
 });
 
-test("reviewer thread title is a project singleton", async (t) => {
+test("zero-config discovers verification commands from package scripts", async (t) => {
   const fixture = await createCommittedFeatureBranch(t);
   await writeText(
-    path.join(fixture, ".agent-sdlc.yml"),
-    [
-      "projectName: sample-project",
-      "",
-      "threads:",
-      "  reviewer:",
-      "    title: \"Reviewer: issue-specific-review\"",
-      "  docs:",
-      "    title: \"Docs: custom\"",
-      "",
-    ].join("\n")
+    path.join(fixture, "package.json"),
+    `${JSON.stringify(
+      { name: "handoff-fixture", scripts: { typecheck: "tsc --noEmit", test: "node --test" } },
+      null,
+      2
+    )}\n`
   );
 
   const config = readConfig(fixture);
 
-  assert.equal(config.threads.reviewer.title, "Reviewer: sample-project");
-  assert.equal(config.threads.docs.title, "Docs: custom");
+  assert.deepEqual(config.commands.verify, ["npm run typecheck", "npm test"]);
+  assert.deepEqual(config.ci.fastChecks, ["npm run typecheck", "npm test"]);
 });
 
-test("config parser includes configured CI policy", async (t) => {
+test("handoff includes CI tier and zero-config CI policy", async (t) => {
   const fixture = await createCommittedFeatureBranch(t);
   await writeText(
-    path.join(fixture, ".agent-sdlc.yml"),
-    [
-      "projectName: fixture",
-      "defaultBase: main",
-      "",
-      "commands:",
-      "  verify:",
-      "    - npm test",
-      "",
-      "ci:",
-      "  fastChecks:",
-      "    - npm run check",
-      "  integration:",
-      "    labels:",
-      "      fullCi: full-ci",
-      "      readyToMerge: ready-to-merge",
-      "    mergeQueue: true",
-      "    mergeGroup: true",
-      "  humanReviewRisks:",
-      "    - auth",
-      "    - data",
-      "  riskyPaths:",
-      "    native:",
-      "      - ios/**",
-      "      - android/**",
-      "    data:",
-      "      - db/migrations/**",
-      "",
-    ].join("\n")
-  );
-
-  const config = readConfig(fixture);
-
-  assert.deepEqual(config.commands.verify, ["npm test"]);
-  assert.deepEqual(config.ci.fastChecks, ["npm run check"]);
-  assert.equal(config.ci.integration.mergeQueue, true);
-  assert.equal(config.ci.integration.mergeGroup, true);
-  assert.deepEqual(config.ci.humanReviewRisks, ["auth", "data"]);
-  assert.deepEqual(config.ci.riskyPaths.native, ["ios/**", "android/**"]);
-});
-
-test("CI human-review risks inherit existing merge risk config", async (t) => {
-  const fixture = await createCommittedFeatureBranch(t);
-  await writeText(
-    path.join(fixture, ".agent-sdlc.yml"),
-    [
-      "projectName: fixture",
-      "defaultBase: main",
-      "",
-      "merge:",
-      "  requireHumanFor:",
-      "    - privacy",
-      "    - billing",
-      "",
-    ].join("\n")
-  );
-
-  const config = readConfig(fixture);
-
-  assert.deepEqual(config.merge.requireHumanFor, ["privacy", "billing"]);
-  assert.deepEqual(config.ci.humanReviewRisks, ["privacy", "billing"]);
-});
-
-test("handoff includes CI tier and configured CI policy", async (t) => {
-  const fixture = await createCommittedFeatureBranch(t);
-  await writeText(
-    path.join(fixture, ".agent-sdlc.yml"),
-    [
-      "projectName: fixture",
-      "defaultBase: main",
-      "",
-      "ci:",
-      "  fastChecks:",
-      "    - npm run check",
-      "  integration:",
-      "    labels:",
-      "      fullCi: full-ci",
-      "      readyToMerge: ready-to-merge",
-      "    mergeQueue: true",
-      "    mergeGroup: true",
-      "  humanReviewRisks:",
-      "    - security",
-      "  riskyPaths:",
-      "    native:",
-      "      - ios/**",
-      "",
-    ].join("\n")
+    path.join(fixture, "package.json"),
+    `${JSON.stringify(
+      { name: "handoff-fixture", scripts: { typecheck: "tsc --noEmit", test: "node --test" } },
+      null,
+      2
+    )}\n`
   );
 
   const output = buildHandoff(fixture, {
@@ -310,10 +223,10 @@ test("handoff includes CI tier and configured CI policy", async (t) => {
   assert.match(output, /Tier: full-ci-required/);
   assert.match(output, /Evidence source: current head SHA/);
   assert.match(output, /Stack position: top-of-stack/);
-  assert.match(output, /Fast checks:\n  - npm run check/);
+  assert.match(output, /Fast checks:\n  - npm run typecheck\n  - npm test/);
   assert.match(output, /Integration labels: fullCi=full-ci, readyToMerge=ready-to-merge/);
-  assert.match(output, /Merge queue evidence accepted: yes/);
-  assert.match(output, /Merge group evidence accepted: yes/);
-  assert.match(output, /Human-review risks:\n  - security/);
-  assert.match(output, /native: ios\/\*\*/);
+  assert.match(output, /Merge queue evidence accepted: no/);
+  assert.match(output, /Merge group evidence accepted: no/);
+  assert.match(output, /Human-review risks:[\s\S]*  - security/);
+  assert.match(output, /Risky path categories: none configured/);
 });

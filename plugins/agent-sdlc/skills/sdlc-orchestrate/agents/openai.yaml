@@ -1,0 +1,5 @@
+interface:
+  display_name: "SDLC Orchestrate"
+  short_description: "Continue the next SDLC step."
+  brand_color: "#315C9A"
+  default_prompt: "Use $sdlc-orchestrate to continue this Agent SDLC issue or PR to its next role."

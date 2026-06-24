@@ -1,0 +1,5 @@
+interface:
+  display_name: "SDLC Merge Queue"
+  short_description: "Merge approved SDLC PRs safely."
+  brand_color: "#315C9A"
+  default_prompt: "Use $sdlc-merge-queue to merge approved Agent SDLC PRs in safe dependency order."

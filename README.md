@@ -67,14 +67,17 @@ Included Codex skills:
 
 ### Agent SDLC
 
-Issue intake, CI-tiered review, and documentation roles for mostly agentic software development.
+Zero-config issue intake, worker dispatch, evidence refresh, review, docs, and merge coordination for mostly agentic software development.
 
 Included Codex skills:
 
+- `sdlc-orchestrate`: inspect issue/PR state and continue to the next SDLC role automatically.
 - `sdlc-issue-intake`: turn rough requests into scoped GitHub Issues with saved worker dispatch prompts and declared CI tiers.
+- `sdlc-preflight`: verify branch, worktree, base, and active-work overlap before dispatch.
 - `sdlc-dispatch-issue`: pick a ready SDLC issue, create its branch/worktree, launch the worker thread, and record the worker state on the issue.
-- `sdlc-project-init`: propose a project-local `.agent-sdlc.yml` workflow and CI policy config.
+- `sdlc-evidence`: refresh PR evidence, current-head checks, attached proof, and issue Agent State.
 - `sdlc-review-loop`: send current changes through an implementer/reviewer loop with CI evidence expectations.
+- `sdlc-merge-queue`: merge approved SDLC PRs in dependency order without fixing worker branches inline.
 - `sdlc-docs`: update repository docs after implementation changes.
 - `sdlc-reviewer`: review a change handoff and return an explicit verdict.
 
@@ -158,7 +161,7 @@ This project uses automated semantic versioning powered by [semantic-release](ht
 - a GitHub Release with generated notes
 - a downloadable archive named `agent-plugins-vX.Y.Z.tar.gz`
 
-Release notes live in the repository's GitHub Releases page; there is no committed `CHANGELOG.md`. The committed `package.json` keeps the development placeholder version `0.0.0-development`. During CI release preparation, semantic-release temporarily rewrites `package.json` to the computed release version before packaging the uploaded archive. The temporary version bump is not committed back to `main`.
+Release notes live in the repository's GitHub Releases page; there is no committed `CHANGELOG.md`. During release preparation, semantic-release rewrites `package.json` and plugin manifests to the computed release version, packages the archive, and commits those version bumps back to `main` with `[skip ci]`.
 
 ## Commit Conventions
 

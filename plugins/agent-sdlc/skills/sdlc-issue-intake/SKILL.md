@@ -5,55 +5,46 @@ description: Use when turning a rough feature request, bug report, cleanup idea,
 
 # SDLC Issue Intake
 
-## Overview
+Turn messy intent into one traceable GitHub Issue. The issue is the coordination record; implementation happens later through `$sdlc-orchestrate`.
 
-Turn messy intent into one traceable GitHub Issue before implementation starts. Keep this lightweight: the issue is the coordination record, the PR is the review surface, and branches/worktrees remain disposable execution spaces. The worker prompt must be saved in the issue so an orchestrator can dispatch it later without asking the user to copy/paste anything.
+## Hard Stops
 
-## Requirements Gate
-
-- Use the current repository unless the user names another repo.
-- Require `gh` only when creating or reading GitHub Issues. If `gh` is unavailable or unauthenticated, draft the issue body and stop before GitHub mutation.
-- Do not implement code as part of intake unless the user explicitly asks to continue after issue creation.
-- Ask at most one clarifying question, and only when the answer changes architecture, data model, auth/security behavior, public behavior, billing, or destructive operations.
+- Do not implement code during intake unless the user explicitly asks to continue.
+- Require `gh` only for GitHub reads/writes. If unavailable, draft the issue body and stop.
+- Ask at most one clarifying question, only when it changes architecture, data model, auth/security, public behavior, billing, or destructive work.
 
 ## Workflow
 
-1. Inspect repo state:
+1. Inspect the repo:
    - `git status --short --branch`
-   - `git fetch origin` when network/remote access is available
-   - `git rev-parse --verify origin/<base>` using `.agent-sdlc.yml` `defaultBase` when present, otherwise `main`
-2. Read `references/issue-and-ci-template.md` before drafting or updating the issue body or worker prompt.
-3. Inspect active work:
+   - `git fetch origin` when available
+   - resolve default base from `origin/HEAD`, then `origin/main`
+2. Read `references/issue-and-ci-template.md`.
+3. Check active work:
    - `gh issue list --label agent:active --state open`
    - `gh issue list --label agent:blocked --state open`
    - `gh pr list --state open`
-4. Convert the request into a scoped issue with goal, acceptance criteria, scope boundaries, dependency notes, risk labels, CI tier, verification plan, and worker dispatch prompt.
-5. Classify the task:
+4. Draft a scoped issue with goal, acceptance criteria, scope boundaries, dependency mode, CI tier, verification, simulator evidence, Agent State, and saved `## Worker Dispatch`.
+5. Classify dependency mode:
    - `independent`: branch from latest base.
-   - `stacked`: depends on one unmerged PR; stack on that PR branch.
-   - `speculative`: explores an approach or competing design; draft PR only until promoted.
-   - `blocked`: depends on multiple unmerged PRs, conflicts with active work, or needs a human decision.
-6. Classify CI tier from `.agent-sdlc.yml` when present: `fast-check-only`, `full-ci-required`, `full-ci-before-merge`, or `human-decision`.
-7. Create or update the GitHub Issue only after the issue body is coherent and includes `## Worker Dispatch` from the reference template. If a script transforms an existing issue body before `gh issue edit --body-file`, verify the generated body is non-empty and still includes the expected headings before applying it. Add labels from `.agent-sdlc.yml` when configured; otherwise use the defaults in the reference.
-8. After creating a new issue, read it back and patch the saved `Worker Dispatch` block so it includes the final issue number and URL assigned by GitHub.
-9. Do not require the human to handle the worker prompt. Return the issue URL, dependency mode, branch, base SHA, and a concise next step such as `Ready for $sdlc-dispatch-issue`.
+   - `stacked`: depends on one unmerged PR.
+   - `speculative`: draft PR until promoted.
+   - `blocked`: conflicting active work, multiple dependencies, or human decision needed.
+6. Classify CI tier:
+   - `fast-check-only`: docs, tests, prompts, local refactors, or detected fast checks cover it.
+   - `full-ci-required`: risky paths or integration contracts need full proof before review.
+   - `full-ci-before-merge`: review can proceed on fast proof, merge waits for full proof.
+   - `human-decision`: auth, data, migration, security, public API, billing, ambiguous branch protection, or unavailable CI access.
+7. Create/update the issue only after the body is coherent and includes `## Worker Dispatch`.
+8. After creating a new issue, read it back and patch `## Worker Dispatch` with the final issue number and URL.
 
-## Branch And Dependency Rules
+## Rules
 
-- Branch names use Conventional Commit style: `feat/<short-description>`, `fix/<short-description>`, `docs/<short-description>`, `chore/<short-description>`.
+- Branch names use Conventional Commit style, such as `feat/<short-description>`.
 - Never include agent names in branch names or commit messages.
-- If an issue depends on one open PR, mark it `stacked` and set the parent PR explicitly.
-- If an issue depends on multiple open PRs, mark it `agent:blocked` and ask the user to choose an integration path.
-- If another active issue touches the same files or domain, stop and report the overlap unless this is explicitly speculative.
-
-## CI Tier Rules
-
-- Start at `fast-check-only` for docs, tests, prompts, local refactors, and changes covered by configured `ci.fastChecks`.
-- Use `full-ci-required` when the change touches configured `ci.riskyPaths`, alters integration contracts, or needs full-system proof before a reviewer can trust it.
-- Use `full-ci-before-merge` for stack layers or changes where review can proceed on fast evidence but merge must wait for the top-of-stack PR, current head SHA, or configured merge queue/merge group proof.
-- Use `human-decision` when the task matches `ci.humanReviewRisks` or `merge.requireHumanFor`, when branch-protection policy is ambiguous, or when required CI access is unavailable.
-- Record the evidence source explicitly. Do not collapse current-head, top-of-stack, and merge-queue evidence into the same proof claim.
+- Stop on active issue/PR overlap unless the task is explicitly speculative.
+- Do not collapse current-head, top-of-stack, and merge-queue evidence into one proof claim.
 
 ## Output
 
-Use the issue body and worker dispatch shapes from `references/issue-and-ci-template.md`. End with a concise status summary, not a worker prompt dump. The durable worker prompt belongs in the GitHub Issue under `## Worker Dispatch`.
+Return issue URL, dependency mode, branch, base SHA, CI tier, and `Ready for $sdlc-orchestrate`. Do not dump the worker prompt; it belongs in the issue.

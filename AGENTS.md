@@ -42,6 +42,10 @@ When available, run Plugin Eval from the cached script for skill-quality checks:
 node <codex-home>/plugins/cache/openai-curated/plugin-eval/<version>/scripts/plugin-eval.js analyze plugins/<plugin-name>/skills/<skill-name> --format markdown
 ```
 
+## Local Log Inspection
+
+- When reading Codex session `.jsonl` files or other large line-oriented logs, avoid broad `cat`/`head` reads because one record can contain the full prompt context. Prefer targeted `rg`, field-aware JSON tools, or line filters that select only the needed event types.
+
 ## Validation
 
 - For skill changes, run `quick_validate.py` on each edited skill.
@@ -161,8 +165,11 @@ Current scopes include:
 - `refactor-ui`
 - `sdlc-docs`
 - `sdlc-dispatch-issue`
+- `sdlc-evidence`
 - `sdlc-issue-intake`
-- `sdlc-project-init`
+- `sdlc-merge-queue`
+- `sdlc-orchestrate`
+- `sdlc-preflight`
 - `sdlc-review-loop`
 - `sdlc-reviewer`
 - `yagni`
@@ -190,4 +197,4 @@ Push conventional commits to `main`. GitHub Actions runs semantic-release and, w
 - generated release notes in the GitHub Release
 - downloadable `agent-plugins-vX.Y.Z.tar.gz` archive
 
-Do not configure semantic-release to commit release assets back to `main`. The committed `package.json` version is the development placeholder `0.0.0-development`; semantic-release temporarily rewrites it only inside the CI workspace before creating the release archive. GitHub Releases are the changelog source of truth. Do not manually edit release versions in skill frontmatter. Plugin manifests may use helper-generated cachebuster versions during plugin development.
+semantic-release commits release version bumps for `package.json` and plugin manifests back to `main` with `[skip ci]`. GitHub Releases are the changelog source of truth; do not add a committed `CHANGELOG.md`. Do not manually edit release versions in skill frontmatter. Plugin manifests may use helper-generated cachebuster versions during plugin development.

@@ -1,5 +1,5 @@
 interface:
   display_name: "SDLC Dispatch Issue"
-  short_description: "Launch SDLC workers and coordinate approved PR merge queues."
+  short_description: "Launch SDLC worker threads."
   brand_color: "#315C9A"
-  default_prompt: "Use $sdlc-dispatch-issue to dispatch ready GitHub issues to workers or coordinate approved PR merge queues without fixing worker branches inline."
+  default_prompt: "Use $sdlc-dispatch-issue to dispatch ready GitHub issues to worker threads without fixing worker branches inline."

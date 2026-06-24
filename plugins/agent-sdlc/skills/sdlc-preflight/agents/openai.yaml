@@ -1,0 +1,5 @@
+interface:
+  display_name: "SDLC Preflight"
+  short_description: "Verify branch and issue readiness."
+  brand_color: "#315C9A"
+  default_prompt: "Use $sdlc-preflight to verify this Agent SDLC issue before dispatching a worker."
