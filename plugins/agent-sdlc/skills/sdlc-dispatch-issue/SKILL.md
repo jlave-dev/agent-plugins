@@ -29,6 +29,7 @@ Launch the worker lane for a preflighted Agent SDLC issue.
 3. Read `## Worker Dispatch`, `## Agent State`, declared base, branch, dependency mode, and simulator evidence.
 4. Stop if `## Worker Dispatch` is missing and cannot be reconstructed from `$sdlc-issue-intake` without guessing.
 5. Create or reuse the declared branch/worktree:
+   - Before creating worker state, run `node plugins/agent-sdlc/scripts/guardrails.ts validate-base --base <declared-base> --file <scope-path> --command "<verification-command>"` for the issue scope and declared fast checks.
    - If the branch already exists, verify it belongs to this issue before using it.
    - Before `create_thread`, verify the declared branch resolves with `git rev-parse --verify <branch>^{commit}`.
    - If the branch was just created locally, push it with upstream tracking and verify `git rev-parse --verify origin/<branch>^{commit}` before `create_thread`; otherwise Codex worktree setup can fail with `fatal: invalid reference`.
@@ -54,3 +55,4 @@ Launch the worker lane for a preflighted Agent SDLC issue.
 - If branch/worktree ownership is unclear, stop with the exact local status.
 - If thread creation is unavailable, mark/report the issue blocked; do not substitute a subagent.
 - If worktree creation fails with `fatal: invalid reference`, materialize the declared branch ref locally and on origin, then retry once before marking the issue blocked.
+- Before editing issue/PR bodies, write the next body to a draft file and run `node plugins/agent-sdlc/scripts/guardrails.ts body --body-file <draft> > <safe-body>`; pass the safe file to `gh --body-file`.
