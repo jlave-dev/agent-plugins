@@ -30,4 +30,5 @@ Refresh the proof that makes an Agent SDLC PR reviewable or mergeable.
 
 - Current-head evidence must name the exact PR head SHA.
 - A local screenshot path does not count as attached proof. Use a GitHub-hosted image/video link when simulator evidence is required.
+- Before `gh issue edit --body-file` or `gh pr edit --body-file`, run `node plugins/agent-sdlc/scripts/guardrails.ts body --body-file <draft> > <safe-body>` and edit from the safe file.
 - Do not rerun hosted CI when the known blocker is account capacity, spending limit, or another external startup failure; record it as a blocker with the right class.
