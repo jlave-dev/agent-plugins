@@ -60,6 +60,25 @@ function pathExistsInWorktree(repoRoot, filePath) {
   return fs.existsSync(path.join(repoRoot, normalizeRepoPath(filePath)));
 }
 
+function expandScopeFiles(repoRoot, files) {
+  const expanded = [];
+  for (const filePath of files.map(normalizeRepoPath).filter(Boolean)) {
+    const absolutePath = path.join(repoRoot, filePath);
+    if (!fs.existsSync(absolutePath) || !fs.statSync(absolutePath).isDirectory()) {
+      expanded.push(filePath);
+      continue;
+    }
+
+    const children = tryGit(repoRoot, ["ls-files", "-co", "--exclude-standard", "--", filePath])
+      .split(/\r?\n/)
+      .map(normalizeRepoPath)
+      .filter(Boolean);
+    expanded.push(...children);
+  }
+
+  return [...new Set(expanded)];
+}
+
 function readPackageScripts(repoRoot, ref = "") {
   const raw = ref
     ? tryGit(repoRoot, ["show", `${ref}:package.json`])
@@ -92,7 +111,7 @@ function validateBaseRef(repoRoot, options = {}) {
     };
   }
 
-  const files = (options.files || []).map(normalizeRepoPath).filter(Boolean);
+  const files = expandScopeFiles(repoRoot, options.files || []);
   const currentScripts = readPackageScripts(repoRoot);
   const baseScripts = readPackageScripts(repoRoot, base.ref);
   const missingFiles = files.filter(

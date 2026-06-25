@@ -20,7 +20,8 @@ Verify that an Agent SDLC issue is safe to dispatch before a worker edits code.
 3. Verify the declared base ref resolves. Default to `origin/HEAD`, then `origin/main`, when the issue does not declare a base.
 4. Run the plugin guard for declared scope paths and verification commands:
    - `node plugins/agent-sdlc/scripts/guardrails.ts validate-base --base <declared-base> --file <scope-path> --command "<verification-command>"`
-   - Stop if it reports files or package scripts that exist only in the current worktree but not at the declared base.
+   - Scope paths may be files or directories; directory scopes are expanded to child files.
+   - Stop if it reports files, child files, or package scripts that exist only in the current worktree but not at the declared base.
 5. Verify the declared branch is available or belongs to this issue. If it is already checked out in another worktree, inspect that worktree before reusing it.
 6. Re-check active issues and PRs for path/domain overlap. If dependency mode changed, stop and mark/report the issue as blocked or stacked.
 7. If the current checkout is detached or on the wrong branch for issue-specific work, stop before reading more repo workflow context or editing files.

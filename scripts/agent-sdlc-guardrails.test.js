@@ -58,6 +58,19 @@ test("base validator rejects scoped files that only exist in the worktree", asyn
   assert.deepEqual(result.missingFiles, ["scripts/new-check.js"]);
 });
 
+test("base validator expands scoped directories before checking the base", async (t) => {
+  const fixture = await createFixture(t);
+  await writeText(path.join(fixture, "scripts", "new-check.js"), "console.log('new');\n");
+
+  const result = validateBaseRef(fixture, {
+    baseRef: "main",
+    files: ["scripts/"],
+  });
+
+  assert.equal(result.ok, false);
+  assert.deepEqual(result.missingFiles, ["scripts/new-check.js"]);
+});
+
 test("base validator rejects package scripts absent from the declared base", async (t) => {
   const fixture = await createFixture(t);
   await writeText(
