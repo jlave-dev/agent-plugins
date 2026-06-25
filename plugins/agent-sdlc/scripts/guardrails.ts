@@ -39,6 +39,12 @@ function normalizeRepoPath(filePath) {
   return String(filePath || "").replace(/^\.?\//, "").replace(/\\/g, "/");
 }
 
+function normalizeBaseRef(baseRef) {
+  return String(baseRef || "main")
+    .replace(/\s+@\s+[a-f0-9]{7,40}\s*$/i, "")
+    .trim();
+}
+
 function pathExistsAtRef(repoRoot, ref, filePath) {
   const repoPath = normalizeRepoPath(filePath);
   if (!repoPath) return false;
@@ -75,7 +81,7 @@ function commandScriptName(command) {
 }
 
 function validateBaseRef(repoRoot, options = {}) {
-  const base = resolveBaseRef(repoRoot, options.baseRef || "main");
+  const base = resolveBaseRef(repoRoot, normalizeBaseRef(options.baseRef));
   if (!base.sha) {
     return {
       ok: false,
