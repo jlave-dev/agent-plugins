@@ -28,7 +28,11 @@ Launch the worker lane for a preflighted Agent SDLC issue.
    - `gh pr list --state open`
 3. Read `## Worker Dispatch`, `## Agent State`, declared base, branch, dependency mode, and simulator evidence.
 4. Stop if `## Worker Dispatch` is missing and cannot be reconstructed from `$sdlc-issue-intake` without guessing.
-5. Create or reuse the declared branch/worktree. If it already exists, verify it belongs to this issue before using it.
+5. Create or reuse the declared branch/worktree:
+   - If the branch already exists, verify it belongs to this issue before using it.
+   - Before `create_thread`, verify the declared branch resolves with `git rev-parse --verify <branch>^{commit}`.
+   - If the branch was just created locally, push it with upstream tracking and verify `git rev-parse --verify origin/<branch>^{commit}` before `create_thread`; otherwise Codex worktree setup can fail with `fatal: invalid reference`.
+   - After thread creation, wait for the real worker thread/worktree and verify its checkout with `git status --short --branch` before marking the issue active.
 6. Update issue Agent State:
    - `Status: active`
    - `Owner`
@@ -49,3 +53,4 @@ Launch the worker lane for a preflighted Agent SDLC issue.
 - If GitHub cannot be read or updated, stop before creating a worker.
 - If branch/worktree ownership is unclear, stop with the exact local status.
 - If thread creation is unavailable, mark/report the issue blocked; do not substitute a subagent.
+- If worktree creation fails with `fatal: invalid reference`, materialize the declared branch ref locally and on origin, then retry once before marking the issue blocked.
