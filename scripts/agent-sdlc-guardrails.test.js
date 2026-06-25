@@ -92,6 +92,20 @@ test("base validator accepts files and scripts present at the declared base", as
   assert.deepEqual(result.missingScripts, []);
 });
 
+test("base validator accepts issue-template base refs with a recorded sha", async (t) => {
+  const fixture = await createFixture(t);
+  const sha = (await run("git", ["rev-parse", "main"], fixture)).trim();
+
+  const result = validateBaseRef(fixture, {
+    baseRef: `main @ ${sha}`,
+    files: ["README.md"],
+    commands: ["npm test"],
+  });
+
+  assert.equal(result.ok, true);
+  assert.equal(result.base.ref, "main");
+});
+
 test("body helper rejects local paths and denied terms", () => {
   const localPath = ["", "Users", "example", "project", "screenshot.png"].join("/");
 
