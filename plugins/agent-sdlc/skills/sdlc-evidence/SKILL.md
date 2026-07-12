@@ -25,6 +25,7 @@ Refresh the proof that makes an Agent SDLC PR reviewable or mergeable.
    - `Status: merge_ready` when review is approved and required merge evidence is current.
    - `Status: needs_human` for human gates.
    - `Status: blocked` for fix-required blockers.
+7. Re-read the PR and issue after each mutation. Body edits, label changes, and draft-to-ready transitions can enqueue a fresh workflow run; if they do, wait for that run and refresh the exact-head check readback before claiming `merge_ready`.
 
 ## Rules
 
@@ -32,3 +33,4 @@ Refresh the proof that makes an Agent SDLC PR reviewable or mergeable.
 - A local screenshot path does not count as attached proof. Use a GitHub-hosted image/video link when simulator evidence is required.
 - Before `gh issue edit --body-file` or `gh pr edit --body-file`, run `node plugins/agent-sdlc/scripts/guardrails.ts body --body-file <draft> > <safe-body>` and edit from the safe file.
 - Do not rerun hosted CI when the known blocker is account capacity, spending limit, or another external startup failure; record it as a blocker with the right class.
+- Do not downgrade a valid approved/evidence-ready state to `needs_human` merely because a reviewer thread or API call transiently errors; reserve that class for an actual user, access, product, or risk gate.
