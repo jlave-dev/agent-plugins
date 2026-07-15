@@ -69,6 +69,7 @@ Included Codex skills:
 
 - `audit-rendered-ui`: review real rendered UI for leaky copy, redundancy, layout issues, and handoff polish.
 - `refactor-ui`: remove UI clutter and implementation-detail copy while preserving behavior.
+- `reference-ruler-ui`: compare an implementation against a concrete visual reference with precise layout and styling checks.
 
 ### Agent SDLC
 
