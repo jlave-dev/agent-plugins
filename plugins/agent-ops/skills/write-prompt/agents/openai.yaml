@@ -1,4 +1,4 @@
 interface:
   display_name: "Write Prompt"
   short_description: "Expand rough asks into copy-ready prompts"
-  default_prompt: "Use $write-prompt to turn this rough gist into a clear, detailed prompt for Codex."
+  default_prompt: "Use $write-prompt to turn this rough gist into a clear, outcome-first prompt for Codex."
