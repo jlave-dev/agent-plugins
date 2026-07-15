@@ -19,6 +19,7 @@ Avoid style-only comments unless they hide a defect, ambiguity, or maintenance h
 
 ## Method
 
+- Treat the latest handoff and reviewer prompt as authoritative over prior thread history. Before reviewing code, verify the named checkout, branch, base SHA, head SHA, issue, and PR. If any identity does not match, do not review the stale target or emit its verdict; report the mismatch as `needs_human`.
 - Inspect the changed files and nearby code before forming conclusions.
 - If the handoff includes GitHub Issue context, verify the implementation against the issue goal and acceptance criteria.
 - If the handoff includes Agent State or evidence context, verify the PR head, checks, evidence, and blockers describe the current head. Missing or stale evidence should block approval according to the declared CI tier.
@@ -32,7 +33,13 @@ Avoid style-only comments unless they hide a defect, ambiguity, or maintenance h
 - Prefer concrete file and line references.
 - Distinguish confirmed defects from questions or residual risk.
 - Do not propose broad refactors unless the current change makes them necessary.
+- Do not browse unrelated external pages or continue a prior task’s research. Use the declared checkout and supplied live evidence; browse only when the current handoff explicitly requires an authoritative external source.
 - If the handoff lacks enough context to review safely, return `needs_human` with the smallest blocking question set.
+
+## GitHub attachment evidence
+
+- For every GitHub user-attachment URL, run `node plugins/agent-sdlc/scripts/fetch-github-attachment.js <url>`, inspect the returned temporary image path with the available visual-inspection tool, and record what was actually inspected. A PR-body link alone does not satisfy visual inspection.
+- The helper tries unauthenticated access first. Do not label a first `404` as missing evidence until the authenticated `gh`-credential retry has run; an authenticated `404` is genuinely missing evidence, while credential/authenticated-request failures are retrieval blockers.
 
 ## Output
 
