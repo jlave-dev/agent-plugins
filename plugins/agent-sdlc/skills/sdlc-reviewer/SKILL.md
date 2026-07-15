@@ -36,6 +36,11 @@ Avoid style-only comments unless they hide a defect, ambiguity, or maintenance h
 - Do not browse unrelated external pages or continue a prior task’s research. Use the declared checkout and supplied live evidence; browse only when the current handoff explicitly requires an authoritative external source.
 - If the handoff lacks enough context to review safely, return `needs_human` with the smallest blocking question set.
 
+## GitHub attachment evidence
+
+- For every GitHub user-attachment URL, run `node plugins/agent-sdlc/scripts/fetch-github-attachment.js <url>`, inspect the returned temporary image path with the available visual-inspection tool, and record what was actually inspected. A PR-body link alone does not satisfy visual inspection.
+- The helper tries unauthenticated access first. Do not label a first `404` as missing evidence until the authenticated `gh`-credential retry has run; an authenticated `404` is genuinely missing evidence, while credential/authenticated-request failures are retrieval blockers.
+
 ## Output
 
 Lead with findings, ordered by severity. Use this shape:

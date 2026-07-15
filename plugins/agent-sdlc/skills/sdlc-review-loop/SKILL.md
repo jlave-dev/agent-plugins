@@ -33,6 +33,11 @@ Run an implementer/reviewer loop from the current thread.
 10. If marking a draft PR ready or changing labels is part of closeout, do it only after the last code/evidence update, then wait for any newly queued current-head checks and perform one final evidence readback. Do not call a PR `merge_ready` while a post-mutation check is still queued.
 11. Escalate when the reviewer returns `needs_human`, asks an unanswerable product/risk question, or max cycles are reached.
 
+## GitHub attachment evidence
+
+- When the change includes GitHub user-attachment URLs, retrieve each with `node plugins/agent-sdlc/scripts/fetch-github-attachment.js <url>` and pass the returned temporary `path` to actual visual inspection before review. The presence of a PR-body link is never visual inspection.
+- A public `404` is only an unauthenticated/private-attachment signal. The helper retries with the in-memory `gh auth token`; classify an authenticated `404` as missing evidence, and classify credential or other authenticated failures as retrieval blockers.
+
 ## Docs Lane
 
 Use `$sdlc-docs` in the same PR when the change affects docs, public behavior, commands, CI/release policy, repo guidance, operational behavior, or user-facing workflows.

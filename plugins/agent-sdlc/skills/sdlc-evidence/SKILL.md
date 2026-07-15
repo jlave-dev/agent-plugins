@@ -27,6 +27,12 @@ Refresh the proof that makes an Agent SDLC PR reviewable or mergeable.
    - `Status: blocked` for fix-required blockers.
 7. Re-read the PR and issue after each mutation. Body edits, label changes, and draft-to-ready transitions can enqueue a fresh workflow run; if they do, wait for that run and refresh the exact-head check readback before claiming `merge_ready`.
 
+## GitHub attachment evidence
+
+- For each GitHub user-attachment URL in the PR or issue, run `node plugins/agent-sdlc/scripts/fetch-github-attachment.js <url>` and use the returned temporary `path` for actual visual inspection. A PR-body link by itself is not inspection.
+- The helper fetches without authentication first. A first `404` means `private_attachment_auth_required` until `gh auth token` retrieval and the authenticated retry complete; do not call it missing evidence yet.
+- Treat an authenticated `404` as `missing_evidence`. Treat unavailable credentials or an authenticated non-404 failure as an authentication/retrieval `review_blocker`, not as proof that the artifact is absent.
+
 ## Rules
 
 - Current-head evidence must name the exact PR head SHA.
