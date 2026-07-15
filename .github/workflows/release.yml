@@ -31,7 +31,8 @@ jobs:
             @semantic-release/exec \
             @semantic-release/git \
             @semantic-release/github \
-            @semantic-release/release-notes-generator
+            @semantic-release/release-notes-generator \
+            conventional-changelog-conventionalcommits
 
       - name: Run tests
         run: npm test
