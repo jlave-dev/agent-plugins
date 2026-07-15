@@ -1,7 +1,7 @@
 {
   "name": "agent-sdlc",
   "version": "1.14.0",
-  "description": "Reusable zero-config issue intake, worker dispatch, evidence, review, documentation, and merge-ready software development lifecycle workflows.",
+  "description": "Reusable zero-config issue intake, worker dispatch, evidence, review, and merge-ready software development lifecycle workflows.",
   "author": {
     "name": "Agent Plugins contributors"
   },
@@ -16,7 +16,7 @@
   "interface": {
     "displayName": "Agent SDLC",
     "shortDescription": "Coordinate repeatable SDLC thread workflows.",
-    "longDescription": "Agent SDLC helps Codex run repeatable software development workflows across GitHub Issues, branches, pull requests, and communicating threads without consumer repo config. It can turn rough requests into scoped issues with saved worker dispatch prompts and CI tiers, route issues to the next SDLC role, preflight worker dispatch, refresh current-head evidence, run implementer/reviewer loops, update docs, and coordinate merge-ready PRs.",
+    "longDescription": "Agent SDLC helps Codex run repeatable software development workflows across GitHub Issues, branches, pull requests, and communicating threads without consumer repo config. It can turn rough requests into scoped issues with saved worker dispatch prompts and CI tiers, route issues to the next SDLC role, preflight worker dispatch, refresh current-head evidence, run implementer/reviewer loops, and coordinate merge-ready PRs.",
     "developerName": "Agent Plugins contributors",
     "category": "Productivity",
     "capabilities": [
@@ -32,7 +32,6 @@
       "merge queue coordination",
       "multi-thread review loop",
       "code review handoffs",
-      "documentation update role",
       "review verdict classification",
       "SDLC role prompts"
     ],

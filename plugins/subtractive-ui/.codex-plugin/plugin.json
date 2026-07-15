@@ -1,13 +1,12 @@
 {
   "name": "subtractive-ui",
   "version": "1.14.0",
-  "description": "Reference-led frontend design, rendered UI audit, and behavior-preserving UI cleanup.",
+  "description": "Rendered UI audit and behavior-preserving UI cleanup.",
   "author": {
     "name": "Agent Plugins contributors"
   },
   "license": "MIT",
   "keywords": [
-    "frontend",
     "design",
     "ui-review",
     "subtractive-ui"
@@ -16,11 +15,10 @@
   "interface": {
     "displayName": "Subtractive UI",
     "shortDescription": "Minimal, reference-led frontend critique.",
-    "longDescription": "Subtractive UI helps Codex design, audit, and refactor frontend surfaces with a professional minimal process. It favors real rendered evidence, visual references, fewer controls, shorter copy, stable responsive layouts, and removal of implementation-detail UI.",
+    "longDescription": "Subtractive UI helps Codex audit and refactor frontend surfaces with a professional minimal process. It favors real rendered evidence, visual references, fewer controls, shorter copy, stable responsive layouts, and removal of implementation-detail UI.",
     "developerName": "Agent Plugins contributors",
     "category": "Productivity",
     "capabilities": [
-      "frontend design",
       "rendered UI audit",
       "UI refactoring",
       "screenshot review",

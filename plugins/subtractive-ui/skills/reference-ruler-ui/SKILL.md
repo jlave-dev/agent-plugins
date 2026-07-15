@@ -5,7 +5,7 @@ description: "Use when matching a frontend implementation to a concrete visual r
 
 # Reference Ruler UI
 
-Use `design-frontend` first when visual direction or product state is unclear. Use this skill when a concrete mockup, screenshot, or generated reference is the target. Use `audit-rendered-ui` between passes for clutter, copy leaks, responsive fit, and polish findings. Use `refactor-ui` when the fix is simplification rather than reference matching.
+Use this skill when a concrete mockup, screenshot, or generated reference is the target. Use `audit-rendered-ui` between passes for clutter, copy leaks, responsive fit, and polish findings. Use `refactor-ui` when the fix is simplification rather than reference matching.
 
 ## Workflow
 

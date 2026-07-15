@@ -14,7 +14,7 @@ const buildHandoffScript = path.join(
   "plugins",
   "agent-sdlc",
   "scripts",
-  "build-handoff.ts"
+  "build-handoff.js"
 );
 const { buildHandoff, issueContextFromPayload, readConfig } = require(buildHandoffScript);
 

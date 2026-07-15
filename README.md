@@ -26,7 +26,7 @@ codex plugin marketplace add <owner>/agent-plugins
 
 ### Agent Ops
 
-Operational helpers for repo documentation, note and plan capture, prompt drafting, and PDF work.
+Operational helpers for repo documentation, note and plan capture, and prompt drafting.
 
 Included Codex skills:
 
@@ -34,7 +34,6 @@ Included Codex skills:
 - `create-readme`: create or refresh useful project `README.md` files.
 - `save-note`: save relevant thread context as local Markdown notes.
 - `save-plan`: save durable planning documents as local Markdown files.
-- `pdf`: create, read, and visually verify PDF artifacts.
 - `write-prompt`: turn rough asks into copy-ready prompts.
 
 ### Agent Dev
@@ -61,7 +60,6 @@ Minimal, reference-led frontend critique for designing, auditing, and refactorin
 
 Included Codex skills:
 
-- `design-frontend`: design frontend screens from specs, screenshots, and visual references.
 - `audit-rendered-ui`: review real rendered UI for leaky copy, redundancy, layout issues, and handoff polish.
 - `refactor-ui`: remove UI clutter and implementation-detail copy while preserving behavior.
 
@@ -78,7 +76,6 @@ Included Codex skills:
 - `sdlc-evidence`: refresh PR evidence, current-head checks, attached proof, and issue Agent State.
 - `sdlc-review-loop`: send current changes through an implementer/reviewer loop with CI evidence expectations.
 - `sdlc-merge-queue`: merge approved SDLC PRs in dependency order without fixing worker branches inline.
-- `sdlc-docs`: update repository docs after implementation changes.
 - `sdlc-reviewer`: review a change handoff and return an explicit verdict.
 
 ## Development

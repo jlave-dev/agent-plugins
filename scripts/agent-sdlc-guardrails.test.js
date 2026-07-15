@@ -8,7 +8,7 @@ const { promisify } = require("node:util");
 
 const execFileAsync = promisify(execFile);
 const repoRoot = path.join(__dirname, "..");
-const guardrailsScript = path.join(repoRoot, "plugins", "agent-sdlc", "scripts", "guardrails.ts");
+const guardrailsScript = path.join(repoRoot, "plugins", "agent-sdlc", "scripts", "guardrails.js");
 const {
   assertSafeGitHubBody,
   replaceMarkdownSection,

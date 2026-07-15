@@ -90,18 +90,6 @@ function evidenceFresh(input, agentState) {
   return headFresh && hasValue(agentState.checks) && hasValue(agentState.evidence);
 }
 
-function docsRequired(input) {
-  if (typeof input.docsRequired === "boolean") return input.docsRequired;
-  const files = input.changedFiles || input.files || [];
-  return files.some((file) => /(^|\/)(README|AGENTS|CONTRIBUTING|DEVELOPMENT|OPERATIONS)\.md$/.test(file));
-}
-
-function docsDone(input, agentState) {
-  if (typeof input.docsDone === "boolean") return input.docsDone;
-  const value = normalizeText(agentState.docs || agentState.docs_verdict).toLowerCase();
-  return ["docs_updated", "docs_not_needed"].includes(value);
-}
-
 function next(role, reason) {
   return { role, reason, stop: false };
 }
@@ -139,10 +127,7 @@ function resolveNextStep(input = {}) {
   }
 
   if (status === "evidence_ready") {
-    if (docsRequired(input) && !docsDone(input, agentState)) {
-      return next("sdlc-docs", "Evidence is ready and changed docs or policy surfaces need a docs verdict.");
-    }
-    return next("sdlc-review-loop", "Evidence is ready; request independent review.");
+    return next("sdlc-review-loop", "Evidence is ready; verify documentation and request independent review.");
   }
 
   if (status === "review_approved") {

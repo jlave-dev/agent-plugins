@@ -11,7 +11,7 @@ Continue an Agent SDLC issue or PR by routing to the next role. The GitHub Issue
 
 1. Identify the issue and PR from the user's request, current branch, or linked GitHub metadata.
 2. Run the dry-run resolver:
-   - `node <plugin-root>/scripts/next-step.ts --issue <number>`
+   - `node <plugin-root>/scripts/next-step.js --issue <number>`
    - Add `--pr <number>` when a PR exists.
 3. Read the returned `role` and `reason`.
 4. If `stop` is true, report the reason and do not invent another step.
@@ -19,7 +19,6 @@ Continue an Agent SDLC issue or PR by routing to the next role. The GitHub Issue
    - `sdlc-preflight`: verify issue, branch, worktree, and overlap before dispatch.
    - `sdlc-dispatch-issue`: create or resume the worker lane.
    - `sdlc-evidence`: refresh PR/issue proof and blocker state.
-   - `sdlc-docs`: update stale docs or policy surfaces.
    - `sdlc-review-loop`: run independent review.
    - `sdlc-merge-queue`: merge only approved and current-head-safe PRs.
 6. After the role updates issue/PR state, rerun the resolver only when the user asked to continue the SDLC flow end to end.

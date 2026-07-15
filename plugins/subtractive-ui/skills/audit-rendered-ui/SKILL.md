@@ -60,5 +60,3 @@ If the audit is for an implementation agent, include a short subtractive edit pl
 ## References
 
 Read `references/leak-dedup-checklist.md` for leaky words, redundant patterns, and replacement examples.
-
-Read `../../references/modern-ios-app-design.md` for mobile or iOS-style visual calibration.

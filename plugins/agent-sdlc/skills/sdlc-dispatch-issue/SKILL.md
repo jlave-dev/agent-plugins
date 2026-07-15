@@ -29,11 +29,13 @@ Launch the worker lane for a preflighted Agent SDLC issue.
 3. Read `## Worker Dispatch`, `## Agent State`, declared base, branch, dependency mode, and simulator evidence.
 4. Stop if `## Worker Dispatch` is missing and cannot be reconstructed from `$sdlc-issue-intake` without guessing.
 5. Create or reuse the declared branch/worktree:
-   - Before creating worker state, run `node plugins/agent-sdlc/scripts/guardrails.ts validate-base --base <declared-base> --file <scope-path> --command "<verification-command>"` for the issue scope and declared fast checks; scope paths may be files or directories.
+   - Before creating worker state, run `node plugins/agent-sdlc/scripts/guardrails.js validate-base --base <declared-base> --file <scope-path> --command "<verification-command>"` for the issue scope and declared fast checks; scope paths may be files or directories.
    - If the branch already exists, verify it belongs to this issue before using it.
+   - For a fresh lane, create the named branch from the exact declared base SHA with `git switch -c <declared-branch> <base-sha>`, then push it with `git push -u origin <declared-branch>` before provisioning the worktree.
+   - Provision the worker worktree from the pushed named branch, not from a detached commit or the orchestrator checkout.
    - Before `create_thread`, verify the declared branch resolves with `git rev-parse --verify <branch>^{commit}`.
    - If the branch was just created locally, push it with upstream tracking and verify `git rev-parse --verify origin/<branch>^{commit}` before `create_thread`; otherwise Codex worktree setup can fail with `fatal: invalid reference`.
-   - After thread creation, wait for the real worker thread/worktree and verify its checkout with `git status --short --branch` before marking the issue active.
+   - After thread creation, wait for the real worker thread/worktree and require its first action to be `git switch <declared-branch>` if needed, followed by `git branch --show-current`, `git status --short --branch`, and `git rev-parse HEAD`; on a fresh lane, HEAD must equal the declared base SHA. The worker must not receive implementation instructions, read more workflow context, or edit files until the symbolic branch and exact base are verified.
 6. Update issue Agent State:
    - `Status: active`
    - `Owner`
@@ -55,4 +57,5 @@ Launch the worker lane for a preflighted Agent SDLC issue.
 - If branch/worktree ownership is unclear, stop with the exact local status.
 - If thread creation is unavailable, mark/report the issue blocked; do not substitute a subagent.
 - If worktree creation fails with `fatal: invalid reference`, materialize the declared branch ref locally and on origin, then retry once before marking the issue blocked.
-- Before editing issue/PR bodies, write the next body to a draft file and run `node plugins/agent-sdlc/scripts/guardrails.ts body --body-file <draft> > <safe-body>`; pass the safe file to `gh --body-file`.
+- If the worker starts detached or on another branch, stop immediately, attach the declared branch, verify status and HEAD, and only then continue.
+- Before editing issue/PR bodies, write the next body to a draft file and run `node plugins/agent-sdlc/scripts/guardrails.js body --body-file <draft> > <safe-body>`; pass the safe file to `gh --body-file`.
