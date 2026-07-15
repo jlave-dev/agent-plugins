@@ -1,6 +1,6 @@
 {
   "name": "agent-dev",
-  "version": "1.13.0",
+  "version": "1.14.0",
   "description": "Developer-focused repo cleanup and simplification workflows.",
   "author": {
     "name": "Agent Plugins contributors"

@@ -1,6 +1,6 @@
 {
   "name": "agent-ops",
-  "version": "1.13.0",
+  "version": "1.14.0",
   "description": "Operational helper skills for repository docs, notes, plans, prompts, and PDF work.",
   "author": {
     "name": "Agent Plugins contributors"

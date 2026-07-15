@@ -1,6 +1,6 @@
 {
   "name": "agent-sdlc",
-  "version": "1.13.0",
+  "version": "1.14.0",
   "description": "Reusable zero-config issue intake, worker dispatch, evidence, review, documentation, and merge-ready software development lifecycle workflows.",
   "author": {
     "name": "Agent Plugins contributors"
