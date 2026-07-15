@@ -15,10 +15,10 @@ Preserve the part of the current conversation that will matter later as a focuse
 
 3. Write a compact Markdown note with a descriptive H1. Add a short timestamp when useful. Prefer sections such as `Context`, `Decisions`, `Details`, `Artifacts`, and `Next Steps`, but omit empty sections.
 
-4. Save with the shared helper. Pipe the final Markdown content to `plugins/agent-ops/scripts/save_artifact.py` and pass `--kind note`, the title, and optional `--notes-dir`/`--date` values:
+4. Resolve `<plugin-root>` to the installed `agent-ops` plugin directory. Save with the shared helper there; do not assume the consumer's current directory is this repository. Pipe the final Markdown content to `<plugin-root>/scripts/save_artifact.py` and pass `--kind note`, the title, and optional `--notes-dir`/`--date` values:
 
    ```bash
-   python3 plugins/agent-ops/scripts/save_artifact.py --kind note --title "Short Descriptive Title" <<'EOF'
+   python3 <plugin-root>/scripts/save_artifact.py --kind note --title "Short Descriptive Title" <<'EOF'
    # Short Descriptive Title
 
    Saved: 2026-06-06 15:04
@@ -44,10 +44,10 @@ Preserve the part of the current conversation that will matter later as a focuse
 
 ## Helper Script
 
-`plugins/agent-ops/scripts/save_artifact.py --kind note` accepts Markdown on stdin and writes it to `./notes` by default:
+`<plugin-root>/scripts/save_artifact.py --kind note` accepts Markdown on stdin and writes it to `./notes` by default:
 
 ```bash
-python3 plugins/agent-ops/scripts/save_artifact.py --kind note --title "Title" [--notes-dir notes] [--date YYYY-MM-DD]
+python3 <plugin-root>/scripts/save_artifact.py --kind note --title "Title" [--notes-dir notes] [--date YYYY-MM-DD]
 ```
 
 It prints the saved file path on success.

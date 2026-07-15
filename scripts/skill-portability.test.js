@@ -70,3 +70,17 @@ test("repo text files do not include personal or machine-specific references", a
     }
   }
 });
+
+test("installed save skills resolve the shared helper from the plugin root", async () => {
+  const skillPaths = [
+    path.join(repoRoot, "plugins", "agent-ops", "skills", "save-note", "SKILL.md"),
+    path.join(repoRoot, "plugins", "agent-ops", "skills", "save-plan", "SKILL.md"),
+  ];
+
+  for (const skillPath of skillPaths) {
+    const relativePath = path.relative(repoRoot, skillPath);
+    const content = await fs.readFile(skillPath, "utf8");
+    assert.match(content, /<plugin-root>\/scripts\/save_artifact\.py/, relativePath);
+    assert.doesNotMatch(content, /plugins\/agent-ops\/scripts\/save_artifact\.py/, relativePath);
+  }
+});
