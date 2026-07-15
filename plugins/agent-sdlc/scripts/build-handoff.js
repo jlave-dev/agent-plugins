@@ -81,19 +81,6 @@ function readConfig(repoRoot) {
     projectName: getProjectName(repoRoot),
     defaultBase: getDefaultBranch(repoRoot),
     commands: { verify: detectedVerifyCommands },
-    ci: {
-      fastChecks: detectedVerifyCommands,
-      integration: {
-        labels: {
-          fullCi: "full-ci",
-          readyToMerge: "ready-to-merge",
-        },
-        mergeQueue: false,
-        mergeGroup: false,
-      },
-      humanReviewRisks: ["auth", "data", "migration", "security", "public-api", "billing"],
-      riskyPaths: {},
-    },
   };
 }
 
@@ -180,41 +167,6 @@ function formatVerifyCommands(commands) {
   return commands.map((command) => `not run by handoff helper: ${command}`).join("\n");
 }
 
-function formatNamedList(title, values) {
-  if (!values || !values.length) return `${title}: none configured`;
-  return [`${title}:`, ...values.map((value) => `  - ${value}`)].join("\n");
-}
-
-function formatRiskyPathCategories(riskyPaths) {
-  const entries = Object.entries(riskyPaths || {}).filter(
-    ([, patterns]) => Array.isArray(patterns) && patterns.length
-  );
-
-  if (!entries.length) return "Risky path categories: none configured";
-
-  return [
-    "Risky path categories:",
-    ...entries.map(([category, patterns]) => `  - ${category}: ${patterns.join(", ")}`),
-  ].join("\n");
-}
-
-function formatCiPolicy(config) {
-  const ci = config.ci || {};
-  const integration = ci.integration || {};
-  const labels = integration.labels || {};
-
-  return [
-    formatNamedList("Fast checks", ci.fastChecks || []),
-    `Integration labels: fullCi=${labels.fullCi || "not configured"}, readyToMerge=${
-      labels.readyToMerge || "not configured"
-    }`,
-    `Merge queue evidence accepted: ${integration.mergeQueue ? "yes" : "no"}`,
-    `Merge group evidence accepted: ${integration.mergeGroup ? "yes" : "no"}`,
-    formatNamedList("Human-review risks", ci.humanReviewRisks || []),
-    formatRiskyPathCategories(ci.riskyPaths),
-  ].join("\n");
-}
-
 function extractMarkdownSection(body, names) {
   if (!body || !body.trim()) return "";
 
@@ -293,7 +245,6 @@ function emptyIssueContext() {
     state: "Not provided.",
     url: "Not provided.",
     labels: "Not provided.",
-    body: "No issue context provided.",
     acceptanceCriteria: "No issue context provided.",
     dependencies: "No issue context provided.",
     verification: "No issue context provided.",
@@ -332,7 +283,6 @@ function issueContextFromPayload(payload) {
     state: payload.state || "unknown",
     url: payload.url || "Not provided.",
     labels: labels || "none",
-    body: body || "No issue body provided.",
     acceptanceCriteria:
       extractMarkdownSection(body, ["Acceptance Criteria", "Acceptance"]) ||
       "No acceptance criteria section found.",
@@ -372,7 +322,6 @@ function readIssueContext(repoRoot, issueRef) {
     return {
       ...emptyIssueContext(),
       ref: String(issueRef),
-      body: `Issue context unavailable from gh.${stderr ? `\n${stderr}` : ""}`,
       acceptanceCriteria: "Issue context unavailable from gh.",
       dependencies: "Issue context unavailable from gh.",
       verification: "Issue context unavailable from gh.",
@@ -430,8 +379,6 @@ function buildHandoff(repoRoot, options = {}) {
     ISSUE_CI_EVIDENCE_SOURCE: issueContext.ciEvidenceSource,
     ISSUE_CI_STACK_POSITION: issueContext.ciStackPosition,
     ISSUE_CI_TIER_SECTION: issueContext.ciTierSection,
-    ISSUE_BODY: issueContext.body,
-    CI_POLICY: formatCiPolicy(config),
   });
 }
 

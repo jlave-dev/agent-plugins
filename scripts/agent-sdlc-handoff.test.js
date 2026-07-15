@@ -14,7 +14,7 @@ const buildHandoffScript = path.join(
   "plugins",
   "agent-sdlc",
   "scripts",
-  "build-handoff.ts"
+  "build-handoff.js"
 );
 const { buildHandoff, issueContextFromPayload, readConfig } = require(buildHandoffScript);
 
@@ -158,18 +158,13 @@ test("issue context extraction finds task sections", () => {
   assert.equal(context.dependencies, "No dependencies section found.");
 });
 
-test("zero-config includes CI policy defaults", async (t) => {
+test("zero-config includes detected project defaults", async (t) => {
   const fixture = await createCommittedFeatureBranch(t);
   const config = readConfig(fixture);
 
   assert.equal(config.projectName, "handoff-fixture");
   assert.equal(config.defaultBase, "main");
   assert.deepEqual(config.commands.verify, []);
-  assert.deepEqual(config.ci.fastChecks, []);
-  assert.equal(config.ci.integration.labels.fullCi, "full-ci");
-  assert.equal(config.ci.integration.mergeQueue, false);
-  assert.equal(config.ci.integration.mergeGroup, false);
-  assert(config.ci.humanReviewRisks.includes("security"));
 });
 
 test("zero-config discovers verification commands from package scripts", async (t) => {
@@ -186,10 +181,9 @@ test("zero-config discovers verification commands from package scripts", async (
   const config = readConfig(fixture);
 
   assert.deepEqual(config.commands.verify, ["npm run typecheck", "npm test"]);
-  assert.deepEqual(config.ci.fastChecks, ["npm run typecheck", "npm test"]);
 });
 
-test("handoff includes CI tier and zero-config CI policy", async (t) => {
+test("handoff includes selected CI and verification context", async (t) => {
   const fixture = await createCommittedFeatureBranch(t);
   await writeText(
     path.join(fixture, "package.json"),
@@ -219,14 +213,10 @@ test("handoff includes CI tier and zero-config CI policy", async (t) => {
     },
   });
 
-  assert.match(output, /## Configured CI Policy/);
   assert.match(output, /Tier: full-ci-required/);
   assert.match(output, /Evidence source: current head SHA/);
   assert.match(output, /Stack position: top-of-stack/);
-  assert.match(output, /Fast checks:\n  - npm run typecheck\n  - npm test/);
-  assert.match(output, /Integration labels: fullCi=full-ci, readyToMerge=ready-to-merge/);
-  assert.match(output, /Merge queue evidence accepted: no/);
-  assert.match(output, /Merge group evidence accepted: no/);
-  assert.match(output, /Human-review risks:[\s\S]*  - security/);
-  assert.match(output, /Risky path categories: none configured/);
+  assert.match(output, /## Verification From Issue/);
+  assert.doesNotMatch(output, /## Issue Body/);
+  assert.doesNotMatch(output, /## Configured CI Policy/);
 });

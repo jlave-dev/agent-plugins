@@ -1,5 +1,0 @@
-interface:
-  display_name: "Design Frontend"
-  short_description: "Design screens from references."
-  brand_color: "#2F7D57"
-  default_prompt: "Use $design-frontend to design this frontend from the selected references."

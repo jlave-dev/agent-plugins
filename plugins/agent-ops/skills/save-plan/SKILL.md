@@ -17,11 +17,10 @@ Turn the plan the user and agent just agreed on into a durable Markdown document
 
 4. Write an implementation-oriented plan with a clear H1. Prefer concrete sections such as `Summary`, `Phases`, `Risks`, `Mitigations`, `Next Steps`, and `Done When`; omit empty sections. Keep it actionable so a later agent can continue without reconstructing the chat.
 
-5. Save new plans with the helper script.
-   Resolve `scripts/save_plan.py` relative to this `SKILL.md`. Pipe the final Markdown content to the script and pass a title that should become the filename stem:
+5. Resolve `<plugin-root>` to the installed `agent-ops` plugin directory. Save new plans with the shared helper there; do not assume the consumer's current directory is this repository. Pipe the final Markdown content to `<plugin-root>/scripts/save_artifact.py` with `--kind plan`, the title, and optional `--plans-dir`/`--date` values:
 
    ```bash
-   python3 scripts/save_plan.py --title "Short Descriptive Plan" <<'EOF'
+   python3 <plugin-root>/scripts/save_artifact.py --kind plan --title "Short Descriptive Plan" <<'EOF'
    # Short Descriptive Plan
 
    ## Summary
@@ -42,10 +41,10 @@ Turn the plan the user and agent just agreed on into a durable Markdown document
 
 ## Helper Script
 
-`scripts/save_plan.py` accepts Markdown on stdin and writes it to the current user's plans directory by default:
+`<plugin-root>/scripts/save_artifact.py --kind plan` accepts Markdown on stdin and writes it to the current user's plans directory by default:
 
 ```bash
-python3 scripts/save_plan.py --title "Title" [--plans-dir path] [--date YYYY-MM-DD]
+python3 <plugin-root>/scripts/save_artifact.py --kind plan --title "Title" [--plans-dir path] [--date YYYY-MM-DD]
 ```
 
 It prints the saved file path on success.

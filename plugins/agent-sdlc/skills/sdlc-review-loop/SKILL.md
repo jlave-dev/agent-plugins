@@ -17,7 +17,7 @@ Run an implementer/reviewer loop from the current thread.
 
 1. Inspect the change with `git status --short --branch`, branch diff, and targeted file reads.
 2. Generate handoff context:
-   - `node <plugin-root>/scripts/build-handoff.ts <repo-root>`
+   - `node <plugin-root>/scripts/build-handoff.js <repo-root>`
    - Add `--issue <number>` when a GitHub Issue is known.
    - Save large output to a temporary handoff file. Send the reviewer a compact target summary plus the handoff path; do not inline an unbounded handoff into a long-lived reviewer thread.
 3. Prepare the reviewer prompt with:
@@ -38,9 +38,9 @@ Run an implementer/reviewer loop from the current thread.
 - When the change includes GitHub user-attachment URLs, retrieve each with `node plugins/agent-sdlc/scripts/fetch-github-attachment.js <url>` and pass the returned temporary `path` to actual visual inspection before review. The presence of a PR-body link is never visual inspection.
 - A public `404` is only an unauthenticated/private-attachment signal. The helper retries with the in-memory `gh auth token`; classify an authenticated `404` as missing evidence, and classify credential or other authenticated failures as retrieval blockers.
 
-## Docs Lane
+## Documentation Verification
 
-Use `$sdlc-docs` in the same PR when the change affects docs, public behavior, commands, CI/release policy, repo guidance, operational behavior, or user-facing workflows.
+Treat documentation verification as part of the implementation/review flow. Inspect README, AGENTS, CI, release, and operational docs whenever the change can make them stale, then record `Docs: updated` or `Docs: not needed` in the review evidence.
 
 ## Evidence Rules
 

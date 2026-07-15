@@ -1,7 +1,7 @@
 {
   "name": "agent-ops",
-  "version": "1.14.0",
-  "description": "Operational helper skills for repository docs, notes, plans, prompts, and PDF work.",
+  "version": "1.14.0+codex.20260715070321",
+  "description": "Operational helper skills for repository docs, notes, plans, and prompts.",
   "author": {
     "name": "Agent Plugins contributors"
   },
@@ -10,14 +10,13 @@
     "agent-ops",
     "documentation",
     "notes",
-    "prompts",
-    "pdf"
+    "prompts"
   ],
   "skills": "./skills/",
   "interface": {
     "displayName": "Agent Ops",
     "shortDescription": "Keep agent work documented and portable.",
-    "longDescription": "Agent Ops packages practical operating skills for creating AGENTS.md files, refreshing READMEs, saving local notes and plans, drafting copy-ready prompts, and working with PDFs when rendering and layout matter.",
+    "longDescription": "Agent Ops packages practical operating skills for creating AGENTS.md files, refreshing READMEs, saving local notes and plans, and drafting copy-ready prompts.",
     "developerName": "Agent Plugins contributors",
     "category": "Productivity",
     "capabilities": [
@@ -25,11 +24,10 @@
       "README authoring",
       "local note capture",
       "local plan capture",
-      "prompt drafting",
-      "PDF creation and review"
+      "prompt drafting"
     ],
     "defaultPrompt": [
-      "Use Agent Ops to document a repo, save a note or plan, draft a prompt, or work with a PDF."
+      "Use Agent Ops to document a repo, save a note or plan, or draft a prompt."
     ],
     "brandColor": "#FF6B4A",
     "composerIcon": "./assets/icon.png",

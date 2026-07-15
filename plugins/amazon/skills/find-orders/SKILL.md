@@ -28,7 +28,7 @@ Use the normal signed-in browser surface available in the current environment. S
 3. Capture order date, product title, order total if visible, delivery status, invoice availability, return eligibility, warranty/support clues, and reorder link availability.
 4. Summarize only what was visible or directly inferred from the Amazon page state.
 
-Read [references/order-workflow.md](references/order-workflow.md) for order-history paths, invoice/return checks, and recovery steps.
+Use `https://www.amazon.com/gp/css/order-history`, inspect each likely order's detail page, and use visible invoice, return, support, and reorder affordances only as read-only evidence. If Amazon asks for sign-in, pause for reauthentication; if search fails, try filters and browser find. Report ambiguity or unavailable invoice/return status instead of guessing.
 
 ## Account Actions
 

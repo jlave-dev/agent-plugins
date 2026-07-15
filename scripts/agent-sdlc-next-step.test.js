@@ -1,7 +1,7 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
 
-const { parseAgentState, resolveNextStep } = require("../plugins/agent-sdlc/scripts/next-step.ts");
+const { parseAgentState, resolveNextStep } = require("../plugins/agent-sdlc/scripts/next-step.js");
 
 function issueWithStatus(status, extra = "") {
   return {
@@ -57,7 +57,7 @@ test("PR with missing evidence refreshes evidence", () => {
   );
 });
 
-test("evidence-ready docs changes run docs before review", () => {
+test("evidence-ready docs changes verify docs in the review loop", () => {
   assert.equal(
     resolveNextStep({
       issue: issueWithStatus(
@@ -72,7 +72,7 @@ test("evidence-ready docs changes run docs before review", () => {
       pr: { headRefOid: "abc123" },
       changedFiles: ["AGENTS.md"],
     }).role,
-    "sdlc-docs"
+    "sdlc-review-loop"
   );
 });
 

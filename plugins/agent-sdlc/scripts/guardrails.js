@@ -3,7 +3,7 @@
 const { execFileSync } = require("node:child_process");
 const fs = require("node:fs");
 const path = require("node:path");
-const { resolveBaseRef } = require("./build-handoff.ts");
+const { resolveBaseRef } = require("./build-handoff.js");
 
 const LOCAL_PATH_PATTERN =
   /(^|[\s"'`=])\/(?:Users\/|home\/[A-Za-z0-9._-]+\/|var\/folders\/|private\/(?:tmp|var)\/|opt\/homebrew\/|Volumes\/)/m;
@@ -209,7 +209,7 @@ function main() {
       return;
     }
 
-    throw new Error("Usage: guardrails.ts validate-base --base <ref> [--file <path>] [--command <cmd>] | body --body-file <file>");
+    throw new Error("Usage: guardrails.js validate-base --base <ref> [--file <path>] [--command <cmd>] | body --body-file <file>");
   } catch (error) {
     console.error(error.message);
     process.exitCode = 1;

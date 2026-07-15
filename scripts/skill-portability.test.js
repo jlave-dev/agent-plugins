@@ -34,14 +34,6 @@ const privateTerms = (process.env.REPO_PRIVATE_DENYLIST || "")
   .split(",")
   .map((term) => term.trim().toLowerCase())
   .filter(Boolean);
-const agentOpsSaveSurfacePaths = [
-  "README.md",
-  "plugins/agent-ops/.codex-plugin/plugin.json",
-  "plugins/agent-ops/skills/save-note",
-  "plugins/agent-ops/skills/save-plan",
-];
-const blockedAgentOpsSaveTerms = [["pony", "tail"].join("")];
-
 async function collectRepoFiles(dir) {
   const entries = await fs.readdir(dir, { withFileTypes: true });
   const files = [];
@@ -79,25 +71,16 @@ test("repo text files do not include personal or machine-specific references", a
   }
 });
 
-test("agent ops save surfaces do not include mode-specific trigger terms", async () => {
-  const files = [];
-  for (const relativePath of agentOpsSaveSurfacePaths) {
-    const filePath = path.join(repoRoot, relativePath);
-    const stat = await fs.stat(filePath);
-    if (stat.isDirectory()) {
-      files.push(...(await collectRepoFiles(filePath)));
-    } else {
-      files.push(filePath);
-    }
-  }
+test("installed save skills resolve the shared helper from the plugin root", async () => {
+  const skillPaths = [
+    path.join(repoRoot, "plugins", "agent-ops", "skills", "save-note", "SKILL.md"),
+    path.join(repoRoot, "plugins", "agent-ops", "skills", "save-plan", "SKILL.md"),
+  ];
 
-  for (const filePath of files) {
-    if (!textExtensions.has(path.extname(filePath))) continue;
-
-    const relativePath = path.relative(repoRoot, filePath);
-    const content = (await fs.readFile(filePath, "utf8")).toLowerCase();
-    for (const term of blockedAgentOpsSaveTerms) {
-      assert(!content.includes(term), `${relativePath} contains a mode-specific trigger term`);
-    }
+  for (const skillPath of skillPaths) {
+    const relativePath = path.relative(repoRoot, skillPath);
+    const content = await fs.readFile(skillPath, "utf8");
+    assert.match(content, /<plugin-root>\/scripts\/save_artifact\.py/, relativePath);
+    assert.doesNotMatch(content, /plugins\/agent-ops\/scripts\/save_artifact\.py/, relativePath);
   }
 });

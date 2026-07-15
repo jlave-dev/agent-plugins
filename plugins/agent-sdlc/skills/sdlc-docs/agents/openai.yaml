@@ -1,5 +1,0 @@
-interface:
-  display_name: "SDLC Docs"
-  short_description: "Update repo docs after code changes."
-  brand_color: "#315C9A"
-  default_prompt: "Use $sdlc-docs to inspect this change and update any stale repository docs."

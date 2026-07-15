@@ -44,11 +44,9 @@ Remove or consolidate before adding. Preserve behavior unless the user explicitl
 
 ## References
 
-Read `references/refactor-patterns.md` when rewriting common leaky copy or simplifying repeated structures.
+Read `../audit-rendered-ui/references/leak-dedup-checklist.md` when rewriting common leaky copy or simplifying repeated structures.
 
-Read `../../references/modern-ios-app-design.md` when the refactor also needs mobile or iOS taste calibration.
-
-Use `$design-frontend` first if the flow itself is unclear, not merely cluttered.
+Clarify the flow first if the task is unclear rather than merely cluttered.
 
 ## Acceptance Standard
 

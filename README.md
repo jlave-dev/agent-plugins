@@ -10,23 +10,30 @@ This repo exposes its Codex marketplace at:
 .agents/plugins/marketplace.json
 ```
 
-From a local checkout, add the marketplace root to Codex:
+From a local checkout, add the marketplace source to Codex:
 
 ```bash
-codex plugin marketplace add <agent-plugins-checkout>
+codex plugin marketplace add /path/to/agent-plugins
 ```
 
-After changes are pushed, Codex can also add it from GitHub:
+After changes are pushed, add a Git marketplace and choose its ref:
 
 ```bash
-codex plugin marketplace add <owner>/agent-plugins
+codex plugin marketplace add jlave-dev/agent-plugins --ref main
+```
+
+Refresh a configured Git marketplace, then install a plugin from its snapshot:
+
+```bash
+codex plugin marketplace upgrade <marketplace-name>
+codex plugin add <plugin-name>@<marketplace-name>
 ```
 
 ## Available Plugins
 
 ### Agent Ops
 
-Operational helpers for repo documentation, note and plan capture, prompt drafting, and PDF work.
+Operational helpers for repo documentation, note and plan capture, and prompt drafting.
 
 Included Codex skills:
 
@@ -34,7 +41,6 @@ Included Codex skills:
 - `create-readme`: create or refresh useful project `README.md` files.
 - `save-note`: save relevant thread context as local Markdown notes.
 - `save-plan`: save durable planning documents as local Markdown files.
-- `pdf`: create, read, and visually verify PDF artifacts.
 - `write-prompt`: turn rough asks into copy-ready prompts.
 
 ### Agent Dev
@@ -57,17 +63,17 @@ Included Codex skills:
 
 ### Subtractive UI
 
-Minimal, reference-led frontend critique for designing, auditing, and refactoring product UI.
+Minimal, reference-led frontend critique for auditing and refactoring product UI.
 
 Included Codex skills:
 
-- `design-frontend`: design frontend screens from specs, screenshots, and visual references.
 - `audit-rendered-ui`: review real rendered UI for leaky copy, redundancy, layout issues, and handoff polish.
 - `refactor-ui`: remove UI clutter and implementation-detail copy while preserving behavior.
+- `reference-ruler-ui`: compare an implementation against a concrete visual reference with precise layout and styling checks.
 
 ### Agent SDLC
 
-Zero-config issue intake, worker dispatch, evidence refresh, review, docs, and merge coordination for mostly agentic software development.
+Zero-config issue intake, worker dispatch, evidence refresh, review, and merge coordination for mostly agentic software development.
 
 Included Codex skills:
 
@@ -78,18 +84,11 @@ Included Codex skills:
 - `sdlc-evidence`: refresh PR evidence, current-head checks, attached proof, and issue Agent State.
 - `sdlc-review-loop`: send current changes through an implementer/reviewer loop with CI evidence expectations.
 - `sdlc-merge-queue`: merge approved SDLC PRs in dependency order without fixing worker branches inline.
-- `sdlc-docs`: update repository docs after implementation changes.
 - `sdlc-reviewer`: review a change handoff and return an explicit verdict.
 
 ## Development
 
-Install dependencies before running repository scripts:
-
-```bash
-npm install
-```
-
-Run the repo test suite:
+The repository has no declared runtime or development dependencies. Run the test suite directly:
 
 ```bash
 npm test
@@ -144,7 +143,6 @@ agent-plugins/
 │   └── subtractive-ui/
 │       ├── .codex-plugin/
 │       │   └── plugin.json
-│       ├── references/
 │       └── skills/
 ├── scripts/                     # Release helper scripts and tests
 ├── .github/workflows/           # Release automation

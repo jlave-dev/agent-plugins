@@ -31,11 +31,7 @@ Keep the same browser page or session for search and product verification when p
 4. Keep only products whose product page confirms title match, current price, rating, and review count.
 5. Rank by the user's criteria. When ratings are within 0.5 stars, prefer the product with more reviews.
 
-Read references only when needed:
-
-- [references/asin-extraction.md](references/asin-extraction.md): ASIN patterns and mismatch prevention.
-- [references/common-errors.md](references/common-errors.md): CAPTCHA, rate-limit, slow-load, and verification recovery.
-- [references/output-formats.md](references/output-formats.md): Shortlist and table templates.
+Extract the ASIN from the product link in the same result container as its heading (`/dp/B0XXXXXXXXX` or `/gp/product/B0XXXXXXXXX`), then verify the product-page title. Ignore search-result prices. If a product page lacks price, rating, or review count, drop it. For CAPTCHA, 403, or empty results, wait about 60 seconds, return to `https://www.amazon.com`, retry once, then report rate limiting. Use a concise ranked list or table with product, price, ASIN, rating, review count, match, and trade-offs; mark `(verified)` only after product-page checks.
 
 ## Account Actions
 
