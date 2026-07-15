@@ -16,7 +16,7 @@
   "interface": {
     "displayName": "Agent Ops",
     "shortDescription": "Keep agent work documented and portable.",
-    "longDescription": "Agent Ops packages practical operating skills for creating AGENTS.md files, refreshing READMEs, saving local notes and plans, drafting copy-ready prompts, and working with PDFs when rendering and layout matter.",
+    "longDescription": "Agent Ops packages practical operating skills for creating AGENTS.md files, refreshing READMEs, saving local notes and plans, and drafting copy-ready prompts.",
     "developerName": "Agent Plugins contributors",
     "category": "Productivity",
     "capabilities": [
