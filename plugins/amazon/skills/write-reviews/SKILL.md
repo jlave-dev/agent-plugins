@@ -30,7 +30,7 @@ Use the normal signed-in browser surface available in the current environment wh
 4. If the user wants submission help, place the draft in the review form and stop for explicit approval before submitting.
 5. Submit only after the user confirms the final visible review content and rating.
 
-Read [references/review-workflow.md](references/review-workflow.md) for review-form paths, draft guidance, submission confirmation, and recovery steps.
+Review forms may start from a product page or order details and may require stars, title, body, media, or feature ratings. Keep drafts grounded in the user's actual experience; do not invent usage or make medical/legal guarantees. Fill only approved content, stop before final submission unless already approved, verify the thank-you/submitted state after submission, and report sign-in or non-reviewable blockers.
 
 ## Account Actions
 

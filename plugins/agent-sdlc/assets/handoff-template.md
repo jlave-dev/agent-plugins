@@ -56,12 +56,6 @@ Please review the current working tree as an independent reviewer. Focus on corr
 {{ISSUE_SIMULATOR_EVIDENCE}}
 ```
 
-### Issue Body
-
-```markdown
-{{ISSUE_BODY}}
-```
-
 ## Git Summary
 
 ```text
@@ -96,12 +90,6 @@ Please review the current working tree as an independent reviewer. Focus on corr
 
 ```text
 {{VERIFY_COMMANDS}}
-```
-
-## Configured CI Policy
-
-```text
-{{CI_POLICY}}
 ```
 
 ## Reviewer Output Contract

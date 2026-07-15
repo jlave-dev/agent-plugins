@@ -10,16 +10,23 @@ This repo exposes its Codex marketplace at:
 .agents/plugins/marketplace.json
 ```
 
-From a local checkout, add the marketplace root to Codex:
+From a local checkout, add the marketplace source to Codex:
 
 ```bash
-codex plugin marketplace add <agent-plugins-checkout>
+codex plugin marketplace add /path/to/agent-plugins
 ```
 
-After changes are pushed, Codex can also add it from GitHub:
+After changes are pushed, add a Git marketplace and choose its ref:
 
 ```bash
-codex plugin marketplace add <owner>/agent-plugins
+codex plugin marketplace add jlave-dev/agent-plugins --ref main
+```
+
+Refresh a configured Git marketplace, then install a plugin from its snapshot:
+
+```bash
+codex plugin marketplace upgrade <marketplace-name>
+codex plugin add <plugin-name>@<marketplace-name>
 ```
 
 ## Available Plugins
@@ -56,7 +63,7 @@ Included Codex skills:
 
 ### Subtractive UI
 
-Minimal, reference-led frontend critique for designing, auditing, and refactoring product UI.
+Minimal, reference-led frontend critique for auditing and refactoring product UI.
 
 Included Codex skills:
 
@@ -65,7 +72,7 @@ Included Codex skills:
 
 ### Agent SDLC
 
-Zero-config issue intake, worker dispatch, evidence refresh, review, docs, and merge coordination for mostly agentic software development.
+Zero-config issue intake, worker dispatch, evidence refresh, review, and merge coordination for mostly agentic software development.
 
 Included Codex skills:
 
@@ -80,13 +87,7 @@ Included Codex skills:
 
 ## Development
 
-Install dependencies before running repository scripts:
-
-```bash
-npm install
-```
-
-Run the repo test suite:
+The repository has no declared runtime or development dependencies. Run the test suite directly:
 
 ```bash
 npm test
@@ -141,7 +142,6 @@ agent-plugins/
 │   └── subtractive-ui/
 │       ├── .codex-plugin/
 │       │   └── plugin.json
-│       ├── references/
 │       └── skills/
 ├── scripts/                     # Release helper scripts and tests
 ├── .github/workflows/           # Release automation

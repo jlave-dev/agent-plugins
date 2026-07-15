@@ -1,6 +1,6 @@
 {
   "name": "amazon",
-  "version": "1.14.0",
+  "version": "1.14.0+codex.20260715-icon-slimming",
   "description": "Amazon product research, order lookup, and review workflows.",
   "author": {
     "name": "Agent Plugins contributors"

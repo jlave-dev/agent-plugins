@@ -1,6 +1,6 @@
 {
   "name": "agent-ops",
-  "version": "1.14.0",
+  "version": "1.14.0+codex.20260715-icon-slimming",
   "description": "Operational helper skills for repository docs, notes, plans, and prompts.",
   "author": {
     "name": "Agent Plugins contributors"
@@ -24,7 +24,7 @@
       "README authoring",
       "local note capture",
       "local plan capture",
-    "prompt drafting"
+      "prompt drafting"
     ],
     "defaultPrompt": [
       "Use Agent Ops to document a repo, save a note or plan, or draft a prompt."

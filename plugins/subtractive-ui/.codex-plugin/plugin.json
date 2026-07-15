@@ -1,6 +1,6 @@
 {
   "name": "subtractive-ui",
-  "version": "1.14.0",
+  "version": "1.14.0+codex.20260715-icon-slimming",
   "description": "Rendered UI audit and behavior-preserving UI cleanup.",
   "author": {
     "name": "Agent Plugins contributors"

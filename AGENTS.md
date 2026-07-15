@@ -6,13 +6,7 @@ This repository publishes a Codex plugin marketplace at `.agents/plugins/marketp
 
 ## Commands
 
-Install dependencies before running repository scripts:
-
-```bash
-npm install
-```
-
-Run the repo test suite:
+This repository has no declared runtime or development dependencies. Run the zero-dependency tests directly:
 
 ```bash
 npm test
@@ -99,7 +93,6 @@ agent-plugins/
 - Keep each `SKILL.md` compact and move detailed, situational guidance into `references/`.
 - Include `agents/openai.yaml` for plugin skills, with concise user-facing metadata and a default prompt mentioning `$skill-name`.
 - Keep browser/tool instructions user-facing unless implementation detail is necessary for reliability.
-- Add or update `.commitlintrc.json` scopes when adding, renaming, or removing plugins or skills.
 - Use `plugins/<plugin-name>/references/` for plugin-wide reference material and `plugins/<plugin-name>/skills/<skill-name>/references/` for skill-specific material.
 
 ## Plugin Icons

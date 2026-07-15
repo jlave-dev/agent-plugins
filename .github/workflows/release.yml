@@ -14,13 +14,14 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 24
+          package-manager-cache: false
 
       - name: Install semantic-release
         run: |
@@ -31,6 +32,9 @@ jobs:
             @semantic-release/git \
             @semantic-release/github \
             @semantic-release/release-notes-generator
+
+      - name: Run tests
+        run: npm test
 
       - name: Run semantic-release
         run: npx semantic-release
