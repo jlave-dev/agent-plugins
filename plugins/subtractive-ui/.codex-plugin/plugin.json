@@ -1,6 +1,6 @@
 {
   "name": "subtractive-ui",
-  "version": "1.14.3",
+  "version": "1.14.4",
   "description": "Rendered UI audit and behavior-preserving UI cleanup.",
   "author": {
     "name": "Agent Plugins contributors"
