@@ -32,7 +32,7 @@ jobs:
             @semantic-release/git \
             @semantic-release/github \
             @semantic-release/release-notes-generator \
-            conventional-changelog-conventionalcommits
+            conventional-changelog-conventionalcommits@9.3.1
 
       - name: Run tests
         run: npm test
