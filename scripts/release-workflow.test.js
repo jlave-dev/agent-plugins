@@ -11,5 +11,5 @@ test("release workflow installs the configured changelog preset", () => {
   const generator = config.plugins.find(([name]) => name === "@semantic-release/release-notes-generator");
 
   assert.equal(generator[1].preset, "conventionalcommits");
-  assert.match(workflow, /conventional-changelog-conventionalcommits/);
+  assert.match(workflow, /conventional-changelog-conventionalcommits@9\.3\.1/);
 });
