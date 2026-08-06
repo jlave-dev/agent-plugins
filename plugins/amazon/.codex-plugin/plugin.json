@@ -1,6 +1,6 @@
 {
   "name": "amazon",
-  "version": "1.14.4",
+  "version": "1.15.0",
   "description": "Amazon product research, order lookup, and review workflows.",
   "author": {
     "name": "Agent Plugins contributors"
