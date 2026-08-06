@@ -1,6 +1,6 @@
 # Agent Plugins
 
-A repo-local Codex plugin marketplace for reusable agent workflows. The marketplace currently packages Agent Ops helpers, Agent Dev cleanup workflows, Amazon account workflows, Subtractive UI frontend-review workflows, and Agent SDLC development workflows as installable Codex plugins.
+A repo-local Codex plugin marketplace for reusable agent workflows. The marketplace currently packages Agent Ops investigation and documentation helpers, Agent Dev cleanup workflows, Amazon account workflows, Subtractive UI frontend-review workflows, and Agent SDLC development workflows as installable Codex plugins.
 
 ## Install The Marketplace
 
@@ -33,10 +33,11 @@ codex plugin add <plugin-name>@<marketplace-name>
 
 ### Agent Ops
 
-Operational helpers for repo documentation, note and plan capture, and prompt drafting.
+Operational helpers for evidence-led investigation, repo documentation, note and plan capture, and prompt drafting.
 
 Included Codex skills:
 
+- `reason-from-evidence`: test hypotheses against facts, observations, reports, assumptions, and constraints without overstating conclusions.
 - `create-agents-md`: create or refresh high-signal `AGENTS.md` files.
 - `create-readme`: create or refresh useful project `README.md` files.
 - `save-note`: save relevant thread context as local Markdown notes.
