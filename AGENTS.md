@@ -142,6 +142,7 @@ Current scopes include:
 
 - `agent-dev`
 - `agent-ops`
+- `investigate-evidence`
 - `amazon`
 - `agent-sdlc`
 - `create-agents-md`
