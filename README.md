@@ -37,7 +37,7 @@ Operational helpers for evidence-led investigation, repo documentation, note and
 
 Included Codex skills:
 
-- `investigate-evidence`: test hypotheses against facts, observations, reports, assumptions, and constraints without overstating conclusions.
+- `reason-from-evidence`: test hypotheses against facts, observations, reports, assumptions, and constraints without overstating conclusions.
 - `create-agents-md`: create or refresh high-signal `AGENTS.md` files.
 - `create-readme`: create or refresh useful project `README.md` files.
 - `save-note`: save relevant thread context as local Markdown notes.

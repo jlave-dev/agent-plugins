@@ -1,0 +1,4 @@
+interface:
+  display_name: "Reason from Evidence"
+  short_description: "Test hypotheses against evidence and constraints"
+  default_prompt: "Use $reason-from-evidence to derive justified conclusions from these observations without overstating them."

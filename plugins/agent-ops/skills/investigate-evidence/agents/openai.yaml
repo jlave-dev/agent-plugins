@@ -1,4 +1,0 @@
-interface:
-  display_name: "Investigate Evidence"
-  short_description: "Test hypotheses against evidence and constraints"
-  default_prompt: "Use $investigate-evidence to investigate these observations without overstating the conclusion."

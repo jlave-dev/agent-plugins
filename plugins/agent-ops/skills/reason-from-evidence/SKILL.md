@@ -1,9 +1,9 @@
 ---
-name: investigate-evidence
+name: reason-from-evidence
 description: Investigate evidence with explicit hypotheses and justified conclusions. Use when debugging systems, analyzing incidents or reports, reducing possible explanations, finding missing evidence, or separating proof, consistency, probability, and speculation.
 ---
 
-# Investigate Evidence
+# Reason from Evidence
 
 Build an auditable case. Do not turn observations into conclusions by narration.
 
