@@ -1,6 +1,6 @@
 {
   "name": "agent-ops",
-  "version": "1.15.0+codex.20260807041118",
+  "version": "1.16.0",
   "description": "Operational skills for evidence-led investigations, repository docs, notes, plans, and prompts.",
   "author": {
     "name": "Agent Plugins contributors"
