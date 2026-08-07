@@ -5,19 +5,19 @@ a worked investigation.
 
 ## Framework map
 
-| Framework | Plain-language role | Investigation use | Strength and limit |
-|---|---|---|---|
-| Deduction | Apply rules to premises. | Derive necessary predictions and eliminate contradictions. | Proves a conditional result; it cannot repair false or incomplete premises. |
-| Induction | Generalize from repeated cases. | Estimate patterns, base rates, and reliability from observations. | Supports a degree of confidence, not logical necessity. |
-| Abduction | Propose explanations for observations. | Generate hypotheses and select useful tests. | Produces candidates or a best explanation, not proof. |
-| First-order logic | Describe objects, relations, and quantified rules. | Formalize claims such as `∀x, failed(x) → alerted(x)` and test entailment or satisfiability. | Precise within the vocabulary; time, uncertainty, and defaults need extensions. |
-| Modal logic | Reason about necessity, possibility, time, obligation, or knowledge. | Separate “observed,” “known,” “possibly occurred,” and “must eventually occur.” | Its result depends on the chosen possible-world or temporal semantics. |
-| Non-monotonic logic | Permit defaults that later evidence can withdraw. | Model “normally,” exceptions, incomplete information, and changing incident beliefs. | A default conclusion is defeasible, not entailed by classical logic. |
-| Constraint satisfaction | Find assignments that satisfy all hard restrictions. | Encode domains, timelines, dependencies, and mutually exclusive choices; prune impossible combinations. | Finds feasible models. Feasible does not mean probable or causal. |
-| Argumentation frameworks | Represent arguments and attacks between them. | Expose conflicting reports, rebuttals, source dependencies, and defensible sets of claims. | Acceptance depends on the selected argument semantics and evidence model. |
-| Bayesian reasoning | Update probability with evidence. | Rank surviving hypotheses and quantify how a test changes odds. | Numeric output is only as sound as priors, likelihoods, and independence assumptions. |
-| Causal inference | Distinguish observation from intervention. | Use causal graphs, controls, interventions, and counterfactuals to test cause claims. | Association alone does not identify cause; identification needs assumptions or design. |
-| Model checking / formal verification | Check every modeled state or prove a property. | Test invariants, reachability, ordering, and concurrency hypotheses; obtain counterexample traces. | Proves or refutes a model property, not model fidelity or an unbounded implementation by default. |
+| Framework | Investigation use | Limit |
+|---|---|---|
+| Deduction | Derive predictions and contradictions from premises. | Proof is conditional on the premises. |
+| Induction | Estimate patterns and base rates from cases. | Gives confidence, not necessity. |
+| Abduction | Generate explanations and useful tests. | Candidates are not proof. |
+| First-order logic | Express objects, relations, and quantified rules. | Time, uncertainty, and defaults need extensions. |
+| Modal logic | Express possibility, necessity, time, or knowledge. | Results depend on the selected semantics. |
+| Non-monotonic logic | Model defeasible defaults and exceptions. | Later evidence can withdraw conclusions. |
+| Constraint satisfaction | Prune assignments that violate hard constraints. | Feasible does not mean probable or causal. |
+| Argumentation | Expose conflicting evidence and rebuttals. | Acceptance depends on argument semantics. |
+| Bayesian reasoning | Rank hypotheses and expected test effects. | Requires defensible priors and likelihoods. |
+| Causal inference | Test causes with graphs, controls, and interventions. | Association alone does not identify cause. |
+| Model checking | Test modeled invariants and reachability. | Proves the model property, not model fidelity. |
 
 The usual flow is:
 
@@ -39,40 +39,30 @@ possibility, knowledge, or eventual behavior matters.
 
 Question: Why did API latency rise after 14:05?
 
-Evidence:
-
-- `E1` observation: client metrics show p95 latency rose at 14:05.
-- `E2` observation: timed-out requests report database-pool acquisition timeout.
-- `E3` observation: pool occupancy reached its limit; database CPU stayed normal.
-- `E4` fact, conditional on deployment records: version B finished rollout at 14:03.
-- `A1` assumption: these clocks differ by less than one minute.
+Evidence: latency rose at 14:05; requests report pool-acquisition timeouts; pool
+occupancy reached its limit while database CPU stayed normal; version B finished
+rollout at 14:03. Assume the clocks differ by less than one minute.
 
 Hypotheses: `H1` slow queries, `H2` version B leaks connections, `H3` database
 capacity fell, `H4` network delay, `H5` other/unknown.
 
-Deductive pruning does not prove `H2`. `E3` weakens `H1`; it does not refute it
-because blocked queries can consume connections without high CPU. `H2` and `H3`
-remain consistent. The best next test compares checkout/return counts by version
-or rolls back one safe canary. If only version B accumulates unreleased
-connections and a canary rollback reverses that behavior, label `H2` **likely**
-with intervention evidence. Label “version B caused all latency” **unknown**
-until scope, alternative changes, and measurement fidelity are checked.
+Normal CPU weakens but does not refute `H1`; blocked queries can hold connections.
+`H2` and `H3` remain consistent. Compare checkout/return counts by version or
+roll back one safe canary. If only B retains connections and rollback reverses
+it, `H2` becomes **likely**. Until tracing identifies the mechanism, report
+“version B causes connection retention,” not a specific leaking code path.
+“Version B caused all latency” remains **unknown**.
 
 ## Example: survey completion decline
 
 Question: Why did completion fall from 62% to 35%?
 
-Facts and observations: invitation and open rates are stable; abandonment is
-concentrated on page 3; a redesign and audience change occurred in the same
-week. Hypotheses include confusing page-3 wording, a mobile defect, a different
-audience, and measurement error.
-
-It is **logically entailed** from complete event records that recorded sessions
-abandon page 3 more often. A redesign cause is only **consistent** because the
-audience changed too. If failures are concentrated on one mobile browser and a
-replay reproduces a disabled Continue button, the defect becomes **likely** for
-that segment. A randomized old/new form test can estimate the redesign effect;
-it still does not prove the same effect for untested populations.
+Opens are stable; abandonment concentrates on page 3; the redesign and audience
+changed together. Complete event records **logically entail** only that recorded
+page-3 abandonment rose. Redesign causation is **consistent**, not proved. A
+reproduced disabled Continue button makes a mobile defect **likely** for that
+browser. A randomized old/new test can estimate the redesign effect, not prove
+it for untested populations.
 
 ## Investigation worksheet
 
@@ -90,9 +80,11 @@ ID | statement | hard or defeasible | justification
 Hypotheses
 ID | explanation | must be true | expected | refuter | status | next test
 
+Entailment / subsumption map:
+Unsupported specificity removed:
 Contradictions / disputed evidence:
 Ranking method and dependence warnings:
-Conclusion label and exact claim:
+Weakest decision-sufficient conclusion and label:
 Residual alternatives:
 Next evidence action:
 ```
@@ -108,4 +100,5 @@ Next evidence action:
 - J. Pearl, [The Foundations of Causal Inference](https://www.cs.ucla.edu/~kaoru/r355-corrections.pdf), 2010.
 - E. Clarke, E. Emerson, and A. Sistla, [Automatic Verification of Finite-State Concurrent Systems](https://doi.org/10.1145/5397.5399), 1986.
 - T. Bayes, [An Essay Towards Solving a Problem in the Doctrine of Chances](https://doi.org/10.1098/rstl.1763.0053), 1763.
+- M. T. Bennett, [The Optimal Choice of Hypothesis Is the Weakest, Not the Shortest](https://doi.org/10.1007/978-3-031-33469-6_5), 2023.
 - NIST, [SP 800-61 Rev. 3](https://doi.org/10.6028/NIST.SP.800-61r3), 2025.

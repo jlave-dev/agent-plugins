@@ -55,16 +55,23 @@ assumption remains conditional on that assumption.
    fact or necessary constraint. Use a truth table, timeline, dependency graph,
    CSP/SAT/SMT solver, query, or small model when manual consistency checks are
    unreliable. Keep surviving hypotheses; survival alone adds no probability.
-7. **Rank survivors.** Use base rates, evidence likelihood, causal fit, number
+7. **Remove unsupported specificity.** Map entailment or subsumption among
+   survivors. If `Hstrong ⊨ Hweak`, then `Hweak` is weaker and the claims are
+   not mutually exclusive alternatives. Prefer the weakest claim that is still
+   adequate for the question or decision; retain stronger detail only when
+   evidence supports its added commitments. Do not confuse shorter wording with
+   logical weakness. Without a justified task distribution, weakness is a
+   reporting discipline, not evidence that a causal hypothesis is more likely.
+8. **Rank survivors.** Use base rates, evidence likelihood, causal fit, number
    of unsupported assumptions, and source quality. Use
    `P(H|E) ∝ P(E|H)P(H)` only when priors and likelihoods are defensible.
    Otherwise use an explicit ordinal ranking. Do not double-count correlated
    evidence.
-8. **Choose the next test.** Prefer evidence for which leading hypotheses make
+9. **Choose the next test.** Prefer evidence for which leading hypotheses make
    different predictions. Balance expected discrimination against cost, delay,
    risk, reversibility, and evidence destruction. Treat absent evidence as
    evidence only when detection was expected and reliable.
-9. **Update and stop deliberately.** Add results to the ledger, withdraw
+10. **Update and stop deliberately.** Add results to the ledger, withdraw
    defeated defaults, and re-run consistency and ranking. Stop when the required
    decision threshold is met, one safe action dominates across survivors, or
    further evidence costs more than its decision value.
@@ -74,12 +81,12 @@ For formal framework selection, worked examples, and a copyable worksheet, read
 
 ## Report
 
-Lead with the narrowest supported conclusion. Include:
+Lead with the weakest decision-sufficient conclusion. Include:
 
 1. Question and scope.
 2. Accepted facts, constraints, and explicit assumptions.
-3. A hypothesis table with status, supporting evidence, conflicts, required
-   assumptions, and decisive next test.
+3. A hypothesis table with status, broader or narrower related hypotheses,
+   supporting evidence, conflicts, required assumptions, and decisive next test.
 4. Contradictions and evidence-quality limits.
 5. Conclusion labeled **logically entailed**, **consistent**, **likely**,
    **speculative**, **refuted**, or **unknown**.
