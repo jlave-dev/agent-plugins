@@ -43,6 +43,30 @@ class SaveArtifactTest(unittest.TestCase):
         self.assertEqual(note_collision.name, "2026-04-13-short-descriptive-title-2.md")
         self.assertEqual(plan.name, "2026-04-13-short-descriptive-title-3.md")
 
+    def test_rejects_date_path_traversal(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            output_dir = pathlib.Path(temp_dir) / "notes"
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    str(SCRIPT),
+                    "--kind",
+                    "note",
+                    "--title",
+                    "Probe",
+                    "--notes-dir",
+                    str(output_dir),
+                    "--date",
+                    "../escaped",
+                ],
+                input="# Probe\n",
+                text=True,
+                capture_output=True,
+            )
+
+            self.assertEqual(completed.returncode, 2)
+            self.assertFalse((pathlib.Path(temp_dir) / "escaped-probe.md").exists())
+
 
 if __name__ == "__main__":
     unittest.main()

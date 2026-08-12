@@ -1,6 +1,6 @@
 ---
 name: create-readme
-description: Create or update README.md files for repositories, packages, apps, libraries, CLI tools, services, datasets, and docs folders. Use when Codex needs to draft, rewrite, audit, or refresh a README; add installation, configuration, usage, contribution, support, license, status, screenshots, badges, troubleshooting, or maintainer sections; or make an existing README accurate, scannable, and project-specific.
+description: Create or update accurate README.md files. Use when asked to draft, rewrite, audit, or refresh a README for a repository, package, app, library, CLI, service, dataset, or docs folder.
 ---
 
 # Create README

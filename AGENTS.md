@@ -24,11 +24,15 @@ Validate an edited plugin:
 python3 <codex-home>/skills/.system/plugin-creator/scripts/validate_plugin.py plugins/<plugin-name>
 ```
 
-Refresh a plugin cachebuster version while preparing local plugin changes:
+Use a cachebuster only when testing an installed plugin through local Codex. It
+forces Codex to load changed skills, scripts, or assets under a new cache key:
 
 ```bash
 python3 <codex-home>/skills/.system/plugin-creator/scripts/update_plugin_cachebuster.py plugins/<plugin-name>
 ```
+
+Revert the manifest version before committing. Include a cachebuster in a PR
+only when the PR tests cache behavior or reviewers must install that exact branch.
 
 When available, run Plugin Eval from the cached script for skill-quality checks:
 

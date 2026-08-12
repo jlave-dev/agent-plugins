@@ -36,7 +36,7 @@
       "SDLC role prompts"
     ],
     "defaultPrompt": [
-      "Use Agent SDLC to intake issues, route the next SDLC role, dispatch workers, refresh evidence, and run structured implementer/reviewer workflows."
+      "Use Agent SDLC to route this issue or pull request through its next safe workflow step."
     ],
     "brandColor": "#315C9A",
     "composerIcon": "./assets/icon.png",

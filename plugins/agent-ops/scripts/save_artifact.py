@@ -7,6 +7,16 @@ import sys
 import unicodedata
 
 
+def parse_date(value: str) -> str:
+    try:
+        parsed = dt.date.fromisoformat(value)
+    except ValueError as error:
+        raise argparse.ArgumentTypeError("date must use YYYY-MM-DD") from error
+    if parsed.isoformat() != value:
+        raise argparse.ArgumentTypeError("date must use YYYY-MM-DD")
+    return value
+
+
 def slugify(value: str, fallback: str) -> str:
     normalized = unicodedata.normalize("NFKD", value)
     ascii_value = normalized.encode("ascii", "ignore").decode("ascii").strip()
@@ -38,6 +48,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--date",
         default=dt.date.today().isoformat(),
+        type=parse_date,
         help="Date prefix for the filename, formatted YYYY-MM-DD",
     )
     return parser.parse_args()
