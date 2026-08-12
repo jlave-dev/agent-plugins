@@ -95,6 +95,23 @@ test("evidence-ready code changes run review loop", () => {
   );
 });
 
+test("evidence-ready issues without a recorded head refresh evidence", () => {
+  assert.equal(
+    resolveNextStep({
+      issue: issueWithStatus(
+        "evidence_ready",
+        [
+          "PR: https://github.com/example/repo/pull/3",
+          "Checks: passed",
+          "Evidence: local checks passed",
+        ].join("\n")
+      ),
+      pr: { headRefOid: "abc123" },
+    }).role,
+    "sdlc-evidence"
+  );
+});
+
 test("review-approved issues refresh evidence before merge readiness", () => {
   assert.equal(
     resolveNextStep({

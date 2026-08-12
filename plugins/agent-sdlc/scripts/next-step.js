@@ -86,7 +86,7 @@ function evidenceFresh(input, agentState) {
   if (typeof input.evidenceFresh === "boolean") return input.evidenceFresh;
   const prHead = normalizeText(input.pr?.headRefOid || input.pr?.headOid || input.headSha);
   const stateHead = normalizeText(agentState.head || agentState.head_sha || agentState.head_ref_oid);
-  const headFresh = !prHead || !stateHead || prHead === stateHead;
+  const headFresh = Boolean(prHead && stateHead && prHead === stateHead);
   return headFresh && hasValue(agentState.checks) && hasValue(agentState.evidence);
 }
 
