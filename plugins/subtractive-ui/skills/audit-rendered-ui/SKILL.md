@@ -29,6 +29,7 @@ For native apps, use the closest available simulator screenshots.
 
 2. Redundancy pass.
    - Flag repeated titles, body copy, CTAs, save/confirm actions, suggestions, filters, and labels that restate nearby text.
+   - Flag eyebrow labels or pretitles (small all-caps text above a heading) when they add only branding, metadata, or redundant hierarchy; keep them when they provide unique task context or required accessible meaning.
    - Prefer one element doing the work of two.
 
 3. Text and layout fit pass.
