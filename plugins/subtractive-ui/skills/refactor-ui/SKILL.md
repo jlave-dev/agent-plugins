@@ -14,7 +14,7 @@ Remove or consolidate before adding. Preserve behavior unless the user explicitl
 ## Sequence
 
 1. Inventory the visible surface.
-   - List titles, paragraphs, helper panels, badges, buttons, duplicated labels, empty states, and repeated suggestions.
+   - List titles, eyebrow labels or pretitles, paragraphs, helper panels, badges, buttons, duplicated labels, empty states, and repeated suggestions.
    - Mark implementation-detail copy for deletion or replacement.
 
 2. Pick the minimum target.
@@ -25,6 +25,7 @@ Remove or consolidate before adding. Preserve behavior unless the user explicitl
 3. Edit copy.
    - Replace internal language with user action language.
    - Delete copy that explains obvious controls.
+   - Remove eyebrow labels or pretitles when they add only branding, metadata, or redundant hierarchy; retain unique task context and accessible names.
    - Keep labels short and concrete.
 
 4. Edit structure.
