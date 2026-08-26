@@ -3,8 +3,11 @@
   "version": "1.17.0",
   "description": "Developer-focused workflows for shaping and simplifying software.",
   "author": {
-    "name": "Agent Plugins contributors"
+    "name": "James Lave",
+    "url": "https://github.com/jlave-dev"
   },
+  "homepage": "https://github.com/jlave-dev/agent-plugins",
+  "repository": "https://github.com/jlave-dev/agent-plugins",
   "license": "MIT",
   "keywords": [
     "agent-dev",
@@ -18,7 +21,7 @@
     "displayName": "Agent Dev",
     "shortDescription": "Shape and simplify software projects.",
     "longDescription": "Agent Dev packages developer workflows for mapping greenfield project decisions and for ruthless, evidence-backed repo cleanup. It identifies human-owned gates, safe agent decisions, empirical questions, deferred work, stale docs, unused code, duplicate scripts, dead flags, speculative abstractions, and implementation drift.",
-    "developerName": "Agent Plugins contributors",
+    "developerName": "James Lave",
     "category": "Productivity",
     "capabilities": [
       "project decision mapping",
@@ -27,6 +30,9 @@
       "stale documentation cleanup",
       "repo simplification"
     ],
+    "websiteURL": "https://github.com/jlave-dev/agent-plugins",
+    "privacyPolicyURL": "https://github.com/jlave-dev/agent-plugins/blob/main/PRIVACY.md",
+    "termsOfServiceURL": "https://github.com/jlave-dev/agent-plugins/blob/main/TERMS.md",
     "defaultPrompt": [
       "Use Agent Dev to shape a software project or find stale, unused, duplicated, speculative, or misleading repo surfaces."
     ],

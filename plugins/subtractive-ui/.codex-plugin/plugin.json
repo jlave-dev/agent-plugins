@@ -3,8 +3,11 @@
   "version": "1.17.0",
   "description": "Rendered UI audit and behavior-preserving UI cleanup.",
   "author": {
-    "name": "Agent Plugins contributors"
+    "name": "James Lave",
+    "url": "https://github.com/jlave-dev"
   },
+  "homepage": "https://github.com/jlave-dev/agent-plugins",
+  "repository": "https://github.com/jlave-dev/agent-plugins",
   "license": "MIT",
   "keywords": [
     "design",
@@ -16,7 +19,7 @@
     "displayName": "Subtractive UI",
     "shortDescription": "Minimal, reference-led frontend critique.",
     "longDescription": "Subtractive UI helps Codex audit and refactor frontend surfaces with a professional minimal process. It favors real rendered evidence, visual references, fewer controls, shorter copy, stable responsive layouts, and removal of implementation-detail UI.",
-    "developerName": "Agent Plugins contributors",
+    "developerName": "James Lave",
     "category": "Productivity",
     "capabilities": [
       "rendered UI audit",
@@ -24,6 +27,9 @@
       "screenshot review",
       "responsive QA"
     ],
+    "websiteURL": "https://github.com/jlave-dev/agent-plugins",
+    "privacyPolicyURL": "https://github.com/jlave-dev/agent-plugins/blob/main/PRIVACY.md",
+    "termsOfServiceURL": "https://github.com/jlave-dev/agent-plugins/blob/main/TERMS.md",
     "defaultPrompt": [
       "Use Subtractive UI to audit or simplify this frontend."
     ],
