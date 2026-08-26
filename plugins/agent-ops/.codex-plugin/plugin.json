@@ -3,8 +3,11 @@
   "version": "1.17.0",
   "description": "Operational skills for evidence-led investigations, repository docs, notes, plans, and prompts.",
   "author": {
-    "name": "Agent Plugins contributors"
+    "name": "James Lave",
+    "url": "https://github.com/jlave-dev"
   },
+  "homepage": "https://github.com/jlave-dev/agent-plugins",
+  "repository": "https://github.com/jlave-dev/agent-plugins",
   "license": "MIT",
   "keywords": [
     "agent-ops",
@@ -19,7 +22,7 @@
     "displayName": "Agent Ops",
     "shortDescription": "Investigate evidence and document agent work.",
     "longDescription": "Agent Ops packages practical operating skills for evidence-led investigations, creating AGENTS.md files, refreshing READMEs, saving notes and plans, and drafting copy-ready prompts.",
-    "developerName": "Agent Plugins contributors",
+    "developerName": "James Lave",
     "category": "Productivity",
     "capabilities": [
       "Evidence-led investigation",
@@ -29,6 +32,9 @@
       "local plan capture",
       "prompt drafting"
     ],
+    "websiteURL": "https://github.com/jlave-dev/agent-plugins",
+    "privacyPolicyURL": "https://github.com/jlave-dev/agent-plugins/blob/main/PRIVACY.md",
+    "termsOfServiceURL": "https://github.com/jlave-dev/agent-plugins/blob/main/TERMS.md",
     "defaultPrompt": [
       "Use Agent Ops to investigate evidence, document a repo, save a note or plan, or draft a prompt."
     ],
