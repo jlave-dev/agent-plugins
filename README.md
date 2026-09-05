@@ -42,7 +42,7 @@ Included Codex skills:
 - `create-readme`: create or refresh useful project `README.md` files.
 - `save-note`: save relevant thread context as local Markdown notes.
 - `save-plan`: save durable planning documents as local Markdown files.
-- `write-prompt`: turn rough asks into copy-ready prompts.
+- `write-prompt`: turn rough asks into copy-ready prompts, from a short paragraph for simple tasks to selective structure for complex work.
 
 ### Agent Dev
 
