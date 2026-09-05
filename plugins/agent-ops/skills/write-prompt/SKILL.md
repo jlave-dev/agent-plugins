@@ -1,36 +1,43 @@
 ---
 name: write-prompt
-description: Turn a rough gist, shorthand ask, notes, or half-formed request into a clear copy-ready prompt. Use when the user invokes $write-prompt, says prompt:, gist:, make this a prompt, promptify, or otherwise indicates they want a prompt artifact instead of the underlying task performed.
+description: Turn rough intent into a copy-ready prompt sized to the task. Use when the user asks to write or refine a prompt, invokes $write-prompt, or says promptify; not to execute the underlying task.
 ---
 
 # Write Prompt
 
-Turn rough intent into one clear Markdown prompt for Codex, another agent, or a side conversation. Do not perform the underlying task.
+Return one prompt for the intended recipient. Do not perform its underlying task. Prompt-making cues such as `prompt:`, `gist:`, and `ask:` apply when the user wants a prompt artifact; ordinary requests to implement, research, or explain remain direct tasks.
 
-## Trigger Discipline
+## Size To The Task
 
-Use this skill only for `$write-prompt`, prompt-making cues such as `prompt:`, `gist:`, `ask:`, `make this a prompt`, or `promptify`, or an explicit request for prompt expansion. If the user asks to implement, research, review, explain, or decide directly, do that task instead.
+Start with the shortest prompt that preserves the user's intent. Complexity comes from dependencies, uncertainty, consequences, and deliverables, not the length of the gist.
 
-## Workflow
+- Simple, self-contained ask: one sentence or short paragraph. No headings, role preamble, plan, or acceptance checklist.
+- Several meaningful requirements: a paragraph and a short list when it improves scanning.
+- Complex or consequential work: use only the sections needed to separate goals, context, constraints, and completion evidence. A short production-migration request may need more detail than a long rewrite request.
 
-1. Identify the recipient: coding, planning, research, review, browser/operator, side-chat, or generic assistant.
-2. Preserve the user's explicit goal, values, constraints, voice, urgency, and supplied facts. Never invent credentials, paths, decisions, evidence, or external state.
-3. Ask at most one question only when its answer would materially change the outcome or authorization boundary. Otherwise include a reasonable assumption or decision rule.
-4. Write one lean, outcome-first prompt. State the user-visible goal, success criteria, relevant context and evidence, constraints and permissions, tool-routing rules, required output, validation, and stop or fallback conditions only when they change behavior.
-5. Remove repeated rules, unnecessary examples, and step-by-step process that the recipient can choose efficiently. Resolve contradictions. Reserve `must`, `never`, `always`, and `only` for true invariants; use decision rules for judgment calls.
+These are choices, not templates or word limits. Honor a requested format or level of detail. If the original is already clear, edit lightly. Do not add scope to make a prompt look complete.
 
-## Prompt Contract
+## Draft
 
-Describe what good looks like instead of prescribing every step. Keep supplied values exact and let the recipient choose the implementation, search, tool, or reasoning path unless a sequence is required for safety or correctness.
+1. Identify the recipient and desired result from context. Preserve supplied facts, paths, commands, constraints, permissions, and voice exactly where they matter. Do not invent missing state or assume the recipient has this conversation; carry over the context it needs.
+2. Resolve routine gaps with reasonable defaults. Ask one focused question only when a missing answer prevents a useful prompt or changes authorization; otherwise write a conditional instruction for the recipient. Do not guess consent.
+3. Lead with the outcome. Add success criteria, evidence, tools, or stop conditions only when they change execution. Let the recipient choose its method unless a sequence is necessary for correctness.
+4. Remove repetition, stock phrases, generic expertise claims, and unnecessary process. Reserve absolute rules for real invariants. Specify concrete writing choices when tone matters; prefer plain prose unless a list or table helps the requested output.
 
-For concise outputs, name the facts, decisions, caveats, and next actions that must remain, then say what may be omitted. When tone matters, describe concrete writing choices rather than relying on labels such as "friendly" or "professional." Keep personality and collaboration behavior brief and distinct.
+## Agent Tasks
 
-## Codex Prompts
+Apply these rules only when relevant to the generated task:
 
-Name supplied repos, branches, files, docs, plans, and commands. State the authorized work layer, such as research, planning, implementation, review, or external coordination. Allow expected in-scope local work and validation without unnecessary approval requests, while naming boundaries for secrets, live services, deployments, external accounts, destructive actions, cost, and scope expansion.
+- Carry authorized work through completion. Use existing context and routine assumptions; do independent work while a necessary answer is pending. If an action needs approval, prepare the reviewable result first and pause at that action. Preserve explicit no-send, no-publish, and other boundaries without adding hypothetical approval gates.
+- User instructions override skill guidelines, subject to higher-priority instructions and actual tool permissions. If file guidance blocks progress, identify the file and exact rule and explain the conflict rather than silently stopping.
+- Require relevant source retrieval and evidence when correctness depends on external facts. If evidence or tools are unavailable, report the specific gap instead of claiming completion.
+- Scale validation to the change and complete required checks. Broaden or repeat checks when changes, failures, or unresolved risks justify it. Avoid tests that merely restate trivial edits.
+- Include delegation guidance when requested or when the target workflow needs it and supports subagents. Name useful independent subtasks; do not prescribe agents for a simple task or invent available tools.
 
-Require prerequisite retrieval when correctness depends on it. Define what needs evidence or citations, what validation matters, and what to report when evidence is missing, tools fail, or the completion bar cannot be met. Prefer the fewest useful tool loops without sacrificing correctness.
+## Output Check
 
-## Format
+Return only one fenced `markdown` block by default, without commentary. Follow a requested wrapper instead. Provide variants only when requested. Before returning, check that all explicit requirements survive and every added instruction changes behavior.
 
-Return a single fenced `markdown` block by default. For complex prompts, use short sections such as Goal, Success Criteria, Context, Constraints, Tools, Output, and Stop Rules, omitting any section that adds no behavioral value. Provide variants only when requested or when the gist clearly has two viable intents.
+For example, `prompt: make this email shorter but keep the deadline` needs only: “Shorten the email below. Keep its meaning and deadline unchanged.” Include the supplied email after it. Do not expand this into Goal / Context / Constraints / Output sections.
+
+Guidance basis: [OpenAI GPT-6 Astra prompting best practices](https://developers.openai.com/api/docs/guides/latest-model#prompting-best-practices), reviewed 2026-09-05. Apply relevant guidance; do not paste the guide into every prompt.
