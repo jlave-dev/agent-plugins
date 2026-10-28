@@ -1,0 +1,44 @@
+{
+  "name": "rehearse",
+  "version": "1.17.3",
+  "description": "Practice explaining real work through adaptive, context-grounded voice rehearsals.",
+  "author": {
+    "name": "James Lave",
+    "url": "https://github.com/jlave-dev"
+  },
+  "homepage": "https://github.com/jlave-dev/agent-plugins",
+  "repository": "https://github.com/jlave-dev/agent-plugins",
+  "license": "MIT",
+  "keywords": [
+    "rehearsal",
+    "voice",
+    "pipecat",
+    "pr-review",
+    "communication"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Rehearse",
+    "shortDescription": "Practice explaining your work aloud.",
+    "longDescription": "Rehearse researches project context, plays a maintainer or stakeholder, asks one question at a time, and turns gaps into a grounded answer bank. Uses Pipecat MCP for voice, with native voice or text alternatives.",
+    "developerName": "James Lave",
+    "category": "Productivity",
+    "capabilities": [
+      "PR review rehearsal",
+      "project status rehearsal",
+      "design review rehearsal",
+      "incident rehearsal",
+      "stakeholder rehearsal"
+    ],
+    "websiteURL": "https://github.com/jlave-dev/agent-plugins",
+    "privacyPolicyURL": "https://github.com/jlave-dev/agent-plugins/blob/main/PRIVACY.md",
+    "termsOfServiceURL": "https://github.com/jlave-dev/agent-plugins/blob/main/TERMS.md",
+    "defaultPrompt": [
+      "Use $rehearse to help me practice explaining my current work."
+    ],
+    "brandColor": "#D65C83",
+    "composerIcon": "./assets/icon.png",
+    "logo": "./assets/icon.png"
+  },
+  "mcpServers": "./.mcp.json"
+}

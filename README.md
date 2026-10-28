@@ -1,6 +1,6 @@
 # Agent Plugins
 
-A repo-local Codex plugin marketplace for reusable agent workflows. The marketplace currently packages Agent Ops investigation and documentation helpers, Agent Dev project-shaping and cleanup workflows, Amazon account workflows, Subtractive UI frontend-review workflows, and Agent SDLC development workflows as installable Codex plugins.
+A repo-local Codex plugin marketplace for reusable agent workflows. The marketplace currently packages Agent Ops investigation and documentation helpers, Agent Dev project-shaping and cleanup workflows, Amazon account workflows, Subtractive UI frontend-review workflows, Agent SDLC development workflows, and Rehearse communication practice as installable Codex plugins.
 
 ## Install The Marketplace
 
@@ -88,6 +88,23 @@ Included Codex skills:
 - `sdlc-merge-queue`: merge approved SDLC PRs in dependency order without fixing worker branches inline.
 - `sdlc-reviewer`: review a change handoff and return an explicit verdict.
 
+### Rehearse
+
+Practice explaining real work to a maintainer or stakeholder. The `rehearse` skill researches the relevant context, asks one question at a time, follows gaps, and produces questions to revisit, facts to study, and a concise answer bank in your own words. Supports PR, status, design, incident, and executive rehearsals, with thinking time and focused retries.
+
+Example: `Use $rehearse to help me explain this branch to its maintainer.`
+
+The plugin includes a Pipecat MCP connection at `http://localhost:9090/mcp`. Use the bundled helper to install the pinned upstream server (requires Python 3 and `uv`), then run it in a separate terminal:
+
+```bash
+python3 plugins/rehearse/scripts/pipecat_server.py setup
+python3 plugins/rehearse/scripts/pipecat_server.py start
+```
+
+From another terminal, run `python3 plugins/rehearse/scripts/pipecat_server.py check` to verify the MCP handshake and expected voice tools. These paths are relative to a checkout; for an installed plugin, use its installation directory. Startup stays in the foreground; Ctrl-C stops the server. Reconnect the host's MCP connection after startup if needed.
+
+Once the skill starts the voice agent, connect microphone and speakers through the browser Playground at `http://localhost:7860`. First connection downloads local speech models. Installing the plugin alone does not supply audio. Active native voice or text can also be used. See the [Pipecat setup and lifecycle reference](plugins/rehearse/skills/rehearse/references/pipecat.md) for other harnesses and troubleshooting. The skill is portable Markdown; the marketplace packaging targets Codex.
+
 ## Development
 
 The repository has no declared runtime or development dependencies. Run the test suite directly:
@@ -145,6 +162,12 @@ agent-plugins/
 │   │   │   └── plugin.json
 │   │   ├── assets/
 │   │   ├── scripts/
+│   │   └── skills/
+│   ├── rehearse/
+│   │   ├── .codex-plugin/
+│   │   │   └── plugin.json
+│   │   ├── .mcp.json
+│   │   ├── assets/
 │   │   └── skills/
 │   └── subtractive-ui/
 │       ├── .codex-plugin/
