@@ -1,6 +1,6 @@
 # Agent Plugins
 
-A repo-local Codex plugin marketplace for reusable agent workflows. The marketplace currently packages Agent Ops investigation and documentation helpers, Agent Dev project-shaping and cleanup workflows, Amazon account workflows, Subtractive UI frontend-review workflows, and Agent SDLC development workflows as installable Codex plugins.
+A repo-local Codex plugin marketplace for reusable agent workflows. The marketplace currently packages Agent Ops investigation and documentation helpers, Agent Dev project-shaping and cleanup workflows, Amazon account workflows, Subtractive UI frontend-review workflows, Agent SDLC development workflows, and Rehearse communication practice as installable Codex plugins.
 
 ## Install The Marketplace
 
@@ -88,6 +88,22 @@ Included Codex skills:
 - `sdlc-merge-queue`: merge approved SDLC PRs in dependency order without fixing worker branches inline.
 - `sdlc-reviewer`: review a change handoff and return an explicit verdict.
 
+### Rehearse
+
+Practice explaining real work to a maintainer or stakeholder. The `rehearse` skill researches the relevant context, asks one question at a time, follows gaps, and produces questions to revisit, facts to study, and a concise answer bank in your own words. Supports PR, status, design, incident, and executive rehearsals, with thinking time and focused retries.
+
+Example: `Use $rehearse to help me explain this branch to its maintainer.`
+
+The plugin launches the pinned VoiceMode MCP server automatically through `uvx` and uses the computer's microphone and speakers directly. No browser Playground or manually started MCP server is needed. One-time setup uses VoiceMode's upstream installer:
+
+```bash
+uvx voice-mode-install --yes
+uvx --from voice-mode==9.0.2 voicemode service install whisper
+uvx --from voice-mode==9.0.2 voicemode service install kokoro
+```
+
+The installer provisions system dependencies; local service installation downloads models and may register background services. Then reconnect the host's MCP connection and allow microphone access when prompted. Rehearse configures local speech endpoints with audio/transcript saving disabled. See the [VoiceMode setup and conversation reference](plugins/rehearse/skills/rehearse/references/voicemode.md) for service checks, startup, other harnesses, and troubleshooting. Active native voice or text can also be used. The skill is portable Markdown; the marketplace packaging targets Codex.
+
 ## Development
 
 The repository has no declared runtime or development dependencies. Run the test suite directly:
@@ -145,6 +161,12 @@ agent-plugins/
 │   │   │   └── plugin.json
 │   │   ├── assets/
 │   │   ├── scripts/
+│   │   └── skills/
+│   ├── rehearse/
+│   │   ├── .codex-plugin/
+│   │   │   └── plugin.json
+│   │   ├── .mcp.json
+│   │   ├── assets/
 │   │   └── skills/
 │   └── subtractive-ui/
 │       ├── .codex-plugin/
