@@ -12,7 +12,7 @@
   "keywords": [
     "rehearsal",
     "voice",
-    "pipecat",
+    "voicemode",
     "pr-review",
     "communication"
   ],
@@ -20,7 +20,7 @@
   "interface": {
     "displayName": "Rehearse",
     "shortDescription": "Practice explaining your work aloud.",
-    "longDescription": "Rehearse researches project context, plays a maintainer or stakeholder, asks one question at a time, and turns gaps into a grounded answer bank. Uses Pipecat MCP for voice, with native voice or text alternatives.",
+    "longDescription": "Rehearse researches project context, plays a maintainer or stakeholder, asks one question at a time, and turns gaps into a grounded answer bank. Uses VoiceMode MCP for direct microphone and speaker access, with native voice or text alternatives.",
     "developerName": "James Lave",
     "category": "Productivity",
     "capabilities": [

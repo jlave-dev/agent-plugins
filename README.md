@@ -94,16 +94,15 @@ Practice explaining real work to a maintainer or stakeholder. The `rehearse` ski
 
 Example: `Use $rehearse to help me explain this branch to its maintainer.`
 
-The plugin includes a Pipecat MCP connection at `http://localhost:9090/mcp`. Use the bundled helper to install the pinned upstream server (requires Python 3 and `uv`), then run it in a separate terminal:
+The plugin launches the pinned VoiceMode MCP server automatically through `uvx` and uses the computer's microphone and speakers directly. No browser Playground or manually started MCP server is needed. One-time setup uses VoiceMode's upstream installer:
 
 ```bash
-python3 plugins/rehearse/scripts/pipecat_server.py setup
-python3 plugins/rehearse/scripts/pipecat_server.py start
+uvx voice-mode-install --yes
+uvx --from voice-mode==9.0.2 voicemode service install whisper
+uvx --from voice-mode==9.0.2 voicemode service install kokoro
 ```
 
-From another terminal, run `python3 plugins/rehearse/scripts/pipecat_server.py check` to verify the MCP handshake and expected voice tools. These paths are relative to a checkout; for an installed plugin, use its installation directory. Startup stays in the foreground; Ctrl-C stops the server. Reconnect the host's MCP connection after startup if needed.
-
-Once the skill starts the voice agent, connect microphone and speakers through the browser Playground at `http://localhost:7860`. First connection downloads local speech models. Installing the plugin alone does not supply audio. Active native voice or text can also be used. See the [Pipecat setup and lifecycle reference](plugins/rehearse/skills/rehearse/references/pipecat.md) for other harnesses and troubleshooting. The skill is portable Markdown; the marketplace packaging targets Codex.
+The installer provisions system dependencies; local service installation downloads models and may register background services. Then reconnect the host's MCP connection and allow microphone access when prompted. Rehearse configures local speech endpoints with audio/transcript saving disabled. See the [VoiceMode setup and conversation reference](plugins/rehearse/skills/rehearse/references/voicemode.md) for service checks, startup, other harnesses, and troubleshooting. Active native voice or text can also be used. The skill is portable Markdown; the marketplace packaging targets Codex.
 
 ## Development
 

@@ -1,11 +1,11 @@
 ---
 name: rehearse
-description: Practice explaining a PR, project status, design, incident, or stakeholder update through a context-grounded mock conversation, using Pipecat MCP voice, native voice, or text. Use when the user wants rehearsal and feedback on their own understanding and answers.
+description: Practice explaining a PR, project status, design, incident, or stakeholder update through a context-grounded mock conversation, using VoiceMode MCP voice, native voice, or text. Use when the user wants rehearsal and feedback on their own understanding and answers.
 ---
 
 # Rehearse
 
-Help the user explain their actual work under realistic questioning. The host agent researches and reasons about the material; Pipecat supplies speech transport. Keep this workflow usable in any harness that can read this skill and access the relevant context.
+Help the user explain their actual work under realistic questioning. The host agent researches and reasons about the material; VoiceMode supplies speech transport. Keep this workflow usable in any harness that can read this skill and access the relevant context.
 
 ## Prepare from evidence
 
@@ -27,7 +27,7 @@ Keep the question tree and model answers private during the first attempt. Brief
 
 ## Choose the conversation channel
 
-Use an already active native voice session when available. Otherwise prefer Pipecat if its tools are available; read [references/pipecat.md](references/pipecat.md) for the bundled setup/start/check helper and the voice lifecycle. Do not run two audio channels together. If voice is unavailable, explain the missing piece briefly and continue in text unless the user asked specifically to wait for voice. Do not claim audio is working from a successful MCP connection alone.
+Use an already active native voice session when available. Otherwise prefer VoiceMode if its tools are available; read [references/voicemode.md](references/voicemode.md) for upstream installation, local speech services, and the conversation loop. Do not run two audio channels together. If voice is unavailable, explain the missing piece briefly and continue in text unless the user asked specifically to wait for voice. Do not claim audio is working from a successful MCP connection alone.
 
 The rehearsal is read-only by default. Do not edit the project, post feedback, send messages, or capture the screen as part of interviewing. A hypothetical stakeholder request inside the roleplay is not an instruction to act on external systems. Do not persist recordings, transcripts, or coaching notes unless requested.
 
