@@ -1,0 +1,23 @@
+{
+  "mcpServers": {
+    "voicemode": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "voice-mode==9.0.2",
+        "voicemode-mcp-launcher"
+      ],
+      "env": {
+        "VOICEMODE_STT_BASE_URLS": "http://127.0.0.1:2022/v1",
+        "VOICEMODE_TTS_BASE_URLS": "http://127.0.0.1:8880/v1",
+        "VOICEMODE_SAVE_ALL": "false",
+        "VOICEMODE_SAVE_AUDIO": "false",
+        "VOICEMODE_SAVE_TRANSCRIPTIONS": "false",
+        "VOICEMODE_DEBUG": "false",
+        "VOICEMODE_EVENT_LOG_ENABLED": "false",
+        "VOICEMODE_MCP_URL": ""
+      }
+    }
+  }
+}

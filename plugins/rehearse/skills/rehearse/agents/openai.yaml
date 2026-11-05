@@ -1,0 +1,4 @@
+interface:
+  display_name: "Rehearse"
+  short_description: "Practice explaining your work with adaptive questions"
+  default_prompt: "Use $rehearse to help me practice explaining my current work to a maintainer or stakeholder."
