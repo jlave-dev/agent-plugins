@@ -1,6 +1,6 @@
 # Agent Plugins
 
-A repo-local Codex plugin marketplace for reusable agent workflows. The marketplace currently packages Agent Ops investigation and documentation helpers, Agent Dev project-shaping and cleanup workflows, Amazon account workflows, Subtractive UI frontend-review workflows, Agent SDLC development workflows, and Rehearse communication practice as installable Codex plugins.
+A repo-local Codex plugin marketplace for reusable agent workflows. The marketplace currently packages Agent Ops investigation and documentation helpers, Agent Dev project-shaping, verification, and cleanup workflows, Amazon account workflows, Subtractive UI frontend-review workflows, Agent SDLC development workflows, and Rehearse communication practice as installable Codex plugins.
 
 ## Install The Marketplace
 
@@ -46,11 +46,12 @@ Included Codex skills:
 
 ### Agent Dev
 
-Developer workflows for shaping new software projects and simplifying existing repos.
+Developer workflows for shaping projects, verifying behavior, and simplifying existing repos.
 
 Included Codex skills:
 
 - `map-project-decisions`: map the first usable slice and separate human-owned product or architecture gates from safe agent decisions, empirical questions, and deferred work.
+- `verify-behavior` checks a behavior guarantee or refactor against the implementation and reports a proof, a counterexample, or what remains unproved.
 - `yagni`: audit or remove stale, unused, duplicated, speculative, or misleading repo surfaces.
 
 ### Amazon

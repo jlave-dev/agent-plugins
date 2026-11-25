@@ -1,7 +1,7 @@
 {
   "name": "agent-dev",
   "version": "1.18.0",
-  "description": "Developer-focused workflows for shaping and simplifying software.",
+  "description": "Developer workflows for shaping projects, verifying behavior, and simplifying software.",
   "author": {
     "name": "James Lave",
     "url": "https://github.com/jlave-dev"
@@ -14,13 +14,14 @@
     "project-design",
     "cleanup",
     "yagni",
-    "maintenance"
+    "maintenance",
+    "behavior-verification"
   ],
   "skills": "./skills/",
   "interface": {
     "displayName": "Agent Dev",
-    "shortDescription": "Shape and simplify software projects.",
-    "longDescription": "Agent Dev packages developer workflows for mapping greenfield project decisions and for ruthless, evidence-backed repo cleanup. It identifies human-owned gates, safe agent decisions, empirical questions, deferred work, stale docs, unused code, duplicate scripts, dead flags, speculative abstractions, and implementation drift.",
+    "shortDescription": "Shape projects, verify behavior, and simplify code.",
+    "longDescription": "Agent Dev packages developer workflows for mapping greenfield project decisions, verifying behavior guarantees and refactor equivalence, and performing ruthless, evidence-backed repo cleanup. It identifies human-owned gates, safe agent decisions, empirical questions, deferred work, stale docs, unused code, duplicate scripts, dead flags, speculative abstractions, and implementation drift.",
     "developerName": "James Lave",
     "category": "Productivity",
     "capabilities": [
@@ -28,13 +29,15 @@
       "YAGNI cleanup planning",
       "dead surface detection",
       "stale documentation cleanup",
-      "repo simplification"
+      "repo simplification",
+      "behavior verification"
     ],
     "websiteURL": "https://github.com/jlave-dev/agent-plugins",
     "privacyPolicyURL": "https://github.com/jlave-dev/agent-plugins/blob/main/PRIVACY.md",
     "termsOfServiceURL": "https://github.com/jlave-dev/agent-plugins/blob/main/TERMS.md",
     "defaultPrompt": [
-      "Use Agent Dev to shape a software project or find stale, unused, duplicated, speculative, or misleading repo surfaces."
+      "Use Agent Dev to shape a software project or find stale, unused, duplicated, speculative, or misleading repo surfaces.",
+      "Use $verify-behavior to check whether this refactor preserves observable behavior for every supported input."
     ],
     "brandColor": "#7C3AED",
     "composerIcon": "./assets/icon.png",
