@@ -1,0 +1,4 @@
+interface:
+  display_name: "Verify Behavior"
+  short_description: "Check behavior guarantees and refactor equivalence"
+  default_prompt: "Use $verify-behavior to check whether this refactor preserves observable behavior for every supported input and show the proof, a counterexample, or the remaining gap."
