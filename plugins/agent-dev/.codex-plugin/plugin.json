@@ -1,6 +1,6 @@
 {
   "name": "agent-dev",
-  "version": "1.18.0",
+  "version": "1.19.0",
   "description": "Developer workflows for shaping projects, verifying behavior, and simplifying software.",
   "author": {
     "name": "James Lave",
